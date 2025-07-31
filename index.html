@@ -8,8 +8,8 @@
         <!-- Reference Font -->
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap">
         <!-- Apply Stylesheets -->
-        <link rel="stylesheet" href="Styling/StyleReset.css">
-        <link rel="stylesheet" href="Styling/PrimaryStyleWhite.css">
+        <link rel="stylesheet" href="Style/StyleReset.css">
+        <link rel="stylesheet" href="Style/PrimaryStyleWhite.css">
     </head>
     <body>
         <a href="#about-page-content" class="skip-to-main">Skip to Main Content</a>
@@ -23,20 +23,20 @@
                 <nav id="nav-container">
                     <!-- Do not display on mobile view. -->
                     <ul class="desktop-nav-links nav-links">
-                        <li><a href="#about">About</a></li>
-                        <li><a href="Content/Projects.html">Projects</a></li>
-                        <li><a href="#skills">Skills</a></li>
-                        <li><a href="#contact">Contact</a></li>
+                        <li><a class="desktop-link" data-target="about">About</a></li>
+                        <li><a class="desktop-link" data-target="game-jams">Projects</a></li>
+                        <li><a class="desktop-link" data-target="skills">Skills</a></li>
+                        <li><a class="desktop-link" data-target="contact">Contact</a></li>
                     </ul>
                     <button class="hamburger" aria-label="Open navigation menu">☰</button>
                 </nav> 
             </div>
             <!-- Do not display on desktop view. -->
             <ul class="mobile-nav-links nav-links">
-                <li><a href="#about">About</a></li>
-                <li><a href="Content/Projects.html">Projects</a></li>
-                <li><a href="#skills">Skills</a></li>
-                <li><a href="#contact">Contact</a></li>
+                <li><a class="mobile-link" data-target="about">About</a></li>
+                <li><a class="mobile-link" data-target="game-jams">Projects</a></li>
+                <li><a class="mobile-link" data-target="skills">Skills</a></li>
+                <li><a class="mobile-link" data-target="contact">Contact</a></li>
             </ul>
         </header>
 
@@ -82,8 +82,8 @@
                             <p>C#</p>
                         </div>
                         <div class="skill">
-                            <img src="Icons/Skills/JavaScript.svg" alt="JavaScript" loading="lazy">
-                            <p>JavaScript</p>
+                            <img src="Icons/Skills/JavaScript.svg" alt="JS" loading="lazy">
+                            <p>JS</p>
                         </div>
                         <div class="skill">
                             <img src="Icons/Skills/HTML5.svg" alt="HTML" loading="lazy">
@@ -103,11 +103,11 @@
                         </div>
                     </div>
                 </div>
-                <section class="section-container" id="small-projects">
+                <section class="section-container" id="game-jams">
                     <h2>Game Jam Projects</h2>
                     <div class="project">
-                        <!-- <div class="project-item">
-                            <a href="Content/BubbleCasino.html">
+                        <div class="project-item">
+                            <a href="https://teemac8.itch.io/bubble-casino">
                                 <h3>Global Game Jam 2025</h3>
                                 <p>
                                     A 48-hour game jam submission inspired by the theme "Bubble." Set in a vividly colorful underwater casino, 
@@ -116,9 +116,9 @@
                                     project was developed using C#11 and the Unity Game Engine.
                                 </p>
                             </a>
-                        </div> -->
+                        </div>
                         <div class="project-item">
-                            <a href="Content/ProtectYourData.html">
+                            <a href="https://teemac8.itch.io/protect-your-data">
                                 <h3>MGDC Bluebird Studios Game Jam</h3>
                                 <p>
                                     48 hour game jam submission following the theme "Real world issues." This game is a roguelike shooter where the
@@ -127,8 +127,8 @@
                                 </p>
                             </a>
                         </div>
-                        <!-- <div class="project-item">
-                            <a href="Content/BlockParty.html">
+                        <div class="project-item">
+                            <a href="https://teemac8.itch.io/block-party">
                                 <h3>WolverineSoft 2024 Pumpkin Game Jam</h3>
                                 <p>
                                     48 hour game jam submission following the theme "Block Party." This game is a 2-player dynamic rhythm-based game where players
@@ -137,8 +137,8 @@
                                 </p>
                             </a>
                         </div>
-                        <div class="project-item">
-                            <a href="Content/DontFlockUp.html">
+                        <!-- <div class="project-item">
+                            <a href="https://teemac8.itch.io/dont-flock-up">
                                 <h3>WolverineSoft 2024 Turkey Game Jam</h3>
                                 <p>
                                     48 hour game jam submission following the theme "Counterproductive." This game is an asymetical, cooperative, infinite runner.
@@ -151,9 +151,28 @@
                 </section>
                 <section class="section-container" id="contact">
                     <h2>Contact Me</h2>
-                    <div class="contact-box">
-                        <p>Email: <a href="mailto:mccaskilltristan@gmail.com">mccaskilltristan@gmail.com</a></p>
-                        <p>Phone: <a href="tel:8066776673">806-677-6673</a></p>
+                    <div id="contact-form">
+                        <form
+                        action="https://formspree.io/f/xyzpplan"
+                        method="POST"
+                        >
+                            <label>
+                                    <input
+                                        type="email"
+                                        name="email"
+                                        placeholder="Your email address"
+                                        required
+                                    >
+                            </label>
+                            <label>
+                                <textarea
+                                name="message"
+                                placeholder="Your message"
+                                required
+                                ></textarea>
+                            </label>
+                            <button type="submit">Send</button>
+                        </form>
                     </div>
                 </section>
             </main>
@@ -178,11 +197,11 @@
         <!-- Timelapse gamedev footage playing in the hero element (expands cursor over) -->
         <!-- Achievement unlocked: Reached the bottom! -->
 
-        <!-- JavaScript to handle the footer year dynamically. -->
-        <script src="JavaScript/FooterYear.js"></script>
+        <!-- JS to handle the footer year dynamically. -->
+        <script src="JS/FooterYear.js"></script>
         <!-- Iteractivity for hamburger menu mobile -->
-        <script src="JavaScript/ToggleHamburger.js"></script>
+        <script src="JS/ToggleHamburger.js"></script>
         <!-- Interactivity for header menu desktop -->
-        <script src="JavaScript/HeaderSelect.js"></script>
+        <script src="JS/HeaderSelect.js"></script>
     </body>
 </html>

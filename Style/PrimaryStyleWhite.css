@@ -2,8 +2,13 @@
 body {
     font-family: 'Poppins', sans-serif;
     background-color: #f4f4f4;
+    height: 100%;
     margin: 0;
     padding: 0;
+}
+
+main {
+    flex: 1;
 }
 
 .helpbar-container {
@@ -14,7 +19,8 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    position: relative;
+    top: 0;
+    position: sticky;
     z-index: 10;
 }
 
@@ -30,6 +36,9 @@ body {
 
 /* Content container */
 #content-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
     position: relative;
     z-index: 1;
 }
@@ -38,6 +47,11 @@ body {
 .name-display {
     font-weight: bold;
     font-size: 1.6rem;
+}
+
+.name-display:hover {
+    transform: scale(1.05);
+    transition: transform 0.15s ease;
 }
 
 /* Prevent link tag from overridding styling */
@@ -64,8 +78,10 @@ body {
 }
 
 header {
-    position: relative;
+    z-index: 10;
+    position: sticky;
     margin-bottom: 1rem;
+    top: 0;
 }
 
 /* Mobile nav links hidden by default */
@@ -126,7 +142,7 @@ header {
 
 #hero h3 {
     color: #cccccc;
-    font-size: 0.9rem;
+    font-size: 1.1rem;
     margin: 0.6rem;
 }
 
@@ -166,7 +182,7 @@ p {
 #skills-icons {
     display: grid;
     --icon-size: 4rem;
-    grid-template-columns: repeat(auto-fit, var(--icon-size));
+    grid-template-columns: 1fr 1fr 1fr;
     row-gap: 3.5rem;
     column-gap: 2rem;
     justify-content: space-evenly;
@@ -234,6 +250,17 @@ p {
     margin-bottom: 0.6rem;
 }
 
+/* Contact Section */
+input, textarea {
+    font-family: 'Poppins', sans-serif;
+    width: 97%;
+    background: #f9f9f9;
+    padding: 0.6rem;
+    border-radius: 1rem;
+    border: 0.1rem solid #ddd;
+    box-shadow: 0 0.1rem 0.2rem rgba(0, 0, 0, 0.1);
+}
+
 /* Style the footer element */
 footer {
     display: flex;
@@ -290,134 +317,113 @@ footer p {
     width: 10%;
 }
 
-/* Media queries for larger screens (tablet view) */
-@media(min-width: 600px) {
-    /* Decrease page stretching */
-    #about-page-content {
-        /* Make more gradual change eventually using math? */
-        margin: auto;
-        width: min(925px, 92%);
-    }
-
-    /* Expand helpbar padding */
-    .helpbar-container {
-        padding: 1.3rem;
-    }
-
-    /* Restyle navigation links */
-    .desktop-nav-links {
-        transition: scale 0.2s ease, color 0.2 ease;
-        display: flex;
-        gap: 1rem;
-        position: static;
-        background-color: #333333;
-        flex-direction: row;
-        align-items: center;
-        opacity: 1;
-    }
-
-    /* Hover effect for header, managed by HeaderSelect.js */
-    /* For unfocusing elements */
-    .desktop-nav-links-unfocused {
-        transition: color 0.15s ease;
-        color: #cccccc;
-    }
-
-    /* For focusing elements */
-    .desktop-nav-links-focused {
-        transition: transform 0.15s ease;
-        transform: scale(1.1);
-    }
-
-    /* Add specificity by targeting the parent container */
-    .desktop-nav-links li.desktop-nav-links-focused a {
-        color: #f9f9f9;
-        transform: scale(1.1);
-        transition: transform 0.15s ease, color 0.15s ease;
-    }
-
-    .desktop-nav-links li.desktop-nav-links-unfocused a {
-        color: #cccccc;
-        transform: scale(1);
-        transition: transform 0.15s ease, color 0.15s ease;
-    }
-
-    /* Hide the hamburger menu on desktop */
-    .mobile-nav-links {
-        display: none;
-    }
-
-    /* Hide the hamburger menu on desktop */
-    .hamburger {
-        display: none;
+/* Update skill icon scaling for medium screens (larger phone view) */
+@media(min-width: 450px) {
+    #skills-icons {
+        grid-template-columns: 1fr 1fr 1fr 1fr;
     }
 }
 
-/* Media queries for larger screens (desktop view) */
-@media(min-width: 800px) {
-    /* Grid align page content */
-    #about-page-content {
-        display: grid;
-        width: min(1250px, 85%);
-        justify-content: center;
-        grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-    }
+/* Update page for desktop view */
+@media(min-width: 750px) {
+  /* Decrease page stretching */
+  #about-page-content {
+    display: grid;
+    width: min(1250px, 85%);
+    justify-content: center;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    margin: auto;
+  }
 
-    /* Individually align content elements */
-    .section-container, #hero {
-        width: 100%;
-        height: 100%;
-        justify-self: center;
-        align-self: center;
-    }
+  /* Expand helpbar padding */
+  .helpbar-container {
+    padding: 1.5rem;
+  }
 
-    .section-container, #hero {
-        max-width: 100%;
-    }
+  /* Restyle navigation links */
+  .desktop-nav-links {
+    transition: scale 0.2s ease, color 0.2s ease;
+    display: flex;
+    gap: 1rem;
+    position: static;
+    background-color: #333333;
+    flex-direction: row;
+    align-items: center;
+    opacity: 1;
+  }
 
-    #about {
-        margin: auto;
-        grid-column: 1 / 4;
-    }
+  .desktop-nav-links-unfocused {
+    transition: color 0.15s ease;
+    color: #cccccc;
+  }
 
-    #skills {
-        grid-column: 4 / 6;
-    }
+  .desktop-nav-links-focused {
+    transition: transform 0.15s ease;
+    transform: scale(1.1);
+  }
 
-    /* Set width of each individual grid element */
-    #hero, #small-projects, #main-projects, #contact {
-        grid-column: 1 / -1;
-    }
+  .desktop-nav-links li.desktop-nav-links-focused a {
+    color: #f9f9f9;
+    transform: scale(1.1);
+    transition: transform 0.15s ease, color 0.15s ease;
+  }
 
-    /* Slightly adjusted font/icon sizes for desktop view */
-    .skill img {
-        width: calc(var(--icon-size) * 0.8);
-    }
+  .desktop-nav-links li.desktop-nav-links-unfocused a {
+    color: #cccccc;
+    transform: scale(1);
+    transition: transform 0.15s ease, color 0.15s ease;
+  }
 
-    #hero h2 {
-        font-size: 1.7rem;
-    }
+  .desktop-link {
+    cursor: pointer;
+  }
 
-    #hero h3 {
-        font-size: 1.1rem;
-    }
+  /* Hide mobile nav on desktop */
+  .mobile-nav-links,
+  .hamburger {
+    display: none;
+  }
 
-    #about h2 {
-        font-size: 1.6rem;
-    }
+  /* Align content sections */
+  .section-container,
+  #hero {
+    width: 100%;
+    height: 100%;
+    justify-self: center;
+    align-self: center;
+    max-width: 100%;
+  }
 
-    #about p {
-        font-size: 1rem;
-        line-height: 1.6rem;
-    }
+  #about {
+    margin: auto;
+    grid-column: 1 / 4;
+  }
 
-    .section-container h2 {
-        font-size: 1.5rem;
-    }
+  #skills {
+    grid-column: 4 / 6;
+  }
 
-    footer p {
-        font-size: 1rem;
-    }
+  #skills-icons {
+    grid-template-columns: repeat(auto-fit, var(--icon-size));
+  }
+
+  /* Set width of full-width sections */
+  #hero,
+  #game-jams,
+  #main-projects,
+  #contact {
+    grid-column: 1 / -1;
+  }
+
+  /* Adjust icon and paragraph size */
+  .skill img {
+    width: calc(var(--icon-size) * 0.8);
+  }
+
+  #about p {
+    font-size: 1rem;
+    line-height: 1.6rem;
+  }
 }
 
 /* Skip to main content link */
