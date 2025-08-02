@@ -250,6 +250,18 @@ p {
     margin-bottom: 0.6rem;
 }
 
+button {
+    background-color: #333333;
+    color: #ffffff;
+    border: none;
+    border-radius: 0.6rem;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    padding: 0.6rem 1.2rem;
+    margin-top: 0.3rem;
+}
+
 /* Contact Section */
 input, textarea {
     font-family: 'Poppins', sans-serif;
@@ -259,6 +271,10 @@ input, textarea {
     border-radius: 1rem;
     border: 0.1rem solid #ddd;
     box-shadow: 0 0.1rem 0.2rem rgba(0, 0, 0, 0.1);
+}
+
+#contact-form label:not(:first-of-type) textarea {
+    margin-top: 0.6rem;
 }
 
 /* Style the footer element */
@@ -315,6 +331,17 @@ footer p {
     margin-bottom: 0.25rem;
     margin-top: 0.5rem;
     width: 10%;
+}
+
+/* Style animated skelington */
+#skelington {
+visibility: hidden;
+transform: translateY(-100%);
+position: absolute;
+image-rendering: pixelated;
+z-index: 1000;
+left: 80rem;
+top: 0;
 }
 
 /* Update skill icon scaling for medium screens (larger phone view) */
