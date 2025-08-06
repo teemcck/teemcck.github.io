@@ -1,6 +1,25 @@
 /* Global body styles */
+:root {
+    --bg-dark: #333333;
+    --bg-light: #f9f9f9;
+    --text-light: #ffffff;
+    --text-muted: #cccccc;
+    --shadow: 0 0.3rem 0.3rem rgba(0, 0, 0, 0.2);
+    --radius: 1rem;
+    --section-width: 97%;
+    --font-sans: 'Poppins', sanserif;
+    --medium-icon-size: 4rem;
+    --small-icon-size: 2rem;
+    --link-img-size: 2rem;
+}
+
+.small-icon {
+    width: var(--small-icon-size);
+    height: var(--small-icon-size);
+}
+
 body {
-    font-family: 'Poppins', sans-serif;
+    font-family: var(--font-sans);
     background-color: #f4f4f4;
     height: 100%;
     margin: 0;
@@ -12,9 +31,9 @@ main {
 }
 
 .helpbar-container {
-    box-shadow: 0 0.3rem 0.3rem rgba(0, 0, 0, 0.2);
-    background-color: #333333;
-    color: #ffffff;
+    box-shadow: var(--shadow);
+    background-color: var(--bg-dark);
+    color: var(--text-light);
     padding: 1.6rem 1rem;
     display: flex;
     justify-content: space-between;
@@ -47,27 +66,26 @@ main {
 .name-display {
     font-weight: bold;
     font-size: 1.6rem;
+    transition: transform 0.15s ease;
 }
 
 .name-display:hover {
     transform: scale(1.05);
-    transition: transform 0.15s ease;
 }
 
-/* Prevent link tag from overridding styling */
-.name-display a {
+/* Prevent link tag from overriding styling */
+.name-display a,
+.name-display a:visited,
+.project-item a,
+.project-item a:visited {
     color: inherit;
     text-decoration: none;
-}
-
-.name-display a:visited {
-    color: inherit;
 }
 
 /* Hamburger menu styles */
 .hamburger {
     background: none;
-    color: #ffffff;
+    color: var(--text-light);
     font-size: 2rem;
     display: inline;
     cursor: pointer;
@@ -88,13 +106,12 @@ header {
 .mobile-nav-links {
     display: flex;
     position: absolute;
-    background-color: #333333;
+    background-color: var(--bg-dark);
     padding: 1rem;
     flex-direction: column;
     align-items: center;
     transform: translateY(-100%); 
-    visibility: hidden; /* Hide the menu initially */
-    /* Add a smooth transition effect for dropdown */
+    visibility: hidden;
     transition: transform 0.3s ease, opacity 0.3s ease;
     z-index: 5;
     opacity: 0;
@@ -106,17 +123,29 @@ header {
 /* When the nav is visible, expand the menu */
 .mobile-nav-links-visible {
     opacity: 1;
-    transform: translateY(0); /* Menu moves down */
+    transform: translateY(0);
 }
 
-/* Navigation list items spacing (update to flex later) */
-.mobile-nav-links li, .desktop-nav-links li {
+/* Navigation list items spacing */
+.mobile-nav-links li,
+.desktop-nav-links li {
     margin: 0.6rem;
+}
+
+#background-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    width: 100vw;
+    height: 100vh;
+    display: block;
+    pointer-events: none;
 }
 
 /* Style links inside both desktop and mobile nav */
 .nav-links li a {
-    color: white;
+    color: var(--text-light);
     font-size: 1.1rem;
     text-decoration: none;
     font-weight: bold;
@@ -129,9 +158,9 @@ header {
     text-align: center;
     padding: 3.1rem 0;
     background: #222222;
-    color: #ffffff;
-    border-radius: 1rem;
-    max-width: 97%;
+    color: var(--text-light);
+    border-radius: var(--radius);
+    max-width: var(--section-width);
 }
 
 #hero h2 {
@@ -141,7 +170,7 @@ header {
 }
 
 #hero h3 {
-    color: #cccccc;
+    color: var(--text-muted);
     font-size: 1.1rem;
     margin: 0.6rem;
 }
@@ -160,16 +189,16 @@ p {
 
 /* Style section container class generally */
 .section-container {
-    border-radius: 1rem;
+    border-radius: var(--radius);
     background-color: #ffffff;
-    box-shadow: 0 0.3rem 0.3rem rgba(0, 0, 0, 0.2);
+    box-shadow: var(--shadow);
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
     flex-wrap: wrap;
     padding: 1.6rem;
     font-size: 1.2rem;
-    width: 97%;
+    width: var(--section-width);
 }
 
 .section-container h2 {
@@ -178,10 +207,14 @@ p {
     font-weight: bold;
 }
 
+/* Account for subsequent h2 lack of padding. */
+.section-container h2:not(:first-child) {
+    margin-top: 1.6rem;
+}
+
 /* Grid align and style skills section */
 #skills-icons {
     display: grid;
-    --icon-size: 4rem;
     grid-template-columns: 1fr 1fr 1fr;
     row-gap: 3.5rem;
     column-gap: 2rem;
@@ -193,25 +226,24 @@ p {
 }
 
 #skills-icons .skill {
-    background-color: #f9f9f9;
-    box-shadow: 0 0.3rem 0.3rem rgba(0, 0, 0, 0.2);
+    background-color: var(--bg-light);
+    box-shadow: var(--shadow);
     padding: 0.3rem;
     border-radius: 0.6rem;
     position: relative;
-    width: var(--icon-size);
     text-align: center;
 }
 
 #skills-icons .skill img {
-    width: var(--icon-size);
-    height: var(--icon-size);
+    width: var(--medium-icon-size);
+    height: var(--medium-icon-size);
     object-fit: contain; 
 }
 
 #skills-icons .skill p {
     position: absolute;
     margin-top: 0.5rem;
-    width: var(--icon-size);
+    width: var(--medium-icon-size);
     font-size: 0.8rem;
     text-align: center;
 }
@@ -225,34 +257,9 @@ p {
     gap: 0.9rem;
 }
 
-/* Prevent link tag from overridding styling */
-.project-item a {
-    color: inherit;
-    text-decoration: none;
-}
-
-.project-item a:visited {
-    color: inherit;
-}
-
-/* Style project item elements */
-.project-item {
-    width: 97%;
-    background: #f9f9f9;
-    padding: 0.6rem;
-    border-radius: 1rem;
-    border: 0.1rem solid #ddd;
-    box-shadow: 0 0.1rem 0.2rem rgba(0, 0, 0, 0.1);
-}
-
-.project-item h3 {
-    font-size: 1.2rem;
-    margin-bottom: 0.6rem;
-}
-
 button {
-    background-color: #333333;
-    color: #ffffff;
+    background-color: var(--bg-dark);
+    color: var(--text-light);
     border: none;
     border-radius: 0.6rem;
     cursor: pointer;
@@ -264,11 +271,11 @@ button {
 
 /* Contact Section */
 input, textarea {
-    font-family: 'Poppins', sans-serif;
-    width: 97%;
-    background: #f9f9f9;
+    font-family: var(--font-sans);
+    width: var(--section-width);
+    background: var(--bg-light);
     padding: 0.6rem;
-    border-radius: 1rem;
+    border-radius: var(--radius);
     border: 0.1rem solid #ddd;
     box-shadow: 0 0.1rem 0.2rem rgba(0, 0, 0, 0.1);
 }
@@ -286,22 +293,15 @@ footer {
     position: relative;
     font-size: 0.9rem;
     background-color: #222222;
-    color: #ffffff;
+    color: var(--text-light);
     text-align: center;
     margin-top: 1rem;
     padding: 0.6rem 0;
-    --link-img-size: 2rem;
-}
-
-/* Remove later */
-.block {
-    display: block;
-    height: 10rem;
 }
 
 footer p {
     font-size: 0.9rem;
-    color: #cccccc;
+    color: var(--text-muted);
 }
 
 .footer-text {
@@ -309,7 +309,6 @@ footer p {
     flex-direction: column;
 }
 
-/* Link elements in the footer. */
 .link-icon {
     width: var(--link-img-size);
 }
@@ -318,7 +317,6 @@ footer p {
     display: flex;
     flex-direction: row;
     gap: 0.5rem;
-    /* Remove link styling. */
     text-decoration: none;
     outline: none;
     border: none;
@@ -326,25 +324,60 @@ footer p {
 
 /* Style horizontal footer divider */
 .footer-divider {
-    border: none; /* Remove default border */
-    border-top: 1px solid #cccccc; 
+    border: none;
+    border-top: 1px solid var(--text-muted);
     margin-bottom: 0.25rem;
     margin-top: 0.5rem;
     width: 10%;
 }
 
-/* Style animated skelington */
-#skelington {
-visibility: hidden;
-transform: translateY(-100%);
-position: absolute;
-image-rendering: pixelated;
-z-index: 1000;
-left: 80rem;
-top: 0;
+/* Style project item elements */
+.project-details {
+    display: contents;
 }
 
-/* Update skill icon scaling for medium screens (larger phone view) */
+.project-title {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    font-size: 1.2rem;
+    margin-bottom: 0.2rem;
+}
+
+.project-title h3 {
+    padding-left: 0.2rem;
+}
+
+.project-title .small-icon {
+    margin-right: 0.2rem;
+}
+
+.project-content {
+    display: flex;
+    flex-direction: column;
+    width: 90%;
+    margin-left: 5%;
+}
+
+.project-title {
+    order: 1;
+}
+
+.project-thumbnail {
+    order: 2;
+}
+
+.project-details p {
+    order: 3;
+}
+
+.project-thumbnail {
+    width: 100%;
+    border-radius: var(--radius);
+    margin-right: 0.6rem;
+}
+
+/* Update skill icon scaling for medium screens */
 @media(min-width: 450px) {
     #skills-icons {
         grid-template-columns: 1fr 1fr 1fr 1fr;
@@ -353,104 +386,125 @@ top: 0;
 
 /* Update page for desktop view */
 @media(min-width: 750px) {
-  /* Decrease page stretching */
-  #about-page-content {
-    display: grid;
-    width: min(1250px, 85%);
-    justify-content: center;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-    margin: auto;
-  }
+    /* Style project item elements */
+    .project-title {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        font-size: 1.2rem;
+        margin-bottom: 0.2rem;
+    }
 
-  /* Expand helpbar padding */
-  .helpbar-container {
-    padding: 1.5rem;
-  }
+    .project-title h3 {
+        padding-left: 0.2rem;
+    }
 
-  /* Restyle navigation links */
-  .desktop-nav-links {
-    transition: scale 0.2s ease, color 0.2s ease;
-    display: flex;
-    gap: 1rem;
-    position: static;
-    background-color: #333333;
-    flex-direction: row;
-    align-items: center;
-    opacity: 1;
-  }
+    .project-title .small-icon {
+        margin-right: 0.2rem;
+    }
 
-  .desktop-nav-links-unfocused {
-    transition: color 0.15s ease;
-    color: #cccccc;
-  }
+    .project-content {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        overflow: hidden;
+        border-radius: var(--radius);
+    }
 
-  .desktop-nav-links-focused {
-    transition: transform 0.15s ease;
-    transform: scale(1.1);
-  }
+    .project-thumbnail {
+        height: 10rem;
+        border-radius: var(--radius);
+        margin-right: 0.6rem;
+    }
 
-  .desktop-nav-links li.desktop-nav-links-focused a {
-    color: #f9f9f9;
-    transform: scale(1.1);
-    transition: transform 0.15s ease, color 0.15s ease;
-  }
+    #about-page-content {
+        display: grid;
+        width: min(1250px, 85%);
+        justify-content: center;
+        grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+        margin: auto;
+    }
 
-  .desktop-nav-links li.desktop-nav-links-unfocused a {
-    color: #cccccc;
-    transform: scale(1);
-    transition: transform 0.15s ease, color 0.15s ease;
-  }
+    .helpbar-container {
+        height: 3rem;
+    }
 
-  .desktop-link {
-    cursor: pointer;
-  }
+    .desktop-nav-links {
+        transition: scale 0.2s ease, color 0.2s ease;
+        display: flex;
+        gap: 1rem;
+        position: static;
+        background-color: var(--bg-dark);
+        flex-direction: row;
+        align-items: center;
+        height: 100%;
+        opacity: 1;
+    }
 
-  /* Hide mobile nav on desktop */
-  .mobile-nav-links,
-  .hamburger {
-    display: none;
-  }
+    .desktop-nav-links-unfocused {
+        color: var(--text-muted);
+        transition: color 0.15s ease;
+    }
 
-  /* Align content sections */
-  .section-container,
-  #hero {
-    width: 100%;
-    height: 100%;
-    justify-self: center;
-    align-self: center;
-    max-width: 100%;
-  }
+    .desktop-nav-links-focused {
+        transform: scale(1.1);
+        transition: transform 0.15s ease;
+    }
 
-  #about {
-    margin: auto;
-    grid-column: 1 / 4;
-  }
+    .desktop-nav-links li.desktop-nav-links-focused a {
+        color: var(--bg-light);
+        transform: scale(1.1);
+        transition: transform 0.15s ease, color 0.15s ease;
+    }
 
-  #skills {
-    grid-column: 4 / 6;
-  }
+    .desktop-nav-links li.desktop-nav-links-unfocused a {
+        color: var(--text-muted);
+        transform: scale(1);
+        transition: transform 0.15s ease, color 0.15s ease;
+    }
 
-  #skills-icons {
-    grid-template-columns: repeat(auto-fit, var(--icon-size));
-  }
+    .desktop-link {
+        cursor: pointer;
+    }
 
-  /* Set width of full-width sections */
-  #hero,
-  #game-jams,
-  #main-projects,
-  #contact {
-    grid-column: 1 / -1;
-  }
+    .mobile-nav-links,
+    .hamburger {
+        display: none;
+    }
 
-  /* Adjust icon and paragraph size */
-  .skill img {
-    width: calc(var(--icon-size) * 0.8);
-  }
+    .section-container,
+    #hero {
+        width: 100%;
+        height: 100%;
+        justify-self: center;
+        align-self: center;
+        max-width: 100%;
+    }
 
-  #about p {
-    font-size: 1rem;
-    line-height: 1.6rem;
-  }
+    #about {
+        margin: auto;
+        grid-column: 1 / 4;
+    }
+
+    #skills {
+        grid-column: 4 / 6;
+    }
+
+    #skills-icons {
+        grid-template-columns: repeat(auto-fit, var(--medium-icon-size));
+    }
+
+    #hero,
+    #game-jams,
+    #main-projects,
+    #contact {
+        grid-column: 1 / -1;
+    }
+
+    #about p {
+        font-size: 1rem;
+        line-height: 1.6rem;
+    }
 }
 
 /* Skip to main content link */
@@ -459,16 +513,16 @@ top: 0;
     top: 0;
     left: 0;
     background-color: #222222;
-    color: #ffffff;
+    color: var(--text-light);
     padding: 0.5rem 1rem;
     font-size: 0.9rem;
     text-decoration: none;
     z-index: 1000;
-    transform: translateY(-100%); /* Hide off-screen */
+    transform: translateY(-100%);
     transition: transform 0.3s ease;
 }
 
 .skip-to-main:focus {
-    transform: translateY(0); /* Bring into view when focused */
-    outline: 2px solid #ffffff;
+    transform: translateY(0);
+    outline: 2px solid var(--text-light);
 }
