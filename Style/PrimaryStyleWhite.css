@@ -120,6 +120,10 @@ header {
     left: 0;
 }
 
+.mobile-nav-links a {
+    font-size: 1.3rem;
+}
+
 /* When the nav is visible, expand the menu */
 .mobile-nav-links-visible {
     opacity: 1;
@@ -146,9 +150,12 @@ header {
 /* Style links inside both desktop and mobile nav */
 .nav-links li a {
     color: var(--text-light);
-    font-size: 1.1rem;
     text-decoration: none;
     font-weight: bold;
+}
+
+.desktop-nav-links li a {
+    font-size: 1.1rem;
 }
 
 /* Style the hero element */
@@ -177,7 +184,7 @@ header {
 
 /* Style general paragraph elements */
 p {
-    font-size: 1rem;
+    font-size: 1.2rem;
     line-height: 1.5rem;
 }
 
@@ -202,14 +209,14 @@ p {
 }
 
 .section-container h2 {
-    font-size: 1.5rem;
+    font-size: 1.6rem;
     margin-bottom: 1rem;
     font-weight: bold;
 }
 
 /* Account for subsequent h2 lack of padding. */
 .section-container h2:not(:first-child) {
-    margin-top: 1.6rem;
+    margin-top: 2rem;
 }
 
 /* Grid align and style skills section */
@@ -242,9 +249,9 @@ p {
 
 #skills-icons .skill p {
     position: absolute;
-    margin-top: 0.5rem;
+    margin-top: 0.8rem;
     width: var(--medium-icon-size);
-    font-size: 0.8rem;
+    font-size: 1rem;
     text-align: center;
 }
 
@@ -282,6 +289,10 @@ input, textarea {
 
 #contact-form label:not(:first-of-type) textarea {
     margin-top: 0.6rem;
+}
+
+::placeholder {
+    font-size: 1.1rem;
 }
 
 /* Style the footer element */
@@ -337,15 +348,27 @@ footer p {
 }
 
 .project-title {
+    position: absolute; /* overlay on thumbnail */
+    top: 0;
+    left: 0;
+    right: 0;
     display: flex;
     flex-direction: row;
     align-items: center;
     font-size: 1.2rem;
-    margin-bottom: 0.2rem;
+    padding: 0.5rem 0.75rem;
+    background-color: rgba(255, 255, 255, 0.8); /* black transparent background */
+    color: rgb(0, 0, 0);
+    border-top-left-radius: var(--radius);
+    border-top-right-radius: var(--radius);
+    z-index: 2;
 }
 
 .project-title h3 {
-    padding-left: 0.2rem;
+    padding-left: 0.4rem;
+    font-size: 1.4rem;
+    margin: 0;
+    color: rgb(0, 0, 0); /* ensure text is visible */
 }
 
 .project-title .small-icon {
@@ -355,26 +378,39 @@ footer p {
 .project-content {
     display: flex;
     flex-direction: column;
-    width: 90%;
-    margin-left: 5%;
-}
-
-.project-title {
-    order: 1;
-}
-
-.project-thumbnail {
-    order: 2;
+    width: 95%;
+    margin-left: 2.5%;
+    position: relative; /* needed for absolute positioning of title inside */
 }
 
 .project-details p {
+    padding-top: 1rem;
     order: 3;
 }
 
 .project-thumbnail {
     width: 100%;
+    box-shadow: var(--shadow);
     border-radius: var(--radius);
     margin-right: 0.6rem;
+    display: block;
+}
+
+/* Ensure thumbnail wrapper handles the overlay */
+.thumbnail-wrapper {
+    margin-top: 1rem;
+    position: relative;
+}
+
+.thumbnail-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(47, 47, 47, 0.3);
+    border-radius: var(--radius);
+    z-index: 1;
 }
 
 /* Update skill icon scaling for medium screens */
@@ -501,8 +537,7 @@ footer p {
         grid-column: 1 / -1;
     }
 
-    #about p {
-        font-size: 1rem;
+    #about p {  
         line-height: 1.6rem;
     }
 }
