@@ -256,12 +256,50 @@ p {
 }
 
 /* Flex align project containers */
-.project {
+.projects {
     display: flex;
     flex-direction: column;
     flex-wrap: wrap;
     align-content: center;
     gap: 0.9rem;
+}
+
+.project-item {
+    width: 100%;
+}
+
+.project-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.thumbnail-wrapper {
+    width: 100%;
+    flex: 1
+}
+
+.thumbnail-overlay {
+    width: 100%;
+}
+
+.project-thumbnail {
+    width: 100%;
+    border-radius: var(--radius);
+}
+
+.project-details {
+    flex: 3
+}
+
+.project-title {
+    display: flex;
+    flex-direction: row;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.project-title h3 {
+    margin-left: 10px;
 }
 
 button {
@@ -342,77 +380,6 @@ footer p {
     width: 10%;
 }
 
-/* Style project item elements */
-.project-details {
-    display: contents;
-}
-
-.project-title {
-    position: absolute; /* overlay on thumbnail */
-    top: 0;
-    left: 0;
-    right: 0;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    font-size: 1.2rem;
-    padding: 0.5rem 0.75rem;
-    background-color: rgba(255, 255, 255, 0.8); /* black transparent background */
-    color: rgb(0, 0, 0);
-    border-top-left-radius: var(--radius);
-    border-top-right-radius: var(--radius);
-    z-index: 2;
-}
-
-.project-title h3 {
-    padding-left: 0.4rem;
-    font-size: 1.4rem;
-    margin: 0;
-    color: rgb(0, 0, 0); /* ensure text is visible */
-}
-
-.project-title .small-icon {
-    margin-right: 0.2rem;
-}
-
-.project-content {
-    display: flex;
-    flex-direction: column;
-    width: 95%;
-    margin-left: 2.5%;
-    position: relative; /* needed for absolute positioning of title inside */
-}
-
-.project-details p {
-    padding-top: 1rem;
-    order: 3;
-}
-
-.project-thumbnail {
-    width: 100%;
-    box-shadow: var(--shadow);
-    border-radius: var(--radius);
-    margin-right: 0.6rem;
-    display: block;
-}
-
-/* Ensure thumbnail wrapper handles the overlay */
-.thumbnail-wrapper {
-    margin-top: 1rem;
-    position: relative;
-}
-
-.thumbnail-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(47, 47, 47, 0.3);
-    border-radius: var(--radius);
-    z-index: 1;
-}
-
 /* Update skill icon scaling for medium screens */
 @media(min-width: 450px) {
     #skills-icons {
@@ -422,37 +389,6 @@ footer p {
 
 /* Update page for desktop view */
 @media(min-width: 750px) {
-    /* Style project item elements */
-    .project-title {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        font-size: 1.2rem;
-        margin-bottom: 0.2rem;
-    }
-
-    .project-title h3 {
-        padding-left: 0.2rem;
-    }
-
-    .project-title .small-icon {
-        margin-right: 0.2rem;
-    }
-
-    .project-content {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        overflow: hidden;
-        border-radius: var(--radius);
-    }
-
-    .project-thumbnail {
-        height: 10rem;
-        border-radius: var(--radius);
-        margin-right: 0.6rem;
-    }
-
     #about-page-content {
         display: grid;
         width: min(1250px, 85%);
