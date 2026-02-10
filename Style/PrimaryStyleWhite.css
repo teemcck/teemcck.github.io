@@ -172,7 +172,7 @@ header {
 
 #hero h2 {
     font-weight: bold;
-    font-size: 1.8rem;
+    font-size: 1.6rem;
     margin: 1rem;
 }
 
@@ -184,7 +184,7 @@ header {
 
 /* Style general paragraph elements */
 p {
-    font-size: 1.2rem;
+    font-size: 1rem;
     line-height: 1.5rem;
 }
 
@@ -209,7 +209,7 @@ p {
 }
 
 .section-container h2 {
-    font-size: 1.6rem;
+    font-size: 1.4rem;
     margin-bottom: 1rem;
     font-weight: bold;
 }
@@ -391,9 +391,9 @@ footer p {
 @media(min-width: 750px) {
     #about-page-content {
         display: grid;
-        width: min(1250px, 85%);
+        width: 75%;
         justify-content: center;
-        grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+        grid-template-columns: 1fr 1fr 1fr 1fr;
         margin: auto;
     }
 
