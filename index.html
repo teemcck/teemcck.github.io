@@ -10,6 +10,8 @@
         <!-- Apply Stylesheets -->
         <link rel="stylesheet" href="Style/StyleReset.css">
         <link rel="stylesheet" href="Style/PrimaryStyleWhite.css">
+        <!-- JS -->
+         <script src="JS/NavSelect.js" defer></script>
     </head>
     <body>
         <a href="#page-content" class="skip-to-main">Skip to Main Content</a>
@@ -18,10 +20,14 @@
             <main id="page-content">
                 <section id="hero">
                     <h1>Tristan McCaskill</h1>
-                    <h2>Indie Game Developer | Software Engineer</h2>
+                    <h2>Game Developer | Software Engineer</h2>
                 </section>
 
-                <hr class="divider">
+                <div class="divider">
+                    <div class="divider-left"></div>
+                    <div class="divider-mid"></div>
+                    <div class="divider-right"></div>
+                </div>
 
                 <section id="nav-bar">
                     <ul class="nav-links">
@@ -32,7 +38,11 @@
                     </ul>
                 </section>
 
-                <hr class="divider">
+                <div class="divider">
+                    <div class="divider-left"></div>
+                    <div class="divider-mid"></div>
+                    <div class="divider-right"></div>
+                </div>
 
                 <div class="section-container" id="about">
                     <h2>About Me</h2>
@@ -54,11 +64,77 @@
                     <h2>Skills</h2>
                 </div>
 
-                <!-- Projects — rebuild from here -->
+                <!-- Projects -->
                 <section class="section-container" id="projects">
                     <h2>Projects</h2>
+                    <div class="projects-container">
+                        <div class="project-item">
+                            <div class="project-content">
+                                <div class="thumbnail-wrapper">
+                                    <div class="thumbnail-overlay"></div>
+                                    <img class="project-thumbnail" src="Assets/Thumbnails/ProtectYourData.png" alt="Protect Your Data Thumbnail" loading="lazy">
+                                    <div class="project-title">
+                                        <!-- <img class="small-icon" src="Assets/Icons/Skills/CSharp.svg" alt="C#" loading="lazy">
+                                        <img class="small-icon" src="Assets/Icons/Skills/Unity.svg" alt="Unity" loading="lazy"> -->
+                                        <!-- <h3>MGDC Bluebird Studios Game Jam</h3> -->
+                                    </div>
+                                </div>
+                                <!-- <div class="project-details">
+                                    <p>
+                                        48 hour game jam submission following the theme "Real world issues." This game is a roguelike shooter where the
+                                        objective is to combat viruses infecting your computer. There are 7 different unlockable upgrades, 2 different bosses,
+                                        and a developed story line. This project was developed using C#11 and the Unity Game Engine.
+                                    </p>
+                                </div> -->
+                            </div>
+                        </div>
+
+                        <div class="project-item">
+                            <div class="project-content">
+                                <div class="thumbnail-wrapper">
+                                    <div class="thumbnail-overlay"></div>
+                                    <img class="project-thumbnail" src="Assets/Thumbnails/BubbleCasino.png" alt="Bubble Casino Thumbnail" loading="lazy">
+                                    <div class="project-title">
+                                        <!-- <img class="small-icon" src="Assets/Icons/Skills/CSharp.svg" alt="C#" loading="lazy">
+                                        <img class="small-icon" src="Assets/Icons/Skills/Unity.svg" alt="Unity" loading="lazy"> -->
+                                        <!-- <h3>Global Game Jam 2025</h3> -->
+                                    </div>
+                                </div>
+                                <!-- <div class="project-details">
+                                    <p>
+                                        A 48-hour game jam submission inspired by the theme "Bubble." Set in a vividly colorful underwater casino, 
+                                        the game challenges players to win as much money as possible to fund their dream wedding. 
+                                        Featuring a fully functional blackjack game and an engaging storyline, this 
+                                        project was developed using C#11 and the Unity Game Engine.
+                                    </p>
+                                </div> -->
+                            </div>
+                        </div>
+
+                        <div class="project-item">
+                            <div class="project-content">
+                                <div class="thumbnail-wrapper">
+                                    <div class="thumbnail-overlay"></div>
+                                    <img class="project-thumbnail" src="Assets/Thumbnails/BlockParty.png" alt="Block Party Thumbnail" loading="lazy">
+                                    <div class="project-title">
+                                        <!-- <img class="small-icon" src="Assets/Icons/Skills/CSharp.svg" alt="C#" loading="lazy">
+                                        <img class="small-icon" src="Assets/Icons/Skills/Unity.svg" alt="Unity" loading="lazy"> -->
+                                        <!-- <h3>WolverineSoft 2024 Pumpkin Game Jam</h3> -->
+                                    </div>
+                                </div>
+                                <!-- <div class="project-details">
+                                    <p>
+                                        48 hour game jam submission following the theme "Block Party." This game is a 2-player dynamic rhythm-based game where players
+                                        synchronize actions to musical beats to outperform their opponent. There are 3 unique tracks, a regular and halloween theme,
+                                        and 9 unique characters to select from. This project was designed using C#11 and the Unity Game Engine.
+                                    </p>
+                                </div> -->
+                            </div>
+                        </div>
+                    </div>
                 </section>
 
+                <!-- Contact -->
                 <section class="section-container" id="contact">
                     <h2>Contact Me</h2>
                     <div id="contact-form">
@@ -86,7 +162,6 @@
                         </form>
                     </div>
                 </section>
-
             </main>
         </div>
     </body>
