@@ -21,7 +21,8 @@ html {
     --text-dark: #47526e;
     --bg-muk: #47526e;
     --shadow: 0 0.3rem 0.3rem rgba(0, 0, 0, 0.2);
-    --radius: .8rem;
+    --radius-large: 0.8rem;
+    --radius-small: 0.4rem;
     --font-sans: 'Primary', sans-serif;
     --link-img-size: 2rem;
 }
@@ -80,6 +81,12 @@ p a, p a:visited {
 /* =====================
    Header & Nav
    ===================== */
+header {
+    display: sticky;
+    background-color: white;
+    padding: 0.5rem;
+}
+
 .nav-bar {
     width: 100%;
     display: flex;
@@ -89,15 +96,14 @@ p a, p a:visited {
 
 .nav-links {
     padding: 0rem 1rem;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    height: 100%;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: repeat(2, auto);
+    justify-content: end;
+    gap: 0.3rem 0.6rem;
+    justify-content: center;
 }
 
 .nav-links li a {
-    padding: 0.2rem 0.4rem;
     color: var(--text-light);
     text-decoration: none;
     font-weight: bold;
@@ -132,11 +138,11 @@ p a, p a:visited {
    Page Layout
    ===================== */
 #content-container {
+    padding: 0.5rem;
     display: flex;
     flex-direction: column;
     min-height: 100vh;
     position: relative;
-    padding: 3rem;
     z-index: 1;
 }
 
@@ -206,14 +212,22 @@ p a, p a:visited {
 
 .projects-container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(375px, 1fr));
+    grid-template-columns: repeat(auto-fit, 1fr);
     gap: 20px;
     width: 100%;
 }
 
+.project-content:hover {
+    transform: scale(1.05);
+}
+
+.project-content {
+    transition: transform 0.3s ease;
+}
+
 .thumbnail-wrapper {
     position: relative;
-    border-radius: var(--radius);
+    border-radius: var(--radius-large);
     overflow: hidden;
     box-shadow: 0 0 0 0px var(--text-link);
 }
@@ -224,7 +238,6 @@ p a, p a:visited {
     background: rgba(0, 0, 0, 0);
     backdrop-filter: blur(0px);
     transition: backdrop-filter 0.2s ease, background 0.2s ease;
-    background: linear-gradient(to top, rgba(0, 0, 0, .8) 20%, rgba(0, 0, 0, 0.4) 40%, rgba(0, 0, 0, 0.0) 60%);
     pointer-events: none;
     inset: 0px; 
 }
@@ -244,6 +257,32 @@ p a, p a:visited {
     transform: translateY(-15px) scale(1.05);
 }
 
+.thumbnail-title {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 0.9rem;
+    color: var(--text-light);
+    font-size: 1.1rem;
+    background: linear-gradient(
+        to top,
+        rgba(0,0,0,0.85),
+        rgba(0,0,0,0.7),
+        rgba(0,0,0,0.4)
+    );
+    z-index: 2;
+}
+
+.thumbnail-title h3 {
+    padding: 0.2rem 0rem;
+}
+
+.thumbnail-subtitle {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
 /* =====================
    Contact
    ===================== */
@@ -253,7 +292,7 @@ textarea {
     width: 97%;
     background: var(--bg-light);
     padding: 0.6rem;
-    border-radius: var(--radius);
+    border-radius: var(--radius-large);
     border: 0.1rem solid #ddd;
     box-shadow: 0 0.1rem 0.2rem rgba(0, 0, 0, 0.1);
     margin: 0.5rem auto;
@@ -298,7 +337,7 @@ button {
 .divider-left {
   width: 64px;
   height: 64px;
-  background-image: url('../Assets/left.png');
+  background-image: url('../Assets/Decoration/left.png');
   background-repeat: no-repeat;
   background-size: contain;
   image-rendering: pixelated;
@@ -308,7 +347,7 @@ button {
 .divider-mid {
   flex: 1;
   height: 64px;
-  background-image: url('../Assets/middle.png');
+  background-image: url('../Assets/Decoration/middle.png');
   background-repeat: round;
   background-size: auto 100%;
   image-rendering: pixelated;
@@ -317,12 +356,40 @@ button {
 .divider-right {
   width: 64px;
   height: 64px;
-  background-image: url('../Assets/right.png');
+  background-image: url('../Assets/Decoration/right.png');
   background-repeat: no-repeat;
   background-size: contain;
   image-rendering: pixelated;
   flex-shrink: 0;
 }
+
+/* =====================
+   Skills
+   ===================== */
+
+.skills-container {
+    display: grid;
+    grid-template-columns: repeat(2, auto);
+    justify-content: end;
+    gap: 0.3rem 0.6rem;
+    justify-content: space-around;
+}
+
+.skills-description {
+    padding-bottom: 1rem;
+}
+
+.skill-metric {
+    border-radius: var(--radius-small);
+    box-shadow: inset 0px 0px 8px rgba(255, 255, 255, 0.6);
+    padding: 0.5rem;
+    margin: 0.2rem;
+}
+
+.skill-subject {
+    padding-bottom: 0.5rem;
+}
+
 
 /* =====================
    Footer
@@ -371,9 +438,25 @@ footer p {
    Desktop (750px+)
    ===================== */
 @media (min-width: 750px) {
+    .projects-container {
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    }
+
+    #content-container {
+        padding: 3rem;
+    }
+
+    .nav-links {
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+    }
+
+    .nav-links li a {
+        padding: 0.2rem 0.4rem;
+    }
+
     #page-content {
         display: grid;
-        width: 60%;
+        width: clamp(60%, 90%, 1100px);
         margin: auto;
     }
 
