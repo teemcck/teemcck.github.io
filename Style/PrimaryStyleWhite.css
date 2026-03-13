@@ -82,9 +82,11 @@ p a, p a:visited {
    Header & Nav
    ===================== */
 header {
-    display: sticky;
-    background-color: white;
+    top: 0;
+    position: sticky;
+    background: white;
     padding: 0.5rem;
+    z-index: 999;
 }
 
 .nav-bar {
@@ -98,9 +100,9 @@ header {
     padding: 0rem 1rem;
     display: grid;
     grid-template-columns: repeat(2, auto);
-    justify-content: end;
     gap: 0.3rem 0.6rem;
     justify-content: center;
+    justify-items: center;
 }
 
 .nav-links li a {
@@ -198,6 +200,16 @@ header {
     margin: 0.6rem;
 }
 
+.hero-icons {
+    display: flex;
+    justify-content: center;
+}
+
+.hero-icon {
+    width: 1.7rem;
+    padding: 0.7rem;
+}
+
 /* =====================
    About
    ===================== */
@@ -237,9 +249,10 @@ header {
     position: absolute;
     background: rgba(0, 0, 0, 0);
     backdrop-filter: blur(0px);
-    transition: backdrop-filter 0.2s ease, background 0.2s ease;
+    transition: backdrop-filter 0.3s ease, background 0.3s ease;
     pointer-events: none;
-    inset: 0px; 
+    inset: 0;
+    z-index: 1;
 }
 
 .thumbnail-wrapper:hover::after {
