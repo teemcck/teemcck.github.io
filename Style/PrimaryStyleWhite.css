@@ -167,7 +167,7 @@ header {
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    padding: 1.6rem;
+    padding: 0.8rem;
     font-size: 1.2rem;
     width: 97%;
     margin: 0 auto;
@@ -397,6 +397,7 @@ button {
 
 .skill-subject {
     /* Fill later */
+    color: var(--text-light);
 }
 
 .skills-description {
@@ -406,16 +407,27 @@ button {
 .skill-metric-container {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     width: 100%;
     border-radius: var(--radius-medium);
-    border-color: #47526e;
-    box-shadow: inset 0px 0px 8px rgba(255, 255, 255, 0.6);
-    padding: 0.5rem;
+    background-color: #2a3142;
+    box-shadow: inset 0px 0px 8px rgba(255, 255, 255, 0.15);
     margin: 0.2rem;
 }
 
 .skill-metric {
-    
+    color: var(--text-light);
+    border-radius: var(--radius-medium);
+    width: calc(var(--level) * 1%);
+    background-color: #196637;
+    box-shadow: inset 0px 0px 8px rgba(255, 255, 255, 0.15);
+    padding: 0.2rem;
+    padding-left: 0.8rem;
+}
+
+.skill-metric-value {
+    color: var(--text-light);
+    padding-right: 0.8rem;
 }
 
 .skill-subject {
@@ -488,7 +500,7 @@ footer p {
 
     #page-content {
         display: grid;
-        width: clamp(60%, 90%, 1100px);
+        width: clamp(60%, 70%, 1100px);
         margin: auto;
     }
 
