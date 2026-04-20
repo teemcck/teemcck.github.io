@@ -6,27 +6,6 @@ const contact = document.querySelector("#contact");
 const links = document.querySelectorAll(".desktop-link");
 const sections = document.querySelectorAll(".section-container");
 
-let blinkInterval = null;
-
-function startBlink(link) {
-  let visible = true;
-  blinkInterval = setInterval(() => {
-    visible = !visible;
-    if (visible) {
-        link.classList.add("active");
-    }
-    else {
-        link.classList.remove("active");
-    }
-  }, 600);
-}
-
-function stopBlink(link) {
-  clearInterval(blinkInterval);
-  blinkInterval = null;
-  link.classList.remove("active");
-}
-
 function showSection(targetId) {
   sections.forEach(section => {
     section.style.display = section.id === targetId ? "block" : "none";
@@ -41,7 +20,6 @@ showSection("about");
 links.forEach(link => {
   if (link.dataset.target === "about") {
     link.classList.add("active");
-    startBlink(link);
   }
 });
 
@@ -51,17 +29,16 @@ links.forEach(link => {
   link.addEventListener("click", () => {
     const targetId = link.dataset.target;
 
-    // Stop blinking previous active link
+    // Remove active class from previous link
     if (activeLink) {
-      stopBlink(activeLink);
+      activeLink.classList.remove("active");
     }
 
     // Show the target section, hide others
     showSection(targetId);
 
-    // Mark new link as active and start blink
+    // Mark new link as active
     link.classList.add("active");
     activeLink = link;
-    startBlink(link);
   });
 });

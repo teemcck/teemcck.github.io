@@ -113,12 +113,27 @@ header {
     font-weight: bold;
     border-radius: 2px;
     width: 100%;
+    position: relative;
+    padding-bottom: 8px;
 }
 
-.nav-links li a.active {
-    background-color: var(--text-light);
-    color: var(--text-dark);
-    text-shadow: none;
+.nav-links li a.active::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 0;
+    right: 0;
+    height: 1.2rem;
+    background-image: url('../Assets/Decoration/SelectUnderline/underline.gif');
+    background-size: auto 100%;
+    background-position: center bottom;
+    image-rendering: pixelated;
+    animation: slowGif 1s steps(1, end) infinite;
+}
+
+@keyframes slowGif {
+    0% { background-position: center bottom; }
+    100% { background-position: center bottom; }
 }
 
 .nav-links li {
@@ -353,7 +368,7 @@ button {
 .divider-left {
   width: 64px;
   height: 64px;
-  background-image: url('../Assets/Decoration/left.png');
+  background-image: url('../Assets/Decoration/Divider/left.png');
   background-repeat: no-repeat;
   background-size: contain;
   image-rendering: pixelated;
@@ -363,7 +378,7 @@ button {
 .divider-mid {
   flex: 1;
   height: 64px;
-  background-image: url('../Assets/Decoration/middle.png');
+  background-image: url('../Assets/Decoration/Divider/middle.png');
   background-repeat: round;
   background-size: auto 100%;
   image-rendering: pixelated;
@@ -372,7 +387,7 @@ button {
 .divider-right {
   width: 64px;
   height: 64px;
-  background-image: url('../Assets/Decoration/right.png');
+  background-image: url('../Assets/Decoration/Divider/right.png');
   background-repeat: no-repeat;
   background-size: contain;
   image-rendering: pixelated;
@@ -493,19 +508,15 @@ footer p {
     .nav-links {
         grid-template-columns: 1fr 1fr 1fr 1fr;
     }
-
-    .nav-links li a {
-        padding: 0.2rem 0.4rem;
+    
+    .desktop-link {
+        cursor: pointer;
     }
 
     #page-content {
         display: grid;
         width: clamp(60%, 70%, 1100px);
         margin: auto;
-    }
-
-    .desktop-link {
-        cursor: pointer;
     }
 
     .section-container,
