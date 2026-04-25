@@ -9,6 +9,21 @@ html {
   font-style: normal;
 }
 
+/* Canvas for drawing GLSL background. */
+canvas {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+}
+
+.shader-overlay {
+  position: fixed;
+  inset: 0;
+  background: #16181f74;
+  z-index: -1;
+  pointer-events: none;
+}
+
 /* =====================
    CSS Custom Properties
    ===================== */
@@ -33,7 +48,7 @@ html {
    ===================== */
 body {
     font-family: var(--font-sans);
-    text-shadow: 0 0 1px;
+    text-shadow: 0 0 0px;
     background-color: #1c2230;
     background-image: repeating-radial-gradient(
         rgba(150, 170, 255, 0.07),
@@ -128,12 +143,6 @@ header {
     background-size: auto 100%;
     background-position: center bottom;
     image-rendering: pixelated;
-    animation: slowGif 1s steps(1, end) infinite;
-}
-
-@keyframes slowGif {
-    0% { background-position: center bottom; }
-    100% { background-position: center bottom; }
 }
 
 .nav-links li {
