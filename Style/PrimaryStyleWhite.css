@@ -19,7 +19,7 @@ canvas {
 .shader-overlay {
   position: fixed;
   inset: 0;
-  background: #16181f74;
+  background: #16181f92;
   z-index: -1;
   pointer-events: none;
 }

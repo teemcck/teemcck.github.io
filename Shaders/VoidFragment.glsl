@@ -8,17 +8,18 @@ varying vec2 vUv;
 
 // -- Simple Options --
 float pixelSize = 8.0;
-float voidScale = 3.0;
-float voidSpeed = 0.01;
-float warpStrength = 0.12;
-float shimmerStrength = 0.12;
+float voidScale = 6.0;
+float voidSpeed = 0.005;
+float warpStrength = 0.05;
+float shimmerStrength = 0.06;
 
 // -- Color Palette --
-vec3 color0 = vec3(0.08, 0.10, 0.16); // 0 overlaps
-vec3 color1 = vec3(0.10, 0.12, 0.18); // 1 overlap
-vec3 color2 = vec3(0.13, 0.15, 0.22); // 2 overlaps
-vec3 color3 = vec3(0.16, 0.18, 0.26); // 3 overlaps
-vec3 glowColor = vec3(0.16, 0.19, 0.27);
+vec3 color0 = vec3(0.08, 0.09, 0.12);
+vec3 color1 = vec3(0.10, 0.11, 0.14);
+vec3 color2 = vec3(0.14, 0.16, 0.20);
+vec3 color3 = vec3(0.19, 0.21, 0.26);
+
+vec3 glowColor = vec3(0.32, 0.35, 0.42);
 
 // -- Noise --
 float hash(vec2 p) {
@@ -70,6 +71,7 @@ vec2 warp(vec2 uv) {
 }
 
 void main() {
+
   vec2 fragCoord = vUv * uResolution;
 
   vec2 uv = floor(fragCoord / pixelSize) * pixelSize;
@@ -96,6 +98,19 @@ void main() {
 
   shimmer = smoothstep(0.72, 1.0, shimmer * 0.5 + 0.5);
 
+  // subtle arcing ribbons
+  float arcs = sin(
+    vuv.x * 12.0 +
+    mediumVoid * 5.0 +
+    fineVoid * 2.0 -
+    uTime * 0.8
+  );
+
+  arcs = abs(arcs);
+  arcs = pow(1.0 - arcs, 6.0);
+
+  arcs *= mediumVoid * 0.7;
+
   // Convert soft layers into overlap masks
   float largeMask = step(0.5, largeVoid);
   float mediumMask = step(0.5, mediumVoid);
@@ -110,6 +125,9 @@ void main() {
 
   // Subtle glow only where layers exist
   col += glowColor * shimmer * voidShape * shimmerStrength;
+
+  // ethereal ribbon energy
+  col += glowColor * arcs * 0.12;
 
   gl_FragColor = vec4(col, 1.0);
 }
