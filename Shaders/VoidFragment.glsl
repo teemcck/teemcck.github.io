@@ -14,10 +14,10 @@ float warpStrength = 0.05;
 float shimmerStrength = 0.06;
 
 // -- Color Palette --
-vec3 color0 = vec3(0.08, 0.09, 0.12);
-vec3 color1 = vec3(0.10, 0.11, 0.14);
-vec3 color2 = vec3(0.14, 0.16, 0.20);
-vec3 color3 = vec3(0.19, 0.21, 0.26);
+vec3 color0 = vec3(0.07, 0.08, 0.10);
+vec3 color1 = vec3(0.09, 0.11, 0.13);
+vec3 color2 = vec3(0.12, 0.15, 0.18);
+vec3 color3 = vec3(0.16, 0.19, 0.22);
 
 vec3 glowColor = vec3(0.32, 0.35, 0.42);
 

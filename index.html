@@ -7,6 +7,8 @@
         <link rel="icon" href="Assets/Icons/Coffee.svg" type="image/x-icon">
         <!-- Reference Font -->
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap">
+        <!-- Icons -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
         <!-- Apply Stylesheets -->
         <link rel="stylesheet" href="Style/StyleReset.css">
         <link rel="stylesheet" href="Style/PrimaryStyleWhite.css">
@@ -26,15 +28,17 @@
         <div id="content-container">
             <main id="page-content">
                 <section id="hero">
-                    <h1>Tristan McCaskill</h1>
-                    <h2>Game Developer | Software Engineer</h2>
-                    <div class="hero-icons">
-                        <a target="_blank" href="https://www.linkedin.com/in/tristan-mccaskill/">
-                            <img class="hero-icon" src="Assets/Icons/Business/LinkedIn.svg" alt="LinkedIn">
-                        </a>
-                        <a target="_blank" href="https://github.com/teemcck">
-                            <img class="hero-icon" src="Assets/Icons/Business/Github.svg" alt="GitHub">
-                        </a>
+                    <div class="hero-text">
+                        <h1>Tristan McCaskill</h1>
+                        <h2>Game Developer | Software Engineer</h2>
+                        <div class="hero-icons">
+                            <a target="_blank" href="https://www.linkedin.com/in/tristan-mccaskill/">
+                                <i class="fa-brands fa-linkedin hero-icon" aria-label="LinkedIn"></i>
+                            </a>
+                            <a target="_blank" href="https://github.com/teemcck">
+                                <i class="fa-brands fa-github hero-icon" aria-label="GitHub"></i>
+                            </a>
+                        </div>
                     </div>
                 </section>
 
@@ -46,10 +50,10 @@
 
                 <section id="nav-bar">
                     <ul class="nav-links">
-                        <li><a class="desktop-link" data-target="about">About</a></li>
-                        <li><a class="desktop-link" data-target="projects">Projects</a></li>
-                        <li><a class="desktop-link" data-target="skills">Skills</a></li>
-                        <li><a class="desktop-link" data-target="contact">Contact</a></li>
+                        <li><a class="desktop-link" data-target="about"><i class="fa-solid fa-user"></i> About</a></li>
+                        <li><a class="desktop-link" data-target="projects"><i class="fa-solid fa-gamepad"></i> Projects</a></li>
+                        <li><a class="desktop-link" data-target="skills"><i class="fa-solid fa-code"></i> Skills</a></li>
+                        <li><a class="desktop-link" data-target="contact"><i class="fa-solid fa-envelope"></i> Contact</a></li>
                     </ul>
                 </section>
 
@@ -69,7 +73,8 @@
                         <a href="https://michigancg.org/#home" target="_blank" rel="noopener noreferrer">Michigan Computer Graphics</a>.
                     </p>
                     <p>
-                        My goal is to create unique, memorable experiences through games that motivate others to explore their passions.                         I'm excited to see where this journey takes me, and I'd love to share that experience with you.
+                        My goal is to create unique, memorable experiences through games that motivate others to explore their passions.
+                        I'm excited to see where this journey takes me, and I'd love to share that experience with you.
                     </p>
                 </div>
 
@@ -81,63 +86,62 @@
                         <div class="language-skills">
                             <div class="skill-subject">Programming/Markup Languages</div>
                             <div class="skill-metric-container">
-                                <div class="skill-metric" style="--level: 80;">C++</div>
+                                <div class="skill-metric" style="--level: 80;"><i class="fa-solid fa-file-code"></i> C++</div>
                                 <span class="skill-metric-value">80</span>
                             </div>
                             <div class="skill-metric-container">
-                                <div class="skill-metric" style="--level: 80;">C#</div>
+                                <div class="skill-metric" style="--level: 80;"><i class="fa-solid fa-file-code"></i> C#</div>
                                 <span class="skill-metric-value">80</span>
                             </div>
                             <div class="skill-metric-container">
-                                <div class="skill-metric" style="--level: 75;">Latex</div>
+                                <div class="skill-metric" style="--level: 75;"><i class="fa-solid fa-scroll"></i> LaTeX</div>
                                 <span class="skill-metric-value">75</span>
                             </div>
                             <div class="skill-metric-container">
-                                <div class="skill-metric" style="--level: 75;">HTML</div>
+                                <div class="skill-metric" style="--level: 75;"><i class="fa-brands fa-html5"></i> HTML</div>
                                 <span class="skill-metric-value">75</span>
                             </div>
                             <div class="skill-metric-container">
-                                <div class="skill-metric" style="--level: 75;">CSS</div>
+                                <div class="skill-metric" style="--level: 75;"><i class="fa-brands fa-css3-alt"></i> CSS</div>
                                 <span class="skill-metric-value">75</span>
                             </div>
                             <div class="skill-metric-container">
-                                <div class="skill-metric" style="--level: 70;">C</div>
+                                <div class="skill-metric" style="--level: 70;"><i class="fa-solid fa-c"></i> C</div>
                                 <span class="skill-metric-value">70</span>
                             </div>
                             <div class="skill-metric-container">
-                                <div class="skill-metric" style="--level: 60;">Java</div>
+                                <div class="skill-metric" style="--level: 60;"><i class="fa-brands fa-java"></i> Java</div>
                                 <span class="skill-metric-value">60</span>
                             </div>
                             <div class="skill-metric-container">
-                                <div class="skill-metric" style="--level: 55;">Python</div>
+                                <div class="skill-metric" style="--level: 55;"><i class="fa-brands fa-python"></i> Python</div>
                                 <span class="skill-metric-value">55</span>
                             </div>
-
                         </div>
                         <div class="tool-skills">
                             <div class="skill-subject">Tools, Frameworks, APIs</div>
                             <div class="skill-metric-container">
-                                <div class="skill-metric" style="--level: 80;">Unity</div>
+                                <div class="skill-metric" style="--level: 80;"><i class="fa-solid fa-unity"></i> Unity</div>
                                 <span class="skill-metric-value">80</span>
                             </div>
                             <div class="skill-metric-container">
-                                <div class="skill-metric" style="--level: 75;">Blender</div>
+                                <div class="skill-metric" style="--level: 75;"><i class="fa-solid fa-cube"></i> Blender</div>
                                 <span class="skill-metric-value">75</span>
                             </div>
                             <div class="skill-metric-container">
-                                <div class="skill-metric" style="--level: 70;">Aseprite</div>
+                                <div class="skill-metric" style="--level: 70;"><i class="fa-solid fa-pen-nib"></i> Aseprite</div>
                                 <span class="skill-metric-value">70</span>
                             </div>
                             <div class="skill-metric-container">
-                                <div class="skill-metric" style="--level: 70;">Git</div>
+                                <div class="skill-metric" style="--level: 70;"><i class="fa-brands fa-git-alt"></i> Git</div>
                                 <span class="skill-metric-value">70</span>
                             </div>
                             <div class="skill-metric-container">
-                                <div class="skill-metric" style="--level: 65;">Make &amp; CMake</div>
+                                <div class="skill-metric" style="--level: 65;"><i class="fa-solid fa-gear"></i> Make &amp; CMake</div>
                                 <span class="skill-metric-value">65</span>
                             </div>
                             <div class="skill-metric-container">
-                                <div class="skill-metric" style="--level: 60;">OpenGL</div>
+                                <div class="skill-metric" style="--level: 60;"><i class="fa-solid fa-display"></i> OpenGL</div>
                                 <span class="skill-metric-value">60</span>
                             </div>
                         </div>
@@ -151,13 +155,15 @@
                         <div class="project-item">
                             <div class="project-content">
                                 <div class="thumbnail-wrapper">
-                                    <div class="thumbnail-overlay"></div>
-                                    <img class="project-thumbnail" src="Assets/Thumbnails/ProtectYourData.png" alt="Protect Your Data Thumbnail" loading="lazy">
-                                    <div class="project-title">
-                                        <!-- <img class="small-icon" src="Assets/Icons/Skills/CSharp.svg" alt="C#" loading="lazy">
-                                        <img class="small-icon" src="Assets/Icons/Skills/Unity.svg" alt="Unity" loading="lazy"> -->
-                                        <!-- <h3>MGDC Bluebird Studios Game Jam</h3> -->
+                                    <div class="project-buttons">
+                                        <button class="project-btn">
+                                            <i class="fa-brands fa-github"></i> GitHub
+                                        </button>
+                                        <button class="project-btn">
+                                            <i class="fa-solid fa-circle-info"></i> Itch.io
+                                        </button>
                                     </div>
+                                    <img class="project-thumbnail" src="Assets/Thumbnails/ProtectYourData.png" alt="Protect Your Data Thumbnail" loading="lazy">
                                     <div class="thumbnail-title">
                                         <h3 class="project-title">Protect Your Data</h3>
                                         <div class="thumbnail-subtitle">
@@ -165,26 +171,21 @@
                                         </div>
                                     </div>
                                 </div>
-                                <!-- <div class="project-details">
-                                    <p>
-                                        48 hour game jam submission following the theme "Real world issues." This game is a roguelike shooter where the
-                                        objective is to combat viruses infecting your computer. There are 7 different unlockable upgrades, 2 different bosses,
-                                        and a developed story line. This project was developed using C#11 and the Unity Game Engine.
-                                    </p>
-                                </div> -->
                             </div>
                         </div>
 
                         <div class="project-item">
                             <div class="project-content">
                                 <div class="thumbnail-wrapper">
-                                    <div class="thumbnail-overlay"></div>
-                                    <img class="project-thumbnail" src="Assets/Thumbnails/BubbleCasino.png" alt="Bubble Casino Thumbnail" loading="lazy">
-                                    <div class="project-title">
-                                        <!-- <img class="small-icon" src="Assets/Icons/Skills/CSharp.svg" alt="C#" loading="lazy">
-                                        <img class="small-icon" src="Assets/Icons/Skills/Unity.svg" alt="Unity" loading="lazy"> -->
-                                        <!-- <h3>Global Game Jam 2025</h3> -->
+                                    <div class="project-buttons">
+                                        <button class="project-btn">
+                                            <i class="fa-brands fa-github"></i> GitHub
+                                        </button>
+                                        <button class="project-btn">
+                                            <i class="fa-solid fa-circle-info"></i> Itch.io
+                                        </button>
                                     </div>
+                                    <img class="project-thumbnail" src="Assets/Thumbnails/BubbleCasino.png" alt="Bubble Casino Thumbnail" loading="lazy">
                                     <div class="thumbnail-title">
                                         <h3 class="project-title">Bubble Casino</h3>
                                         <div class="thumbnail-subtitle">
@@ -192,27 +193,21 @@
                                         </div>
                                     </div>
                                 </div>
-                                <!-- <div class="project-details">
-                                    <p>
-                                        A 48-hour game jam submission inspired by the theme "Bubble." Set in a vividly colorful underwater casino, 
-                                        the game challenges players to win as much money as possible to fund their dream wedding. 
-                                        Featuring a fully functional blackjack game and an engaging storyline, this 
-                                        project was developed using C#11 and the Unity Game Engine.
-                                    </p>
-                                </div> -->
                             </div>
                         </div>
 
                         <div class="project-item">
                             <div class="project-content">
                                 <div class="thumbnail-wrapper">
-                                    <div class="thumbnail-overlay"></div>
-                                    <img class="project-thumbnail" src="Assets/Thumbnails/BlockParty.png" alt="Block Party Thumbnail" loading="lazy">
-                                    <div class="project-title">
-                                        <!-- <img class="small-icon" src="Assets/Icons/Skills/CSharp.svg" alt="C#" loading="lazy">
-                                        <img class="small-icon" src="Assets/Icons/Skills/Unity.svg" alt="Unity" loading="lazy"> -->
-                                        <!-- <h3>WolverineSoft 2024 Pumpkin Game Jam</h3> -->
+                                    <div class="project-buttons">
+                                        <button class="project-btn">
+                                            <i class="fa-brands fa-github"></i> GitHub
+                                        </button>
+                                        <button class="project-btn">
+                                            <i class="fa-solid fa-circle-info"></i> Itch.io
+                                        </button>
                                     </div>
+                                    <img class="project-thumbnail" src="Assets/Thumbnails/BlockParty.png" alt="Block Party Thumbnail" loading="lazy">
                                     <div class="thumbnail-title">
                                         <h3 class="project-title">Block Party</h3>
                                         <div class="thumbnail-subtitle">
@@ -220,18 +215,8 @@
                                         </div>
                                     </div>
                                 </div>
-                                <!-- <div class="project-details">
-                                    <p>
-                                        48 hour game jam submission following the theme "Block Party." This game is a 2-player dynamic rhythm-based game where players
-                                        synchronize actions to musical beats to outperform their opponent. There are 3 unique tracks, a regular and halloween theme,
-                                        and 9 unique characters to select from. This project was designed using C#11 and the Unity Game Engine.
-                                    </p>
-                                </div> -->
                             </div>
                         </div>
-
-                        <!-- To add: -->
-                        <!-- Bubble Casino Seaquel -->
                     </div>
                 </section>
 
@@ -259,7 +244,7 @@
                                     required
                                 ></textarea>
                             </label>
-                            <button type="submit">Send</button>
+                            <button type="submit"><i class="fa-solid fa-paper-plane"></i> Send</button>
                         </form>
                     </div>
                 </section>
