@@ -1,8 +1,24 @@
 import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
 
 async function loadShaders() {
-  const vertexShader = await fetch('./Shaders/VoidVertex.glsl').then(res => res.text());
-  const fragmentShader = await fetch('./Shaders/VoidFragment.glsl').then(res => res.text());
+  const vertexShaderUrl = new URL('../Shaders/VoidVertex.glsl', import.meta.url);
+  const fragmentShaderUrl = new URL('../Shaders/VoidFragment.glsl', import.meta.url);
+
+  const vertexShader = await fetch(vertexShaderUrl).then(res => {
+    if (!res.ok) {
+      throw new Error(`Failed to load vertex shader: ${vertexShaderUrl}`);
+    }
+
+    return res.text();
+  });
+
+  const fragmentShader = await fetch(fragmentShaderUrl).then(res => {
+    if (!res.ok) {
+      throw new Error(`Failed to load fragment shader: ${fragmentShaderUrl}`);
+    }
+
+    return res.text();
+  });
 
   init(vertexShader, fragmentShader);
 }
@@ -69,4 +85,6 @@ function init(vertexShader, fragmentShader) {
   });
 }
 
-loadShaders();
+loadShaders().catch((error) => {
+  console.error(error);
+});

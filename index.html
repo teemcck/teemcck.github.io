@@ -4,7 +4,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Tristan McCaskill</title>
-        <link rel="icon" href="Assets/Icons/Coffee.svg" type="image/x-icon">
+        <link rel="icon" href="Assets/Icons/favicon/Coffee.svg" type="image/svg+xml">
         <!-- Reference Font -->
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap">
         <!-- Icons -->
@@ -14,16 +14,73 @@
         <link rel="stylesheet" href="Style/PrimaryStyleWhite.css">
         <!-- Scripts -->
         <script src="JS/NavSelect.js" defer></script>
+        <script src="JS/ShaderInfoModal.js" defer></script>
         <script type="module" src="JS/VoidBackground.js"></script>
     </head>
     <body>
         <a href="#page-content" class="skip-to-main">Skip to Main Content</a>
 
-        <header>
-            * Site is under construction.
-        </header>
+        <div class="shader-info-modal" id="shader-info-modal" data-shader-info-modal hidden>
+            <div class="shader-info-backdrop" data-shader-info-close></div>
+            <div
+                class="shader-info-dialog"
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="shader-info-title"
+            >
+                <span class="shader-info-frame-side shader-info-frame-side-top" aria-hidden="true"></span>
+                <span class="shader-info-frame-side shader-info-frame-side-right" aria-hidden="true"></span>
+                <span class="shader-info-frame-side shader-info-frame-side-bottom" aria-hidden="true"></span>
+                <span class="shader-info-frame-side shader-info-frame-side-left" aria-hidden="true"></span>
+                <span class="shader-info-frame-corner shader-info-frame-corner-top-left" aria-hidden="true"></span>
+                <span class="shader-info-frame-corner shader-info-frame-corner-top-right" aria-hidden="true"></span>
+                <span class="shader-info-frame-corner shader-info-frame-corner-bottom-right" aria-hidden="true"></span>
+                <span class="shader-info-frame-corner shader-info-frame-corner-bottom-left" aria-hidden="true"></span>
+
+                <div class="shader-info-scroll">
+                    <div class="shader-info-header">
+                        <div>
+                            <h2 id="shader-info-title">Background Shader</h2>
+                            <p>
+                                The background is a GLSL fragment shader rendered through Three.js. The shader animates layered noise,
+                                pixelation, and color blending directly on the GPU.
+                            </p>
+                        </div>
+                        <button type="button" class="shader-info-close" data-shader-info-close aria-label="Close background info">
+                            <span class="shader-info-close-label" aria-hidden="true">X</span>
+                        </button>
+                    </div>
+
+                    <div class="shader-info-content">
+                        <div class="shader-info-copy">
+                            <h3>How it works</h3>
+                            <p>
+                                A full-screen plane is drawn behind the site. The fragment shader computes each pixel color in real time
+                                using time, resolution, and noise-based warping from the local GLSL source file.
+                            </p>
+                        </div>
+                        <div class="shader-code-panel">
+                            <div class="shader-code-label">Pulled from <code>Shaders/VoidFragment.glsl</code></div>
+                            <pre class="shader-code-block"><code data-shader-code>Loading shader source...</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <div class="shader-overlay"></div>
+
+        <div class="page-top-linkbar">
+            <button
+                type="button"
+                class="shader-info-trigger"
+                data-shader-info-open
+                aria-haspopup="dialog"
+                aria-controls="shader-info-modal"
+            >
+                What is this background?
+            </button>
+        </div>
 
         <div id="content-container">
             <main id="page-content">
@@ -64,18 +121,34 @@
                 </div>
 
                 <div class="section-container" id="about">
-                    <h2>About Me</h2>
-                    <p>
-                        Hi there! I'm Tristan, a computer science student in the LSA Honors Program at the University of Michigan. 
-                        I'm deeply passionate about software engineering and videogame development. I am a member of 
-                        <a href="https://wolverinesoft.org/" target="_blank" rel="noopener noreferrer">WolverineSoft</a>, 
-                        a game development club, and 
-                        <a href="https://michigancg.org/#home" target="_blank" rel="noopener noreferrer">Michigan Computer Graphics</a>.
-                    </p>
-                    <p>
-                        My goal is to create unique, memorable experiences through games that motivate others to explore their passions.
-                        I'm excited to see where this journey takes me, and I'd love to share that experience with you.
-                    </p>
+                    <div class="about-layout">
+                        <figure class="profile-frame">
+                            <img src="Assets/Profile/Tristan1.png" alt="Tristan McCaskill" class="profile-photo">
+                            <span class="profile-frame-side profile-frame-side-top" aria-hidden="true"></span>
+                            <span class="profile-frame-side profile-frame-side-right" aria-hidden="true"></span>
+                            <span class="profile-frame-side profile-frame-side-bottom" aria-hidden="true"></span>
+                            <span class="profile-frame-side profile-frame-side-left" aria-hidden="true"></span>
+                            <span class="profile-frame-corner profile-frame-corner-top-left" aria-hidden="true"></span>
+                            <span class="profile-frame-corner profile-frame-corner-top-right" aria-hidden="true"></span>
+                            <span class="profile-frame-corner profile-frame-corner-bottom-right" aria-hidden="true"></span>
+                            <span class="profile-frame-corner profile-frame-corner-bottom-left" aria-hidden="true"></span>
+                        </figure>
+
+                        <div class="about-copy">
+                            <h2>About Me</h2>
+                            <p>
+                                Hi there! I'm Tristan, a computer science student in the LSA Honors Program at the University of Michigan. 
+                                I'm deeply passionate about software engineering and videogame development. I am a member of 
+                                <a href="https://wolverinesoft.org/" target="_blank" rel="noopener noreferrer">WolverineSoft</a>, 
+                                a game development club, and 
+                                <a href="https://michigancg.org/#home" target="_blank" rel="noopener noreferrer">Michigan Computer Graphics</a>.
+                            </p>
+                            <p>
+                                My goal is to create unique, memorable experiences through games that motivate others to explore their passions.
+                                I'm excited to see where this journey takes me, and I'd love to share that experience with you.
+                            </p>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Skills -->
@@ -152,71 +225,53 @@
                 <section class="section-container" id="projects">
                     <h2>Projects</h2>
                     <div class="projects-container">
-                        <div class="project-item">
-                            <div class="project-content">
-                                <div class="thumbnail-wrapper">
-                                    <div class="project-buttons">
-                                        <button class="project-btn">
-                                            <i class="fa-brands fa-github"></i> GitHub
-                                        </button>
-                                        <button class="project-btn">
-                                            <i class="fa-solid fa-circle-info"></i> Itch.io
-                                        </button>
-                                    </div>
-                                    <img class="project-thumbnail" src="Assets/Thumbnails/ProtectYourData.png" alt="Protect Your Data Thumbnail" loading="lazy">
-                                    <div class="thumbnail-title">
-                                        <h3 class="project-title">Protect Your Data</h3>
-                                        <div class="thumbnail-subtitle">
-                                            Topdown wavebased roguelike shooter with 3 bosses.
+                        <a class="project-card-link" href="projects/protect-your-data.html" aria-label="Open Protect Your Data project documentation">
+                            <div class="project-item">
+                                <div class="project-content">
+                                    <div class="thumbnail-wrapper">
+                                        <img class="project-thumbnail" src="Assets/Thumbnails/ProtectYourData.png" alt="Protect Your Data Thumbnail" loading="lazy">
+                                        <div class="thumbnail-title">
+                                            <h3 class="project-title">Protect Your Data</h3>
+                                            <div class="thumbnail-subtitle">
+                                                Topdown wavebased roguelike shooter with 3 bosses.
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </a>
 
-                        <div class="project-item">
-                            <div class="project-content">
-                                <div class="thumbnail-wrapper">
-                                    <div class="project-buttons">
-                                        <button class="project-btn">
-                                            <i class="fa-brands fa-github"></i> GitHub
-                                        </button>
-                                        <button class="project-btn">
-                                            <i class="fa-solid fa-circle-info"></i> Itch.io
-                                        </button>
-                                    </div>
-                                    <img class="project-thumbnail" src="Assets/Thumbnails/BubbleCasino.png" alt="Bubble Casino Thumbnail" loading="lazy">
-                                    <div class="thumbnail-title">
-                                        <h3 class="project-title">Bubble Casino</h3>
-                                        <div class="thumbnail-subtitle">
-                                            Blackjack simulator... to afford your wedding?
+                        <a class="project-card-link" href="projects/bubble-casino.html" aria-label="Open Bubble Casino project documentation">
+                            <div class="project-item">
+                                <div class="project-content">
+                                    <div class="thumbnail-wrapper">
+                                        <img class="project-thumbnail" src="Assets/Thumbnails/BubbleCasino.png" alt="Bubble Casino Thumbnail" loading="lazy">
+                                        <div class="thumbnail-title">
+                                            <h3 class="project-title">Bubble Casino</h3>
+                                            <div class="thumbnail-subtitle">
+                                                Blackjack simulator... to afford your wedding?
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </a>
 
-                        <div class="project-item">
-                            <div class="project-content">
-                                <div class="thumbnail-wrapper">
-                                    <div class="project-buttons">
-                                        <button class="project-btn">
-                                            <i class="fa-brands fa-github"></i> GitHub
-                                        </button>
-                                        <button class="project-btn">
-                                            <i class="fa-solid fa-circle-info"></i> Itch.io
-                                        </button>
-                                    </div>
-                                    <img class="project-thumbnail" src="Assets/Thumbnails/BlockParty.png" alt="Block Party Thumbnail" loading="lazy">
-                                    <div class="thumbnail-title">
-                                        <h3 class="project-title">Block Party</h3>
-                                        <div class="thumbnail-subtitle">
-                                            Friday night funkin' inspired rhythm game.
+                        <a class="project-card-link" href="projects/block-party.html" aria-label="Open Block Party project documentation">
+                            <div class="project-item">
+                                <div class="project-content">
+                                    <div class="thumbnail-wrapper">
+                                        <img class="project-thumbnail" src="Assets/Thumbnails/BlockParty.png" alt="Block Party Thumbnail" loading="lazy">
+                                        <div class="thumbnail-title">
+                                            <h3 class="project-title">Block Party</h3>
+                                            <div class="thumbnail-subtitle">
+                                                Friday night funkin' inspired rhythm game.
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </a>
                     </div>
                 </section>
 
