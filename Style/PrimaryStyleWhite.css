@@ -113,7 +113,7 @@ p a, p a:visited {
     width: 100%;
     box-sizing: border-box;
     padding: 0.55rem 1rem;
-    background: #2f6f8f;
+    background: #254f68;
     color: var(--text-light);
     border-bottom: 2px solid rgba(255, 255, 255, 0.22);
     font-size: 0.9rem;
@@ -154,7 +154,7 @@ p a, p a:visited {
 .shader-info-backdrop {
     position: absolute;
     inset: 0;
-    background: rgba(8, 10, 15, 0.72);
+    background: rgba(5, 7, 11, 0.84);
 }
 
 .shader-info-dialog {
@@ -323,7 +323,7 @@ p a, p a:visited {
 
 .shader-code-panel {
     border-radius: 0.22rem;
-    background: var(--modal-stone-panel);
+    background: rgba(18, 21, 28, 0.94);
     border: 1px solid var(--modal-stone-panel-border);
     overflow: hidden;
     margin-top: 0.4rem;
@@ -338,6 +338,7 @@ p a, p a:visited {
 .shader-code-block {
     margin: 0;
     padding: 0.95rem;
+    background: rgba(10, 12, 17, 0.72);
     overflow-x: auto;
     font-size: 0.8rem;
     line-height: 1.35rem;
