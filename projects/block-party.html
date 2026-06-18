@@ -9,6 +9,8 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
         <link rel="stylesheet" href="../Style/StyleReset.css">
         <link rel="stylesheet" href="../Style/PrimaryStyleWhite.css">
+        <link rel="stylesheet" href="../Style/ProjectDevlog.css">
+        <script src="../JS/ProjectTabs.js" defer></script>
         <script type="module" src="../JS/VoidBackground.js"></script>
     </head>
     <body class="project-page-body">
@@ -23,104 +25,99 @@
         <div class="shader-overlay"></div>
 
         <main id="project-content" class="project-page-main">
-            <section class="project-page">
-                <div class="project-hero">
-                    <div class="project-hero-copy">
-                        <p class="project-eyebrow">Project Entry</p>
+            <section class="project-page" data-project-tabs>
+                <header class="project-devlog-header">
+                    <div class="project-title-block">
+                        <p class="project-eyebrow">Devlog</p>
                         <h1>Block Party</h1>
-                        <p class="project-summary">
-                            A rhythm game project described as Friday Night Funkin'-inspired, now documented in a dedicated entry page.
+                        <p class="project-short-summary">
+                            A rhythm game devlog about timing windows, chart readability, and presentation energy.
                         </p>
-                        <div class="project-links">
-                            <a
-                                class="project-link-button"
-                                href="https://jegjegjeg.itch.io/block-party-official"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                            >
-                                <i class="fa-brands fa-itch-io"></i> Open on Itch
-                            </a>
-                            <span class="project-link-button project-link-button-disabled" aria-disabled="true">
-                                <i class="fa-brands fa-github"></i> GitHub coming soon
-                            </span>
-                        </div>
                     </div>
-                    <div class="project-hero-media">
+
+                    <figure class="project-cover">
                         <img src="../Assets/Thumbnails/BlockParty.png" alt="Block Party thumbnail artwork">
+                    </figure>
+
+                    <div class="project-action-links">
+                        <a
+                            class="project-action-link"
+                            href="https://jegjegjeg.itch.io/block-party-official"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            <i class="fa-brands fa-itch-io"></i>
+                            Itch
+                        </a>
+                        <a
+                            class="project-action-link"
+                            href="https://github.com/teemcck"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            <i class="fa-brands fa-github"></i>
+                            GitHub
+                        </a>
                     </div>
+
+                </header>
+
+                <div class="project-tab-list" role="tablist" aria-label="Block Party devlog sections">
+                    <button type="button" class="project-tab is-active" id="block-overview-tab" role="tab" aria-selected="true" aria-controls="block-overview">
+                        Overview
+                    </button>
+                    <button type="button" class="project-tab" id="block-prototype-tab" role="tab" aria-selected="false" aria-controls="block-prototype" tabindex="-1">
+                        Prototype
+                    </button>
+                    <button type="button" class="project-tab" id="block-timing-tab" role="tab" aria-selected="false" aria-controls="block-timing" tabindex="-1">
+                        Timing Pass
+                    </button>
+                    <button type="button" class="project-tab" id="block-presentation-tab" role="tab" aria-selected="false" aria-controls="block-presentation" tabindex="-1">
+                        Presentation
+                    </button>
                 </div>
 
-                <div class="project-meta-grid">
-                    <article class="project-meta-card">
-                        <h2><i class="fa-solid fa-music"></i> Project Type</h2>
-                        <p>Rhythm game</p>
-                    </article>
-                    <article class="project-meta-card">
-                        <h2><i class="fa-solid fa-bolt"></i> Design Goal</h2>
-                        <p>Friday Night Funkin'-style pacing and presentation.</p>
-                    </article>
-                    <article class="project-meta-card">
-                        <h2><i class="fa-solid fa-flag-checkered"></i> Current Focus</h2>
-                        <p>Rhythm readability, moment-to-moment responsiveness, and presentation energy.</p>
-                    </article>
-                </div>
-
-                <div class="project-sections">
-                    <article class="project-panel">
-                        <h2><i class="fa-solid fa-book-open"></i> Devlog Overview</h2>
+                <div class="project-tab-panels">
+                    <section class="project-panel is-active" id="block-overview" role="tabpanel" aria-labelledby="block-overview-tab">
+                        <h2>Overview</h2>
                         <p>
-                            Block Party benefits from a devlog structure because rhythm games are heavily about feel. A static summary
-                            does not say much about timing, visual feedback, or the relationship between input and presentation.
+                            Block Party is a Friday Night Funkin'-inspired rhythm game focused on timing,
+                            readable chart feedback, and presentation that supports the beat.
                         </p>
-                        <p>
-                            This page is set up to read like an active project entry: what the target is, what is already present,
-                            and what parts would be improved next.
-                        </p>
-                    </article>
+                    </section>
 
-                    <article class="project-panel">
-                        <h2><i class="fa-solid fa-wrench"></i> What Was Built</h2>
+                    <section class="project-panel" id="block-prototype" role="tabpanel" aria-labelledby="block-prototype-tab" hidden>
+                        <p class="devlog-step">01 / Prototype</p>
+                        <h2>Note interaction</h2>
+                        <p>The first pass made sure the chart/input loop worked before adding polish.</p>
                         <ul class="project-list">
-                            <li>Rhythm-game project entry</li>
-                            <li>Friday Night Funkin'-inspired framing and pacing</li>
-                            <li>Dedicated devlog-style page for longer-form notes</li>
+                            <li>Chart-driven prompts</li>
+                            <li>Input-to-note matching</li>
+                            <li>FNF-style starting format</li>
                         </ul>
-                    </article>
+                    </section>
 
-                    <article class="project-panel">
-                        <h2><i class="fa-solid fa-lightbulb"></i> Dev Notes</h2>
-                        <p>
-                            The hard part in a rhythm project is preserving responsiveness while still giving the presentation enough
-                            energy. That balance is usually where most iteration time goes.
-                        </p>
-                        <p>
-                            The next useful additions here would be notes on chart design, feedback timing, and how the visual style
-                            supports the beat structure.
-                        </p>
-                    </article>
-
-                    <article class="project-panel">
-                        <h2><i class="fa-solid fa-list-check"></i> Next Steps</h2>
+                    <section class="project-panel" id="block-timing" role="tabpanel" aria-labelledby="block-timing-tab" hidden>
+                        <p class="devlog-step">02 / Timing Pass</p>
+                        <h2>Timing windows</h2>
+                        <p>Misses need to feel understandable, not random.</p>
                         <ul class="project-list">
-                            <li>Document timing windows and input feedback decisions</li>
-                            <li>Add media showing gameplay state rather than only portfolio art</li>
-                            <li>Include a short retrospective on what the project taught</li>
+                            <li>Hit and miss windows</li>
+                            <li>Immediate input response</li>
+                            <li>Feedback before flourish</li>
                         </ul>
-                    </article>
+                    </section>
 
-                    <article class="project-panel project-gallery-panel">
-                        <h2><i class="fa-solid fa-image"></i> Devlog Media</h2>
-                        <div class="project-gallery">
-                            <figure class="project-gallery-item">
-                                <img src="../Assets/Thumbnails/BlockParty.png" alt="Block Party project thumbnail">
-                                <figcaption>Current thumbnail used on the portfolio index</figcaption>
-                            </figure>
-                            <figure class="project-gallery-item">
-                                <img src="../Assets/Screenshots/Void.png" alt="Supporting screenshot for Block Party">
-                                <figcaption>Supporting image slot for future gameplay captures</figcaption>
-                            </figure>
-                        </div>
-                    </article>
+                    <section class="project-panel" id="block-presentation" role="tabpanel" aria-labelledby="block-presentation-tab" hidden>
+                        <p class="devlog-step">03 / Presentation</p>
+                        <h2>Readable energy</h2>
+                        <p>The presentation should support the beat without covering the chart.</p>
+                        <ul class="project-list">
+                            <li>Separate gameplay elements</li>
+                            <li>Personality around the chart</li>
+                            <li>Future pass: chart design notes</li>
+                        </ul>
+                    </section>
                 </div>
             </section>
         </main>

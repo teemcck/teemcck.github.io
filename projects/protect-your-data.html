@@ -9,6 +9,8 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
         <link rel="stylesheet" href="../Style/StyleReset.css">
         <link rel="stylesheet" href="../Style/PrimaryStyleWhite.css">
+        <link rel="stylesheet" href="../Style/ProjectDevlog.css">
+        <script src="../JS/ProjectTabs.js" defer></script>
         <script type="module" src="../JS/VoidBackground.js"></script>
     </head>
     <body class="project-page-body">
@@ -23,104 +25,99 @@
         <div class="shader-overlay"></div>
 
         <main id="project-content" class="project-page-main">
-            <section class="project-page">
-                <div class="project-hero">
-                    <div class="project-hero-copy">
-                        <p class="project-eyebrow">Project Entry</p>
+            <section class="project-page" data-project-tabs>
+                <header class="project-devlog-header">
+                    <div class="project-title-block">
+                        <p class="project-eyebrow">Devlog</p>
                         <h1>Protect Your Data</h1>
-                        <p class="project-summary">
-                            A topdown wave-based roguelike shooter built around escalating encounters and three boss fights.
+                        <p class="project-short-summary">
+                            A short-run topdown shooter about readable waves, quick retries, and boss checkpoints.
                         </p>
-                        <div class="project-links">
-                            <a
-                                class="project-link-button"
-                                href="https://teemac8.itch.io/protect-your-data"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                            >
-                                <i class="fa-brands fa-itch-io"></i> Open on Itch
-                            </a>
-                            <span class="project-link-button project-link-button-disabled" aria-disabled="true">
-                                <i class="fa-brands fa-github"></i> GitHub coming soon
-                            </span>
-                        </div>
                     </div>
-                    <div class="project-hero-media">
+
+                    <figure class="project-cover">
                         <img src="../Assets/Thumbnails/ProtectYourData.png" alt="Protect Your Data thumbnail artwork">
+                    </figure>
+
+                    <div class="project-action-links">
+                        <a
+                            class="project-action-link"
+                            href="https://teemac8.itch.io/protect-your-data"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            <i class="fa-brands fa-itch-io"></i>
+                            Itch
+                        </a>
+                        <a
+                            class="project-action-link"
+                            href="https://github.com/teemcck"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            <i class="fa-brands fa-github"></i>
+                            GitHub
+                        </a>
                     </div>
+
+                </header>
+
+                <div class="project-tab-list" role="tablist" aria-label="Protect Your Data devlog sections">
+                    <button type="button" class="project-tab is-active" id="protect-overview-tab" role="tab" aria-selected="true" aria-controls="protect-overview">
+                        Overview
+                    </button>
+                    <button type="button" class="project-tab" id="protect-prototype-tab" role="tab" aria-selected="false" aria-controls="protect-prototype" tabindex="-1">
+                        Prototype
+                    </button>
+                    <button type="button" class="project-tab" id="protect-loop-tab" role="tab" aria-selected="false" aria-controls="protect-loop" tabindex="-1">
+                        Combat Loop
+                    </button>
+                    <button type="button" class="project-tab" id="protect-boss-tab" role="tab" aria-selected="false" aria-controls="protect-boss" tabindex="-1">
+                        Boss Pass
+                    </button>
                 </div>
 
-                <div class="project-meta-grid">
-                    <article class="project-meta-card">
-                        <h2><i class="fa-solid fa-gamepad"></i> Project Type</h2>
-                        <p>Topdown action roguelike shooter</p>
-                    </article>
-                    <article class="project-meta-card">
-                        <h2><i class="fa-solid fa-bullseye"></i> Design Goal</h2>
-                        <p>Build short, escalating combat runs that stay readable under pressure.</p>
-                    </article>
-                    <article class="project-meta-card">
-                        <h2><i class="fa-solid fa-flag-checkered"></i> Current Focus</h2>
-                        <p>Boss pacing, encounter variety, and run-to-run combat rhythm.</p>
-                    </article>
-                </div>
-
-                <div class="project-sections">
-                    <article class="project-panel">
-                        <h2><i class="fa-solid fa-book-open"></i> Devlog Overview</h2>
+                <div class="project-tab-panels">
+                    <section class="project-panel is-active" id="protect-overview" role="tabpanel" aria-labelledby="protect-overview-tab">
+                        <h2>Overview</h2>
                         <p>
-                            Protect Your Data is structured here more like a running development log than a static portfolio card.
-                            The point is to show what the project is trying to solve, what is already working, and where iteration
-                            would continue.
+                            Protect Your Data is a topdown wave shooter built around short runs, clear enemy pressure,
+                            and three boss checkpoints that give the run a readable arc.
                         </p>
-                        <p>
-                            The game leans on a clean topdown combat read, repeated wave pressure, and major boss checkpoints to give
-                            each run a stronger sense of progression.
-                        </p>
-                    </article>
+                    </section>
 
-                    <article class="project-panel">
-                        <h2><i class="fa-solid fa-wrench"></i> What Was Built</h2>
+                    <section class="project-panel" id="protect-prototype" role="tabpanel" aria-labelledby="protect-prototype-tab" hidden>
+                        <p class="devlog-step">01 / Prototype</p>
+                        <h2>Movement and shooting</h2>
+                        <p>First goal: make the basic topdown loop feel clean enough to build on.</p>
                         <ul class="project-list">
-                            <li>Wave-based combat progression</li>
-                            <li>Roguelike structure with repeatable runs</li>
-                            <li>Three boss fights called out as major milestones</li>
+                            <li>Player movement and aiming</li>
+                            <li>Basic enemy pressure</li>
+                            <li>Repeatable arena setup</li>
                         </ul>
-                    </article>
+                    </section>
 
-                    <article class="project-panel">
-                        <h2><i class="fa-solid fa-lightbulb"></i> Dev Notes</h2>
-                        <p>
-                            The interesting part of the project is not just the enemy count, but the pacing between swarms, recovery,
-                            and boss escalation. The devlog framing makes that easier to explain than a one-line project summary.
-                        </p>
-                        <p>
-                            A next pass here would be documenting player upgrades, difficulty tuning, and the decisions behind each boss.
-                        </p>
-                    </article>
-
-                    <article class="project-panel">
-                        <h2><i class="fa-solid fa-list-check"></i> Next Steps</h2>
+                    <section class="project-panel" id="protect-loop" role="tabpanel" aria-labelledby="protect-loop-tab" hidden>
+                        <p class="devlog-step">02 / Combat Loop</p>
+                        <h2>Wave pacing</h2>
+                        <p>The run needed pressure without filling the screen with unreadable noise.</p>
                         <ul class="project-list">
-                            <li>Break out each boss fight with a short implementation note</li>
-                            <li>Add a run-flow section covering upgrades and difficulty ramp</li>
-                            <li>Add source links and post-release notes alongside the live Itch page</li>
+                            <li>Enemy spawn timing</li>
+                            <li>Recovery gaps between waves</li>
+                            <li>Run structure for quick retries</li>
                         </ul>
-                    </article>
+                    </section>
 
-                    <article class="project-panel project-gallery-panel">
-                        <h2><i class="fa-solid fa-image"></i> Devlog Media</h2>
-                        <div class="project-gallery">
-                            <figure class="project-gallery-item">
-                                <img src="../Assets/Thumbnails/ProtectYourData.png" alt="Protect Your Data project thumbnail">
-                                <figcaption>Current thumbnail used on the portfolio index</figcaption>
-                            </figure>
-                            <figure class="project-gallery-item">
-                                <img src="../Assets/Screenshots/Hacked.png" alt="Gameplay screenshot for Protect Your Data">
-                                <figcaption>Supporting screenshot for encounter tone and visual direction</figcaption>
-                            </figure>
-                        </div>
-                    </article>
+                    <section class="project-panel" id="protect-boss" role="tabpanel" aria-labelledby="protect-boss-tab" hidden>
+                        <p class="devlog-step">03 / Boss Pass</p>
+                        <h2>Boss checkpoints</h2>
+                        <p>The bosses give the run a clearer shape than waves alone.</p>
+                        <ul class="project-list">
+                            <li>Three boss encounters</li>
+                            <li>Separate pacing from normal waves</li>
+                            <li>Future pass: upgrades and balance notes</li>
+                        </ul>
+                    </section>
                 </div>
             </section>
         </main>

@@ -9,6 +9,8 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
         <link rel="stylesheet" href="../Style/StyleReset.css">
         <link rel="stylesheet" href="../Style/PrimaryStyleWhite.css">
+        <link rel="stylesheet" href="../Style/ProjectDevlog.css">
+        <script src="../JS/ProjectTabs.js" defer></script>
         <script type="module" src="../JS/VoidBackground.js"></script>
     </head>
     <body class="project-page-body">
@@ -23,104 +25,99 @@
         <div class="shader-overlay"></div>
 
         <main id="project-content" class="project-page-main">
-            <section class="project-page">
-                <div class="project-hero">
-                    <div class="project-hero-copy">
-                        <p class="project-eyebrow">Project Entry</p>
+            <section class="project-page" data-project-tabs>
+                <header class="project-devlog-header">
+                    <div class="project-title-block">
+                        <p class="project-eyebrow">Devlog</p>
                         <h1>Bubble Casino</h1>
-                        <p class="project-summary">
-                            A blackjack simulator framed with a playful premise and a lighter tone than the rest of the project set.
+                        <p class="project-short-summary">
+                            A blackjack game devlog focused on rules clarity, round flow, and comedic tone.
                         </p>
-                        <div class="project-links">
-                            <a
-                                class="project-link-button"
-                                href="https://teambubblecasino.itch.io/the-bubble-casino"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                            >
-                                <i class="fa-brands fa-itch-io"></i> Open on Itch
-                            </a>
-                            <span class="project-link-button project-link-button-disabled" aria-disabled="true">
-                                <i class="fa-brands fa-github"></i> GitHub coming soon
-                            </span>
-                        </div>
                     </div>
-                    <div class="project-hero-media">
+
+                    <figure class="project-cover">
                         <img src="../Assets/Thumbnails/BubbleCasino.png" alt="Bubble Casino thumbnail artwork">
+                    </figure>
+
+                    <div class="project-action-links">
+                        <a
+                            class="project-action-link"
+                            href="https://teambubblecasino.itch.io/the-bubble-casino"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            <i class="fa-brands fa-itch-io"></i>
+                            Itch
+                        </a>
+                        <a
+                            class="project-action-link"
+                            href="https://github.com/teemcck"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            <i class="fa-brands fa-github"></i>
+                            GitHub
+                        </a>
                     </div>
+
+                </header>
+
+                <div class="project-tab-list" role="tablist" aria-label="Bubble Casino devlog sections">
+                    <button type="button" class="project-tab is-active" id="bubble-overview-tab" role="tab" aria-selected="true" aria-controls="bubble-overview">
+                        Overview
+                    </button>
+                    <button type="button" class="project-tab" id="bubble-prototype-tab" role="tab" aria-selected="false" aria-controls="bubble-prototype" tabindex="-1">
+                        Prototype
+                    </button>
+                    <button type="button" class="project-tab" id="bubble-flow-tab" role="tab" aria-selected="false" aria-controls="bubble-flow" tabindex="-1">
+                        Table Flow
+                    </button>
+                    <button type="button" class="project-tab" id="bubble-polish-tab" role="tab" aria-selected="false" aria-controls="bubble-polish" tabindex="-1">
+                        Polish Pass
+                    </button>
                 </div>
 
-                <div class="project-meta-grid">
-                    <article class="project-meta-card">
-                        <h2><i class="fa-solid fa-cards-blank"></i> Project Type</h2>
-                        <p>Card game simulator</p>
-                    </article>
-                    <article class="project-meta-card">
-                        <h2><i class="fa-solid fa-masks-theater"></i> Tone Goal</h2>
-                        <p>Comedic framing around a blackjack-driven scenario.</p>
-                    </article>
-                    <article class="project-meta-card">
-                        <h2><i class="fa-solid fa-flag-checkered"></i> Current Focus</h2>
-                        <p>Clarifying presentation, game feel, and the personality behind the premise.</p>
-                    </article>
-                </div>
-
-                <div class="project-sections">
-                    <article class="project-panel">
-                        <h2><i class="fa-solid fa-book-open"></i> Devlog Overview</h2>
+                <div class="project-tab-panels">
+                    <section class="project-panel is-active" id="bubble-overview" role="tabpanel" aria-labelledby="bubble-overview-tab">
+                        <h2>Overview</h2>
                         <p>
-                            Bubble Casino works better as a devlog entry because the value is partly in the tone and framing, not only
-                            in the rules of blackjack. This format gives room to describe what the project is aiming for.
+                            Bubble Casino is a blackjack simulator wrapped in a strange wedding-money premise.
+                            The devlog tracks the rules, round clarity, and presentation pass.
                         </p>
-                        <p>
-                            The core interaction is familiar, so iteration mostly lives in presentation, pacing, feedback, and how the
-                            premise supports the humor.
-                        </p>
-                    </article>
+                    </section>
 
-                    <article class="project-panel">
-                        <h2><i class="fa-solid fa-wrench"></i> What Was Built</h2>
+                    <section class="project-panel" id="bubble-prototype" role="tabpanel" aria-labelledby="bubble-prototype-tab" hidden>
+                        <p class="devlog-step">01 / Prototype</p>
+                        <h2>Card rules first</h2>
+                        <p>The first pass was mostly about getting the hand logic right.</p>
                         <ul class="project-list">
-                            <li>Blackjack simulator concept</li>
-                            <li>Distinct comedic pitch in the subtitle</li>
-                            <li>Dedicated entry page for longer-form development notes</li>
+                            <li>Player and dealer turns</li>
+                            <li>Hand value tracking</li>
+                            <li>Win, loss, and bust states</li>
                         </ul>
-                    </article>
+                    </section>
 
-                    <article class="project-panel">
-                        <h2><i class="fa-solid fa-lightbulb"></i> Dev Notes</h2>
-                        <p>
-                            Because the underlying card rules are straightforward, the challenge is making the project feel authored
-                            rather than generic. That usually comes down to UI clarity, animation timing, and writing.
-                        </p>
-                        <p>
-                            A stronger devlog pass later could document specific decisions around feedback loops, table presentation,
-                            and why the theme supports the mechanic.
-                        </p>
-                    </article>
-
-                    <article class="project-panel">
-                        <h2><i class="fa-solid fa-list-check"></i> Next Steps</h2>
+                    <section class="project-panel" id="bubble-flow" role="tabpanel" aria-labelledby="bubble-flow-tab" hidden>
+                        <p class="devlog-step">02 / Table Flow</p>
+                        <h2>Readable rounds</h2>
+                        <p>The player should know the state of the hand before choosing an action.</p>
                         <ul class="project-list">
-                            <li>Document the intended player flow for a single round</li>
-                            <li>Add notes on interface feedback and timing</li>
-                            <li>Include build links and a short retrospective when ready</li>
+                            <li>Visible card state</li>
+                            <li>Clear action timing</li>
+                            <li>Round result feedback</li>
                         </ul>
-                    </article>
+                    </section>
 
-                    <article class="project-panel project-gallery-panel">
-                        <h2><i class="fa-solid fa-image"></i> Devlog Media</h2>
-                        <div class="project-gallery">
-                            <figure class="project-gallery-item">
-                                <img src="../Assets/Thumbnails/BubbleCasino.png" alt="Bubble Casino project thumbnail">
-                                <figcaption>Current thumbnail used on the portfolio index</figcaption>
-                            </figure>
-                            <figure class="project-gallery-item">
-                                <img src="../Assets/Screenshots/Battle.png" alt="Supporting screenshot for Bubble Casino">
-                                <figcaption>Supporting image slot for future gameplay or interface captures</figcaption>
-                            </figure>
-                        </div>
-                    </article>
+                    <section class="project-panel" id="bubble-polish" role="tabpanel" aria-labelledby="bubble-polish-tab" hidden>
+                        <p class="devlog-step">03 / Polish Pass</p>
+                        <h2>Tone pass</h2>
+                        <p>The joke should sit around the blackjack, not bury it.</p>
+                        <ul class="project-list">
+                            <li>Wedding/casino framing</li>
+                            <li>Stronger table feedback</li>
+                            <li>Future pass: short retrospective</li>
+                        </ul>
+                    </section>
                 </div>
             </section>
         </main>

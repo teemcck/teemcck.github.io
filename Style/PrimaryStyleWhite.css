@@ -109,6 +109,17 @@ p a, p a:visited {
 /* =====================
    Overlay Controls
    ===================== */
+.site-status-bar {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0.55rem 1rem;
+    background: #2f6f8f;
+    color: var(--text-light);
+    border-bottom: 2px solid rgba(255, 255, 255, 0.22);
+    font-size: 0.9rem;
+    text-align: center;
+}
+
 .shader-info-trigger {
     position: static;
     background: transparent;
@@ -129,7 +140,7 @@ p a, p a:visited {
 
 .page-top-linkbar {
     position: static;
-    padding: 0.85rem 0 0.2rem 0.85rem;
+    padding: 0.65rem 0 0.2rem 0.85rem;
     width: max-content;
     margin: 0;
 }
@@ -147,8 +158,6 @@ p a, p a:visited {
 }
 
 .shader-info-dialog {
-    --shader-info-frame-tile: 3rem;
-    --shader-info-frame-inset: calc(var(--shader-info-frame-tile) / 2);
     --shader-info-frame-width: min(92vw, 52rem);
     position: relative;
     box-sizing: border-box;
@@ -156,17 +165,17 @@ p a, p a:visited {
     max-height: min(84vh, 48rem);
     overflow: hidden;
     margin: 5rem auto 1.5rem;
-    padding: var(--shader-info-frame-inset);
-    background: var(--modal-stone-bg);
+    padding: 0;
+    background: #252b36;
+    border: 2px solid rgba(212, 219, 222, 0.24);
     color: var(--text-muted);
     box-shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
-    image-rendering: pixelated;
 }
 
 .shader-info-scroll {
     position: relative;
     z-index: 1;
-    max-height: calc(min(84vh, 48rem) - var(--shader-info-frame-tile));
+    max-height: min(84vh, 48rem);
     overflow: auto;
     scrollbar-width: thin;
     scrollbar-color: var(--modal-stone-scroll-thumb) var(--modal-stone-scroll-track);
@@ -193,12 +202,7 @@ p a, p a:visited {
 
 .shader-info-frame-side,
 .shader-info-frame-corner {
-    position: absolute;
-    pointer-events: none;
-    image-rendering: pixelated;
-    background-repeat: repeat;
-    background-size: var(--shader-info-frame-tile) var(--shader-info-frame-tile);
-    z-index: 2;
+    display: none;
 }
 
 .shader-info-frame-side {
@@ -613,16 +617,18 @@ body.modal-open {
    Divider
    ===================== */
 .divider {
-    width: 100%;
+    width: calc(100% + 1rem);
+    margin-left: -1rem;
     display: flex;
     align-items: center;
     image-rendering: pixelated;
 }
 
-.divider-left {
+.divider-left,
+.divider-right {
     width: 64px;
     height: 64px;
-    background-image: url('../Assets/Decoration/Divider/left.png');
+    background-image: url('../Assets/Decoration/Divider/DividerEnd.png');
     background-repeat: no-repeat;
     background-size: contain;
     image-rendering: pixelated;
@@ -632,20 +638,14 @@ body.modal-open {
 .divider-mid {
     flex: 1;
     height: 64px;
-    background-image: url('../Assets/Decoration/Divider/middle.png');
+    background-image: url('../Assets/Decoration/Divider/Divider.png');
     background-repeat: round;
     background-size: auto 100%;
     image-rendering: pixelated;
 }
 
 .divider-right {
-    width: 64px;
-    height: 64px;
-    background-image: url('../Assets/Decoration/Divider/right.png');
-    background-repeat: no-repeat;
-    background-size: contain;
-    image-rendering: pixelated;
-    flex-shrink: 0;
+    transform: scaleX(-1);
 }
 
 /* =====================
@@ -827,208 +827,6 @@ button {
 }
 
 /* =====================
-   Project Detail Pages
-   ===================== */
-.project-page-body {
-    min-height: 100vh;
-}
-
-.project-page-body header {
-    position: static;
-    background: white;
-    padding: 0.5rem 0.9rem;
-}
-
-.project-page-main {
-    position: relative;
-    z-index: 1;
-    padding: 1.75rem 1rem 3rem;
-}
-
-.back-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    color: #111111;
-    text-decoration: none;
-    padding: 0.2rem 0.4rem;
-    border-radius: var(--radius-small);
-    background: transparent;
-    border: none;
-}
-
-.back-link:hover,
-.back-link:focus-visible {
-    color: var(--bg-muk);
-    background: transparent;
-    outline: none;
-}
-
-.project-page {
-    width: min(100%, 72rem);
-    margin: 0 auto 3rem;
-    color: var(--text-muted);
-    display: grid;
-    gap: 2.6rem;
-}
-
-.project-hero,
-.project-meta-grid,
-.project-sections {
-    display: grid;
-    gap: 1.6rem;
-    background: linear-gradient(
-        180deg,
-        rgba(20, 24, 34, 0.78),
-        rgba(20, 24, 34, 0.56)
-    );
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 0.28rem;
-    padding: 1.35rem;
-    box-shadow: 0 18px 48px rgba(0, 0, 0, 0.16);
-}
-
-.project-sections {
-    align-items: start;
-}
-
-.project-hero-copy {
-    padding: 0.4rem 0 0;
-}
-
-.project-eyebrow {
-    text-transform: uppercase;
-    color: var(--text-link);
-    font-size: 0.8rem;
-    letter-spacing: 0;
-    margin-bottom: 0.6rem;
-}
-
-.project-page h1 {
-    color: var(--text-light);
-    font-size: 2rem;
-    line-height: 1.2;
-    margin-bottom: 1rem;
-}
-
-.project-summary {
-    font-size: 1.05rem;
-    line-height: 1.8rem;
-    max-width: 42rem;
-    margin-bottom: 0.25rem;
-}
-
-.project-links {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.8rem;
-    margin-top: 1rem;
-}
-
-.project-link-button {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.55rem;
-    text-decoration: none;
-    color: var(--text-light);
-    background: rgba(142, 165, 197, 0.16);
-    border: 1px solid rgba(142, 165, 197, 0.38);
-    border-radius: 0.2rem;
-    padding: 0.6rem 0.85rem;
-}
-
-.project-link-button:hover,
-.project-link-button:focus-visible {
-    background: rgba(142, 165, 197, 0.26);
-}
-
-.project-link-button-disabled {
-    color: var(--text-muted);
-    background: rgba(255, 255, 255, 0.05);
-    border-color: rgba(255, 255, 255, 0.12);
-    cursor: default;
-}
-
-.project-hero-media {
-    overflow: hidden;
-    border-radius: 0.24rem;
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    background: rgba(26, 31, 43, 0.55);
-    box-shadow: 0 18px 48px rgba(0, 0, 0, 0.22);
-}
-
-.project-hero-media img,
-.project-gallery-item img {
-    display: block;
-    width: 100%;
-    height: auto;
-}
-
-.project-meta-card h2,
-.project-panel h2 {
-    color: var(--text-light);
-    font-size: 1.15rem;
-    margin-bottom: 0.8rem;
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-}
-
-.project-meta-card p,
-.project-panel p,
-.project-list li,
-.project-gallery-item figcaption {
-    line-height: 1.6rem;
-}
-
-.project-meta-card {
-    padding: 1.25rem 0 1.1rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.project-meta-card:first-child {
-    padding-top: 0;
-    border-top: none;
-}
-
-.project-panel {
-    padding: 1.4rem 0 0;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.project-panel:first-child {
-    padding-top: 0;
-    border-top: none;
-}
-
-.project-list {
-    display: grid;
-    gap: 0.5rem;
-    padding-left: 1.2rem;
-    list-style: disc;
-}
-
-.project-gallery {
-    display: grid;
-    gap: 1.2rem;
-    margin-top: 0.7rem;
-}
-
-.project-gallery-item {
-    background: rgba(255, 255, 255, 0.03);
-    border-radius: 0.22rem;
-    overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.14);
-}
-
-.project-gallery-item figcaption {
-    padding: 0.7rem 0.85rem;
-    color: var(--text-muted);
-    font-size: 0.95rem;
-}
-
-/* =====================
    Desktop (750px+)
    ===================== */
 @media (min-width: 750px) {
@@ -1087,45 +885,4 @@ button {
         justify-self: start;
     }
 
-    .project-page-main {
-        padding: 2.6rem 3.2rem 4rem;
-    }
-
-    .project-hero {
-        grid-template-columns: minmax(0, 1.1fr) minmax(20rem, 0.9fr);
-        align-items: stretch;
-        gap: 3rem;
-        padding: 1.8rem;
-    }
-
-    .project-meta-grid {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 2.4rem;
-        padding: 1.6rem 1.8rem;
-    }
-
-    .project-meta-card {
-        padding-top: 0;
-        border-top: none;
-    }
-
-    .project-sections {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        align-items: start;
-        gap: 2.8rem;
-        padding: 1.8rem;
-    }
-
-    .project-panel {
-        padding-top: 0;
-        border-top: none;
-    }
-
-    .project-gallery-panel {
-        grid-column: 1 / -1;
-    }
-
-    .project-gallery {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
 }
