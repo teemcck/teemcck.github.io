@@ -8,7 +8,7 @@ const sections = document.querySelectorAll(".section-container");
 
 function showSection(targetId) {
   sections.forEach(section => {
-    section.style.display = section.id === targetId ? "block" : "none";
+    section.style.display = section.id === targetId ? "flex" : "none";
     section.classList.toggle("active", section.id === targetId);
   });
 }
