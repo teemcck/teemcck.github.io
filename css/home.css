@@ -270,6 +270,10 @@ section a:hover {
     width: 100%
 }
 
+.huffman-thumbnail {
+    filter: invert(1);
+}
+
 .project-description {
     font-size: 0.95rem;
     font-weight: 450;

@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Canonical Huffman File Compressor</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&display=swap" rel="stylesheet">
@@ -34,7 +35,8 @@
 <body>
     <header>
         <div class="breadcrumb">
-            <a href="index.html">~/portfolio</a><span class="path-sep">/</span><span class="path-current">blog</span>
+            <a href="index.html" target="_blank" rel="noopener noreferrer">~/portfolio</a><span
+                class="path-sep">/</span><span class="path-current">blog</span>
         </div>
         <div id="hero">
             <h1>Tristan's Blog</h1>
@@ -56,85 +58,358 @@
     <h2>Canonical Huffman File Compressor</h2>
     <div id="blog-body">
         <div id="blog-content">
-            <!-- These paragraphs need to be formalized later. -->
+            <!-- Notes on tweaking blog: -->
+            <!-- https://claude.ai/share/b9a58a46-b5aa-48a1-b1ce-20e58fcb6081 -->
+
+            <h3>Project Inspiration</h3>
+            <p>
+                I watch quite a bit of low-level and assembly programming content
+                in my free time to generate ideas for projects. I found <a
+                    href="https://down2core.com/TheCodePath.html">this resource</a> from a content creator, <a
+                    href="https://www.twitch.tv/y4spr">y4spr</a>,
+                which highlights many project ideas, including implementing a Huffman coding compression algorithm.
+                I chose this project because it seemed fun to write some classic C (and because compression algorithms
+                are very cool). Huffman coding is not especially difficult to implement, and its many possible
+                variations meant my project would not feel like a regurgitation of a Wikipedia article.
+            </p>
+
             <h3>Overview of Huffman Coding</h3>
-
-            <!-- Commented out algorithm for now. -->
             <p>
-                <!-- Introduction -->
-                Huffman Coding is a lossless data compression technique that represents symbols using variable-length
-                codes. More frequently occurring symbols are assigned shorter codes, while less frequently occurring
-                symbols are assigned longer codes. By using shorter codes for common symbols, Huffman Coding can reduce
-                the overall size of the encoded data.
+                To understand this project's implementation details, it helps to introduce Huffman coding for readers
+                who are not already familiar with it. Huffman coding is a lossless
+                compression technique that represents symbols with variable-length binary
+                codes. Frequent symbols receive short codes and rare symbols receive long codes, which reduces the
+                average number of bits needed per symbol. A "symbol" is intentionally abstract: it can be a character,
+                a word, or, as in this project, a single byte.
             </p>
             <p>
-                Note that the term "symbol" here is intentionally abstract as the units being encoded depend on the data
-                format. For
-                example, a symbol could simply be a single byte in a file.
+                To avoid the jargon, consider the word "ABRACADABRA", which has
+                11 letters: five As, two Bs, two Rs, one C, and one D. With five distinct letters, a fixed-length
+                scheme needs 3 bits for every letter, or \(11 \times 3 = 33\) bits in total. A Huffman code gives
+                the common letter a short code and the rare letters longer ones:
+            </p>
+            $$
+            \begin{array}{c|c|c|c}
+            \textbf{Letter} & \textbf{Count} & \textbf{Fixed} & \textbf{Huffman} \\ \hline
+            \texttt{A} & 5 & \texttt{000} & \texttt{0} \\
+            \texttt{B} & 2 & \texttt{001} & \texttt{100} \\
+            \texttt{C} & 1 & \texttt{010} & \texttt{101} \\
+            \texttt{D} & 1 & \texttt{011} & \texttt{110} \\
+            \texttt{R} & 2 & \texttt{100} & \texttt{111}
+            \end{array}
+            $$
+            <p>
+                Weighting each code length by how often the letter appears, the message now costs
+            </p>
+            $$5(1) + 2(3) + 1(3) + 1(3) + 2(3) = 23 \text{ bits},$$
+            <p>
+                about 30% fewer bits than the fixed-length encoding, with nothing lost. Written out in full, the
+                encoded message is:
+            </p>
+            $$
+            \underbrace{\texttt{0}}_{\texttt{A}}\,
+            \underbrace{\texttt{100}}_{\texttt{B}}\,
+            \underbrace{\texttt{111}}_{\texttt{R}}\,
+            \underbrace{\texttt{0}}_{\texttt{A}}\,
+            \underbrace{\texttt{101}}_{\texttt{C}}\,
+            \underbrace{\texttt{0}}_{\texttt{A}}\,
+            \underbrace{\texttt{110}}_{\texttt{D}}\,
+            \underbrace{\texttt{0}}_{\texttt{A}}\,
+            \underbrace{\texttt{100}}_{\texttt{B}}\,
+            \underbrace{\texttt{111}}_{\texttt{R}}\,
+            \underbrace{\texttt{0}}_{\texttt{A}}
+            $$
+            <p>
+                The spaces and labels are only for readability. The real output is the unbroken string
+                01001110101011001001110, and a decoder can still split it back into letters.
+            </p>
+            <p>
+                At a glance, this technique might seem sound, but on closer inspection, you may notice a strange
+                pattern. Why are certain bit sequences skipped? Why not use short codes such as <code>1</code>,
+                <code>00</code>, or <code>11</code> before using longer codes such as <code>100</code>,
+                <code>101</code>, <code>110</code>, or <code>111</code>? Those shorter codes would seem to
+                let us combine more bits. So why don't we use them?
+            </p>
+            <p>
+                Suppose we instead assign these short codes:
+            </p>
+            $$
+            \begin{array}{c|cccc}
+            \text{Letter} & \texttt{A} & \texttt{B} & \texttt{R} & \texttt{C} \\ \hline
+            \text{Code} & \texttt{0} & \texttt{1} & \texttt{00} & \texttt{11}
+            \end{array}
+            $$
+            <p>
+                Now the four-bit string \(\texttt{0011}\) has several valid readings. Since there are no
+                separators between codes, the decoder cannot tell which letter boundaries were intended:
+            </p>
+            $$
+            \begin{aligned}
+            \texttt{0011} &= \underbrace{\texttt{0}\,\texttt{0}\,\texttt{1}\,\texttt{1}}_{\texttt{AABB}} \\
+            &= \underbrace{\texttt{0}\,\texttt{0}\,\texttt{11}}_{\texttt{AAC}} \\
+            &= \underbrace{\texttt{00}\,\texttt{1}\,\texttt{1}}_{\texttt{RBB}} \\
+            &= \underbrace{\texttt{00}\,\texttt{11}}_{\texttt{RC}}
+            \end{aligned}
+            $$
+            <p>
+                The ambiguity comes from one codeword being the beginning of another: \(\texttt{0}\) is a prefix
+                of \(\texttt{00}\), and \(\texttt{1}\) is a prefix of \(\texttt{11}\). When the decoder reads a
+                \(\texttt{0}\), it cannot know whether the string it is reading is A or the start of R.
+            </p>
+            <p>
+                The skipped sequences in the earlier table are the price of avoiding this. Once a bit sequence is
+                assigned to a letter, nothing longer that begins with it can be used. Giving <code>A</code> the code
+                <code>0</code> rules out every code that starts with <code>0</code>, which leaves only sequences
+                starting with <code>1</code> for the other four letters. Codes with this property are called
+                <em>prefix codes</em>, and they let a decoder recognize each letter the instant its last bit arrives,
+                with no separators and no looking ahead.
+            </p>
+            <p>
+                The unused sequences are not wasted. Every open bit sequence can be extended in two ways by appending
+                a <code>0</code> or a <code>1</code>. Leaving <code>1</code> unassigned therefore opens two new
+                positions, <code>10</code> and <code>11</code>. Leaving both of those open creates four positions:
+                <code>100</code>, <code>101</code>, <code>110</code>, and <code>111</code>. The pattern continues as
+                long as positions remain open; each unused sequence becomes the prefix of longer codes below it.
+            </p>
+            <figure style="margin: 1rem 0;">
+            <svg viewBox="0 0 560 270" role="img" style="width:100%; max-width:560px; display:block; margin:1rem auto;"
+                aria-label="Binary code tree. Code 0 is assigned to A. Code 1 branches into 10 and 11, which branch into 100, 101, 110, and 111.">
+                <g stroke="currentColor" stroke-width="1.5" fill="none">
+                    <!-- edges -->
+                    <line x1="280" y1="42" x2="140" y2="80" />
+                    <line x1="280" y1="42" x2="420" y2="80" />
+                    <line x1="420" y1="108" x2="350" y2="145" />
+                    <line x1="420" y1="108" x2="490" y2="145" />
+                    <line x1="350" y1="173" x2="315" y2="210" />
+                    <line x1="350" y1="173" x2="385" y2="210" />
+                    <line x1="490" y1="173" x2="455" y2="210" />
+                    <line x1="490" y1="173" x2="525" y2="210" />
+                </g>
+                <g font-family="'Fira Code', monospace" font-size="14" fill="currentColor" text-anchor="middle">
+                    <!-- edge bit labels -->
+                    <text x="198" y="54" font-size="12" opacity="0.7">0</text>
+                    <text x="362" y="54" font-size="12" opacity="0.7">1</text>
+                    <text x="372" y="132" font-size="12" opacity="0.7">0</text>
+                    <text x="470" y="132" font-size="12" opacity="0.7">1</text>
+                    <text x="322" y="196" font-size="12" opacity="0.7">0</text>
+                    <text x="372" y="196" font-size="12" opacity="0.7">1</text>
+                    <text x="462" y="196" font-size="12" opacity="0.7">0</text>
+                    <text x="512" y="196" font-size="12" opacity="0.7">1</text>
+                    <!-- root -->
+                    <text x="280" y="30" opacity="0.7">start</text>
+                    <!-- level 1 -->
+                    <rect x="115" y="80" width="50" height="28" rx="6" fill="currentColor" fill-opacity="0.15"
+                        stroke="currentColor" stroke-width="1.5" />
+                    <text x="140" y="99">0 → A</text>
+                    <rect x="395" y="80" width="50" height="28" rx="6" fill="none" stroke="currentColor"
+                        stroke-width="1.5" />
+                    <text x="420" y="99">1</text>
+                    <!-- level 2 -->
+                    <rect x="325" y="145" width="50" height="28" rx="6" fill="none" stroke="currentColor"
+                        stroke-width="1.5" />
+                    <text x="350" y="164">10</text>
+                    <rect x="465" y="145" width="50" height="28" rx="6" fill="none" stroke="currentColor"
+                        stroke-width="1.5" />
+                    <text x="490" y="164">11</text>
+                    <!-- level 3 -->
+                    <rect x="290" y="210" width="50" height="28" rx="6" fill="currentColor" fill-opacity="0.15"
+                        stroke="currentColor" stroke-width="1.5" />
+                    <text x="315" y="229">100</text>
+                    <rect x="360" y="210" width="50" height="28" rx="6" fill="currentColor" fill-opacity="0.15"
+                        stroke="currentColor" stroke-width="1.5" />
+                    <text x="385" y="229">101</text>
+                    <rect x="430" y="210" width="50" height="28" rx="6" fill="currentColor" fill-opacity="0.15"
+                        stroke="currentColor" stroke-width="1.5" />
+                    <text x="455" y="229">110</text>
+                    <rect x="500" y="210" width="50" height="28" rx="6" fill="currentColor" fill-opacity="0.15"
+                        stroke="currentColor" stroke-width="1.5" />
+                    <text x="525" y="229">111</text>
+                    <!-- leaf letters -->
+                    <text x="315" y="258" font-size="12">B</text>
+                    <text x="385" y="258" font-size="12">C</text>
+                    <text x="455" y="258" font-size="12">D</text>
+                    <text x="525" y="258" font-size="12">R</text>
+                </g>
+            </svg>
+                <figcaption style="color: var(--light-gray); font-size: 0.85rem; margin-top: 0.5rem; text-align: center;">
+                    Huffman tree for the ABRACADABRA example.
+                </figcaption>
+            </figure>
+            <p>
+                This tree is more than a visualization of how the codes are formed; it is also a data structure we
+                can use to derive Huffman codes, and it is central to the algorithm's efficiency.
+            </p>
+            <p>
+                This is the core of the algorithm. At a high level, these are the steps basic Huffman compression
+                algorithms perform. The simplicity and optimality of this method make it a popular component in
+                compression algorithms. This raises an obvious question: if Huffman coding produces optimal codes,
+                why do other compression methods exist? Does it not "solve" file compression?
+            </p>
+            <p>
+                Not quite. The outlined Huffman coding algorithm produces optimal codes for a set of symbol frequencies,
+                but it does not take advantage of patterns between neighboring symbols. For example, a file containing
+                many repeated sequences could be compressed further by replacing them with references to earlier
+                occurrences. For instance, after writing the first \(\texttt{ABC}\), an LZ77 encoder can refer back
+                three symbols to copy the next six:
+            </p>
+            $$
+            \texttt{ABCABCABC}\quad\longrightarrow\quad
+            \texttt{ABC}\,\langle 3,6\rangle
+            $$
+            <p>
+                The pair \(\langle 3,6\rangle\) means “copy six symbols from three positions back,” so a repeated
+                sequence can be represented by a reference instead of being written out again. The exact bit savings
+                depend on how the reference is encoded. <a href="https://en.wikipedia.org/wiki/DEFLATE" target="_blank"
+                    rel="noopener noreferrer">DEFLATE</a>
+                combines this kind of <a href="https://en.wikipedia.org/wiki/LZ77_and_LZ78" target="_blank"
+                    rel="noopener noreferrer">LZ77</a> reference with
+                Huffman coding: LZ77 finds repeated patterns, then Huffman coding gives short codes to the resulting
+                symbols and references. Huffman coding is therefore one part of a larger compression algorithm.
+            </p>
+            <p>
+                That does not mean Huffman coding is only useful in toy compression algorithms. It serves a purpose
+                and does some of the heavy lifting in compression tools used every day. Although I made this project
+                as a fun, educational portfolio piece, Huffman coding also works well as a standalone algorithm.
+                <!-- Move elsewhere: I would also not consider this project concluded, even if it is in a finished state. I have
+                left plenty of room for this to be iterated on and expanded into a full DEFLATE-like algorithm in the
+                future. -->
             </p>
 
-            <h3>What is Canonical Huffman Coding?</h3>
+            <h4>What is Canonical Huffman Coding?</h4>
             <p>
-                When compressing from a data source, it is important to include meta data to explicitly state or allow
-                inference to the "codebook" used
-                to compress the file. The codebook is responsible for storing which symbols map to which codes. For
-                Huffman Compression, this requires us to format a header in one of the following ways:
+                A decoder needs the codebook, so the compressed file has to carry enough information to rebuild it.
+                There are two conventional options:
             </p>
             <ul>
-                <li>Store the entire structure of the binary tree so codes can be reconstructed during decompression.
-                </li>
-                <li>Store the codes in order of all possible symbols, using a predefined nullcode symbol for symbols
-                    that do not occur.</li>
+                <li>Store the structure of the binary tree.</li>
+                <li>Store the code for every possible symbol, using a null code for symbols that never occur.</li>
             </ul>
             <p>
-                Both of these methods of sourcing the codebook for decompression are fine for large files, but can
-                become
-                costly for small files. When compressed, small files have the potential of becoming larger if the size
-                of
-                the header is greater then the original size of the file (which would be common for encoding a large
-                binary tree or array of codes).
+                Both are acceptable for large files, but costly for small ones, where the header can outweigh the data
+                it describes. Canonical Huffman coding lets us store much less.
             </p>
-            <p>
-                Canonical Huffman is an adapation of conventional Huffman algorithms with the added step of
-                standardizing the codes. This added standardization step occurs after we have constructed the Huffman
-                Tree and have found the lengths of the codes, and before we build an indexable codebook.
-            </p>
-            <p>Canonical Huffman codes follow these rules:</p>
-            <ul>
-                <li>All codes of a shared length are assigned their values sequentially.</li>
-                <li>For codes of a shared length, order is determined by alphabetic value.</li>
-            </ul>
 
-            <h3>Algorithm Outline</h3>
             <p>
-                This project implements a byte-oriented Huffman compressor and decompressor. It treats every input byte
-                as a symbol in the range 0-255.
+                To see how, take the 15-letter message <code>DDDDDDCCCCAAABB</code>: six Ds, four Cs, three As, and
+                two Bs. Building a Huffman tree merges the two lightest trees each time. B (2) and A (3) combine
+                into a tree of weight 5, which then combines with C (4) to make a tree of weight 9. Finally, D (6)
+                joins that tree to make the root. If we label the lighter branch <code>0</code> and the heavier branch
+                <code>1</code> at every merge, the tree produces these codes:
+            </p>
+            $$
+            \begin{array}{c|c|c|c}
+            \textbf{Letter} & \textbf{Count} & \textbf{Length} & \textbf{Tree code} \\ \hline
+            \texttt{D} & 6 & 1 & \texttt{0} \\
+            \texttt{C} & 4 & 2 & \texttt{10} \\
+            \texttt{B} & 2 & 3 & \texttt{110} \\
+            \texttt{A} & 3 & 3 & \texttt{111}
+            \end{array}
+            $$
+            <p>
+                Now notice which part of this table actually matters. The compressed size depends only on the
+                <em>lengths</em>: \(6(1) + 4(2) + 2(3) + 3(3) = 29\) bits. The specific bit patterns are an accident of
+                how we happened to label the branches. If we had labeled the heavier branch <code>0</code> instead,
+                we would get <code>D = 1</code>, <code>C = 01</code>, <code>B = 001</code>, <code>A = 000</code>.
+                These are different codes, but they have the same lengths, are still prefix codes, and compress the
+                message to the same 29 bits.
             </p>
             <p>
-                The encoder counts how often each byte appears, builds a Huffman tree,
-                turns the tree depths into canonical codes, then writes a header and the encoded payload. The decoder
-                canon
-                reads the header, reconstructs those sameical codes, and uses them to recover the original bytes.
+                The patterns are arbitrary, so the lengths are all we need. That suggests a trick: instead of
+                letting the tree decide the patterns, we agree on a fixed rule for assigning them <em>from the
+                    lengths</em>. If the compressor and decompressor both know the rule, the file only needs to store
+                the
+                lengths, and both sides can rebuild identical codes. This is canonical Huffman coding. The Huffman
+                tree is still built, but only to find each symbol's code length, and then it is thrown away.
             </p>
+
+            <h4>How Do You Find Canonical Codes?</h4>
             <p>
-                The command-line entry point is main.c. It accepts -e to encode or
-                -d to decode, followed by the input
-                file and target file respectively for both modes.
+                The rule for finding canonical Huffman codes is:
             </p>
-            <p>
-                The encoding process collects the data from the file and passes it through a series of representations:
             <ol>
-                <li>
-                    Counting Bytes: <code class="language-c">count_frequencies()</code> reads the input with
-                    fgetc. It uses an
-                    int for each result because fgetc must represent both every byte value and
-                    the special EOF value. Each byte's count goes into
-                    <code class="language-c">uint64_t frequencies[256]</code>. The total input size is stored as <code
-                        class="language-c">uint32_t</code>,
-                    which matches the four-byte
-                    size field in the file format.
-                    <pre class="line-numbers" data-remove-indent="true" tabindex="0" aria-label="Encoding example"><code class="language-c">
-                        int symbol;
+                <li>Sort the symbols by code length, shortest first, breaking ties by symbol value.</li>
+                <li>Give the first symbol the all-zeros code of its length.</li>
+                <li>Give each following symbol the previous code plus one. If its length is longer than the previous
+                    symbol's, append zeros until the lengths match.</li>
+            </ol>
+            <p>
+                The two operations each have a job. Adding one moves to the next unused bit pattern of the same
+                length, so no two symbols collide. Appending zeros when the length grows moves us down into the longer
+                codes, past every pattern that starts with a code we have already handed out, so the result stays a
+                prefix code. Appending zeros is the same as shifting left, so formally, if \(c_k\) is the \(k\)-th code
+                in sorted order and \(\ell_k\) is its length, then
+            </p>
+            $$c_0 = 0, \qquad c_{k+1} = (c_k + 1) \ll (\ell_{k+1} - \ell_k)$$
+            <p>
+                The shift is zero when two neighbors have the same length, and larger when the length jumps. Let's run
+                this on our message. All we are given are the lengths: D has 1, C has 2, and A and B have
+                3. Sorted by length and then alphabetically, the order is D, C, A, B:
+            </p>
+            $$
+            \begin{array}{c|c|l|c}
+            \textbf{Letter} & \ell & \textbf{Calculation} & \textbf{Canonical code} \\ \hline
+            \texttt{D} & 1 & c_0 = 0 & \texttt{0} \\
+            \texttt{C} & 2 & (\texttt{0} + 1) \ll 1 = \texttt{1} \ll 1 & \texttt{10} \\
+            \texttt{A} & 3 & (\texttt{10} + 1) \ll 1 = \texttt{11} \ll 1 & \texttt{110} \\
+            \texttt{B} & 3 & (\texttt{110} + 1) \ll 0 & \texttt{111}
+            \end{array}
+            $$
+            <p>
+                Compare this with the tree's codes. <code>D</code> and <code>C</code> are unchanged, but
+                <code>A</code> and <code>B</code> have swapped: the tree gave <code>B = 110</code> and
+                <code>A = 111</code>, while the canonical rule gives <code>A = 110</code> and <code>B = 111</code>.
+                That is fine, since the lengths are identical and the total is still 29 bits. What we gained is that
+                these codes can be recomputed by anyone who knows the lengths.
+            </p>
+
+            <h4>What does the header store?</h4>
+            <p>
+                This is the payoff. The header stores neither codes nor tree structure; it stores only one length per
+                possible byte. For this message, the 256-entry length table holds a <code>1</code> for <code>D</code>, a
+                <code>2</code> for <code>C</code>, a <code>3</code> for <code>A</code>, a <code>3</code> for
+                <code>B</code>, and a <code>0</code> everywhere else (zero meaning the symbol never appears). Because
+                each entry is a single small number, the table is the same size no matter what the data looks like.
+            </p>
+            <p>
+                But we are still storing 256 bytes. Is that really shorter? Compared with storing the codes, yes. A
+                code can be up to 15 bits and needs its length stored beside it, so storing codes would cost around
+                three bytes per symbol instead of one. This is also safer because the decoder does not have to trust
+                codes supplied by the file; it validates the lengths and generates the codes itself.
+            </p>
+
+            <h3>Implementation Details</h3>
+            <p>
+                This project is a byte-oriented compressor and decompressor written in C. Every input byte is a symbol
+                in the range 0-255. The command-line entry point, <code>main.c</code>, accepts <code>-e</code> to
+                encode or <code>-d</code> to decode, followed by the input file and the output file.
+            </p>
+            <p>
+                The encoder follows the usual textbook pipeline: count byte frequencies, build a Huffman tree, get
+                each symbol's code length from its depth in the tree, assign codes, and write a header followed by the
+                encoded data. Compared with a basic textbook implementation of Huffman coding, I added a few features
+                that I wanted to implement:
+            </p>
+            <ul>
+                <li><strong>Length limiting.</strong> After the lengths come out of the tree, a miniz-inspired
+                    heuristic caps them at 15 bits so every code fits comfortably in a 16-bit integer.</li>
+                <li><strong>Canonical codes with a lengths-only header.</strong> Rather than store the codes
+                    themselves, the header stores one length per possible byte, and both the encoder and decoder
+                    rebuild the same canonical codes from those lengths. This keeps the header small and gives the
+                    decoder something it can validate instead of trust.</li>
+            </ul>
+            <p>
+                The sections below follow the encoder from start to finish, then cover the decoder. Each one shows the
+                code that carries the idea, starting with the first pass over the input.
+            </p>
+            <h4>Counting bytes</h4>
+            <p>
+                <code class="language-c">count_frequencies()</code> makes a pass over the file and counts how
+                often each byte appears. It also keeps track of the file's total size, which is written into the
+                header later. It is easiest to count the frequencies by grouping them into buckets indexed by their
+                value.
+            </p>
+            <pre class="line-numbers" data-remove-indent="true" tabindex="0" aria-label="Counting frequencies"><code class="language-c">
+                        // ...uint64_t frequencies[256], symbol defined above.
 
                         // Read bytes until EOF, counting each symbol and the total input size.
                         while ((symbol = fgetc(input)) != EOF) {
@@ -145,107 +420,637 @@
                             ++(*total_symbols);
                         }
                     </code></pre>
-
-                </li>
-                <li>
-                    Build a Huffman tree: we are able to forward the collected frequencies to a new function that may
-                    construct a "Huffman" tree. Huffman trees are built strictly using a bottom-up approach. Start by
-                    inserting elements, sorted by frequency from least to greatest, into a minheap.
-                    <pre class="line-numbers" data-remove-indent="true" tabindex="0" aria-label="Encoding example"><code class="language-c">
-                        minheap heap = {0};
-                        // Leave the caller with no tree on failure or empty input.
-                        *root = NULL;
-
-                        // Insert one leaf for each symbol that occurs in the input.
-                        for (size_t symbol = 0; symbol < SYMBOL_COUNT; ++symbol) {
-                            if (frequencies[symbol] != 0) {
-                                // calloc initializes the child pointers to null on this platform.
-                                huffman_node *leaf = calloc(1, sizeof(*leaf));
-                                if (leaf == NULL) {
-                                    release_heap_trees(&heap);
-                                    return EXIT_FAILURE;
-                                }
-                                leaf->frequency = frequencies[symbol];
-                                leaf->symbol = (uint8_t)symbol;
-                                // At most 256 leaves are inserted into a 256-entry heap.
-                                heap_insert(&heap, leaf);
-                            }
-                        }
-                    </code></pre>
-
-                    After building your minheap, you can repeatedly combine the two least frequent elements into
-                    internal nodes and reinsert them back into the tree. Continue this process until there is one final
-                    node, which is your root node. In this representation, all of the leaf nodes of our Huffman tree
-                    correspond to individual symbols.
-                    <pre class="line-numbers" data-remove-indent="true" tabindex="0" aria-label="Encoding example"><code class="language-c">
+            <div class="code-source">
+                <a href="https://github.com/teemcck/Canonical-Huffman-Coding/blob/main/src/huffman_encode.c#L8-L26"
+                    target="_blank" rel="noopener noreferrer">View source file</a>
+            </div>
+            <p>
+                When I first wrote this loop, I made <code class="language-c">symbol</code> a
+                <code class="language-c">uint8_t</code> instead of an <code class="language-c">int</code>, reasoning
+                that a byte only holds values from 0 to 255 (even though using a smaller type for one local variable
+                saves essentially nothing). This caused the loop never to terminate.
+            </p>
+            <p>
+                The standard library defines <code>EOF</code> as -1, and storing that in a
+                <code class="language-c">uint8_t</code> wraps it around to 255. The comparison against
+                <code>EOF</code> is then between 255 and -1, which is never true, so the loop never exits and
+                <code class="language-c">frequencies[255]</code> is incremented over and over. Turning on stricter
+                compiler warnings (<code>-Wall</code> or <code>-Wextra</code>) and thinking more carefully about the
+                types would likely have caught it. This is why <code>fgetc</code> returns an <code>int</code> in the
+                first place. It was a novice mistake, and it taught me to be more cautious when handling unsigned
+                integers.
+            </p>
+            <h4>Building the Huffman tree</h4>
+            <p>
+                I followed the standard approach for constructing a Huffman tree because it is relatively
+                straightforward.
+                Each symbol is initially represented by a leaf node, and all nodes are stored in a priority queue
+                ordered by increasing symbol frequency. The algorithm repeatedly removes the two nodes with the lowest
+                frequencies and combines them into a new "internal" node. This node has no associated symbol; instead,
+                its frequency is the sum of its children's frequencies. The two removed nodes become its children, and
+                the new internal node is inserted back into the priority queue.
+            </p>
+            <p>
+                For example, take the earlier input, where B appears twice, A three times, and C four times. The heap
+                removes B and A, then receives their parent, whose frequency is five:
+            </p>
+            $$
+            \begin{array}{|c|c|c|}
+            \hline
+            \texttt{B}\!:\!2 & \texttt{A}\!:\!3 & \texttt{C}\!:\!4 \\
+            \hline
+            \end{array}
+            $$
+            $$
+            \Downarrow \; \text{pop } \texttt{B} \text{ and } \texttt{A}, \; \text{push } 2 + 3 = 5
+            $$
+            $$
+            \begin{array}{|c|c|}
+            \hline
+            \texttt{C}\!:\!4 & 5 \\
+            \hline
+            \end{array}
+            $$
+            <p>
+                The <code>5</code> is an internal node whose <code>left</code> pointer refers to
+                <code>B</code> and whose <code>right</code> pointer refers to <code>A</code>, so the two leaves are
+                still reachable through it. Repeating this until one entry remains leaves the root of the Huffman
+                tree, with each byte represented by a leaf beneath it.
+            </p>
+            <p>
+                In essence, this algorithm begins with a collection of single-node trees and repeatedly combines them
+                until only one tree remains. This construction produces an optimal Huffman code in \(O(k \log k)\)
+                time, where \(k\) is the number of distinct bytes in the input.
+            </p>
+            <p>
+                C does not provide standard-library data structures like C++ does, so I wrote my own min-heap priority
+                queue for this algorithm. I could have used a third-party library, but implementing data structures is
+                fun. I will not discuss the fairly standard min-heap implementation in detail here. Its two public
+                functions are <code>heap_insert()</code>, which takes a node, and <code>heap_pop_top()</code>, which
+                returns one. Each node is represented by a basic C struct that stores a frequency, a symbol, and
+                pointers to its
+                left and right children.
+            </p>
+            <pre class="line-numbers" data-remove-indent="true" tabindex="0" aria-label="Huffman tree node struct"><code class="language-c">
+                typedef struct huffman_node {
+                    uint64_t frequency;
+                    struct huffman_node *left;
+                    struct huffman_node *right;
+                    uint8_t symbol;
+                } huffman_node;
+            </code></pre>
+            <div class="code-source"><a
+                    href="https://github.com/teemcck/Canonical-Huffman-Coding/blob/main/src/huffman_tree.h#L6-L11"
+                    target="_blank" rel="noopener noreferrer">VIEW SOURCE FILE</a></div>
+            <p>
+                I ordered the struct members with memory alignment in mind, placing larger members before
+                smaller ones to minimize padding and reduce memory overhead.
+            </p>
+            <p>
+                I defined the min-heap comparator to order nodes from least to most frequent. We can therefore allocate
+                a leaf for each symbol and insert it into the heap:
+            </p>
+            <pre class="line-numbers" data-remove-indent="true" tabindex="0" aria-label="Inserting leaves"><code class="language-c">
+            // Insert one leaf for each symbol that occurs in the input.
+            for (size_t symbol = 0; symbol &lt; SYMBOL_COUNT; ++symbol) {
+                if (frequencies[symbol] != 0) {
+                    huffman_node *leaf = calloc(1, sizeof(*leaf));
+                    if (leaf == NULL) {
+                        release_heap_trees(&amp;heap);
+                        return EXIT_FAILURE;
+                    }
+                    leaf->frequency = frequencies[symbol];
+                    leaf->symbol = (uint8_t)symbol;
+                    heap_insert(&amp;heap, leaf);
+                }
+            }
+        </code></pre>
+            <p>
+                With the leaves in the min-heap, the encoder repeatedly removes the two nodes with the lowest
+                frequencies and makes them the children of a new parent. It sets the parent's frequency to the sum of
+                its children's frequencies before inserting it back into the priority queue. This process repeats
+                until only the root of the Huffman tree remains:
+            </p>
+            <pre class="line-numbers" data-remove-indent="true" tabindex="0" aria-label="Merging nodes"><code class="language-c">
                         // Repeatedly combine the two least frequent trees into one parent.
                         while (heap.size > 1) {
                             // Allocate before removing children so failure cleanup can find them.
                             huffman_node *parent = calloc(1, sizeof(*parent));
                             if (parent == NULL) {
-                                release_heap_trees(&heap);
+                                release_heap_trees(&amp;heap);
                                 return EXIT_FAILURE;
                             }
-                            parent->left = heap_pop_top(&heap);
-                            parent->right = heap_pop_top(&heap);
-                            // Internal nodes represent the combined frequency of their children.
+                            parent->left = heap_pop_top(&amp;heap);
+                            parent->right = heap_pop_top(&amp;heap);
                             parent->frequency = parent->left->frequency + parent->right->frequency;
-                            heap_insert(&heap, parent);
+                            heap_insert(&amp;heap, parent);
                         }
                     </code></pre>
+            <div class="code-source"><a
+                    href="https://github.com/teemcck/Canonical-Huffman-Coding/blob/main/src/huffman_tree.c#L42-L55"
+                    target="_blank" rel="noopener noreferrer">View source file</a></div>
+            <h4>Extracting code lengths</h4>
+            <p>
+                The next step is to find each symbol's code length. Because the Huffman tree provides a simple way to
+                determine these lengths, we define each symbol's code length as its depth in the tree. A recursive
+                function can walk the tree and record that depth for every symbol.
+            </p>
+            <p>
+                <code class="language-c">build_code_lengths()</code> walks the tree and records each byte's
+                depth as its code length. A file with only one distinct byte needs a one-bit code, even though
+                its lone leaf has depth zero. After recording the lengths, the tree has done its job and can be
+                freed.
+            </p>
+            <pre class="line-numbers" data-remove-indent="true" tabindex="0" aria-label="Code lengths from depth"><code class="language-c">
+                        // Leaves hold symbols; internal nodes always have two children.
+                        if (root->left == NULL) {
+                            // Tree depth gives the bit count. A lone symbol still needs one bit.
+                            code_lengths[root->symbol] = (uint8_t)(depth == 0 ? 1 : depth);
+                            return;
+                        }
 
-                </li>
-                <li>
-                    Get code lengths: build_code_lengths walks the tree. A leaf's depth becomes that byte's
-                    code length.
-                    A one-symbol input is assigned a one-bit code so it still has a usable code. The tree is freed after
-                    its lengths have been collected.
-                </li>
-                <li>
-                    Limit lengths and create canonical codes: limit_code_lengths caps lengths at
-                    MAX_CODE_LEN (15) while preserving a valid prefix code.
-                    validate_code_lengths checks the result and counts codes at each length. The encoder
-                    then sorts (symbol, length) pairs by length and symbol value, and
-                    build_canonical_codes assigns the bit patterns. Canonical codes avoid storing the tree
-                    itself: both
-                    sides can derive the same codes from the lengths and ordering.
-                </li>
-                <li>
-                    Write the header and payload: The encoder rewinds the input to its starting position, writes the
-                    code lengths and original byte count, then reads each input byte again and looks up its code in
-                    huffman_code codebook[256]. bit_writer emits the code bits and pads the
-                    final output byte with zeros
-                    if needed.
-                </li>
-            </ol>
+                        // Each branch adds one bit to the codes below it.
+                        build_code_lengths(root->left, code_lengths, depth + 1);
+                        build_code_lengths(root->right, code_lengths, depth + 1);
+                    </code></pre>
+            <div class="code-source"><a
+                    href="https://github.com/teemcck/Canonical-Huffman-Coding/blob/main/src/huffman_tree.c#L62-L77"
+                    target="_blank" rel="noopener noreferrer">View source file</a></div>
+
+            <p>
+                Although this function recurses over the tree, it uses only \(O(h)\) stack space, where \(h\) is the
+                tree's height. Since the tree contains at most 511 nodes for 256 distinct symbols, stack usage is not
+                a concern here.
+            </p>
+            <h4>Length Limiting</h4>
+            <p>
+                Highly uneven byte frequencies can produce unbalanced Huffman trees and long codes. Although this is
+                an edge case, it still needs to be addressed. This project caps code lengths at 15 bits to fit its
+                representation and keep decoding
+                simple, as DEFLATE does. Since shortening codes can make the prefix code invalid, the encoder repairs
+                the length distribution before assigning canonical codes.
+            </p>
+            <p>
+                The optimal length-limited code can be found exactly with the <a
+                    href="https://en.wikipedia.org/wiki/Package-merge_algorithm" target="_blank"
+                    rel="noopener noreferrer">package-merge algorithm</a>, but it is more complex than necessary
+                here. Instead, this project uses a fast heuristic that sacrifices a small amount of compression
+                efficiency for simplicity and speed. The MiniZ-inspired heuristic below is how this project handles
+                that repair.
             </p>
 
-            <h3>Hello World in C</h3>
-            <p>This simple C program prints a greeting to the terminal.</p>
-            <pre class="line-numbers" data-remove-indent="true" tabindex="0" aria-label="Hello World C example"><code class="language-c">
-                #include &lt;stdio.h&gt;
-                int main(void) {
-                    printf("Hello, world!\n");
+            <h4>MiniZ Heuristic</h4>
+            <p>
+                MiniZ is a small C library for DEFLATE compression and decompression. It limits code lengths with a
+                simple heuristic rather than a more rigorous method like package-merge. I based my implementation on
+                the algorithm in MiniZ's <a href="https://github.com/richgel999/miniz/blob/master/miniz_tdef.c#L194"
+                    target="_blank" rel="noopener noreferrer">tdefl_huffman_enforce_max_code_size</a>. It works on a
+                <em>histogram</em> of code lengths rather than on the tree: <code>histogram[L]</code> is the number of
+                symbols with a code of length \(L\). It proceeds in three passes:
+            </p>
+            <p>
+                <strong>Pass 1: clamp.</strong> Every symbol with a length above \(L_{max}\) is moved into the
+                \(L_{max}\) bucket. If nothing exceeded the limit, the original lengths are already valid and the
+                function returns early. Otherwise the clamping has shortened some codes, so the Kraft sum may now
+                exceed 1, which makes the code invalid.
+            </p>
+            <p>
+                <strong>Pass 2: repair the Kraft sum.</strong> To compare fractions exactly, the sum is scaled by
+                \(2^{L_{max}}\) so that it is an integer:
+            </p>
+            $$
+            \begin{aligned}
+            K &= \sum_{L=1}^{L_{max}} \text{histogram}[L] \, 2^{L_{max}-L} \\
+            \text{valid} &\iff K \le 2^{L_{max}}
+            \end{aligned}
+            $$
+            <p>
+                While \(K\) is too large, the algorithm applies a repair step. It removes one symbol from the longest
+                bucket and one from the longest non-empty shorter bucket (length \(L\)), then places two symbols at
+                length \(L + 1\). In other words, one leaf at \(L_{max}\) and one at \(L\) become two leaves at
+                \(L + 1\). The leaf count stays the same, but the sum falls by exactly one unit:
+            </p>
+
+            $$
+            \begin{aligned}
+            -2^0 - 2^{L_{max}-L} + 2\cdot 2^{L_{max}-L-1} &= -1
+            \end{aligned}
+            $$
+            <pre class="line-numbers" data-remove-indent="true" tabindex="0" aria-label="Kraft repair loop"><code class="language-c">
+                // We use integer scaled values (by 2^MAX_CODE_LEN) for precise fractional numbers.
+                uint32_t target = 1u &lt;&lt; MAX_CODE_LEN;
+                while (kraft_sum > target) {
+                    int length = MAX_CODE_LEN - 1;
+                    while (length > 0 &amp;&amp; histogram[length] == 0) {
+                        --length;
+                    }
+                    if (length == 0 || histogram[MAX_CODE_LEN] == 0) {
+                        return EXIT_FAILURE;
+                    }
+
+                    --histogram[MAX_CODE_LEN];
+                    // Lift next non-zero code to free up more space.
+                    --histogram[length];
+                    histogram[length + 1] += 2;
+                    // Reduced the Kraft sum by 1.
+                    --kraft_sum;
+                }
+            </code></pre>
+            <div class="code-source"><a
+                    href="https://github.com/teemcck/Canonical-Huffman-Coding/blob/main/src/canonical.c#L136-L158"
+                    target="_blank" rel="noopener noreferrer">View source file</a></div>
+            <p>
+                The loop terminates because each step lowers \(K\) by one. It fails only if there is no room to
+                repair, which cannot happen when the symbol count is at most \(2^{L_{max}}\) (here, 256 versus 32,768).
+            </p>
+            <p>
+                <strong>Pass 3: reassign lengths.</strong> The histogram now describes a valid set of lengths, but not
+                which symbol gets which length. Symbols are sorted by decreasing frequency with an insertion sort
+                (at most 256 elements), and the shortest lengths are handed to the most frequent symbols first. This
+                preserves the intuition that common symbols get short codes.
+            </p>
+            <pre class="line-numbers" data-remove-indent="true" tabindex="0" aria-label="Reassigning lengths"><code class="language-c">
+                // Copy histogram back into code_lengths, most frequent symbols first.
+                size_t index = 0;
+                for (unsigned length = 1; length &lt;= MAX_CODE_LEN; ++length) {
+                    for (size_t i = 0; i &lt; histogram[length]; ++i) {
+                        code_lengths[symbols[index++]] = (uint8_t)length;
+                    }
+                }
+            </code></pre>
+            <div class="code-source"><a
+                    href="https://github.com/teemcck/Canonical-Huffman-Coding/blob/main/src/canonical.c#L85-L109"
+                    target="_blank" rel="noopener noreferrer">View source file</a></div>
+            <p>
+                The result is not guaranteed to be optimal, but in practice it is close, and it only runs in the
+                rare case where a code exceeded the limit.
+            </p>
+
+            <h4>Assigning canonical codes</h4>
+            <p>
+                After calculating the code lengths, the encoder validates them and sorts the symbols by increasing code
+                length, breaking ties by byte value. This ordering allows us to assign canonical Huffman codes without
+                storing the exact bit patterns generated during tree construction.
+            </p>
+            <p>
+                As was shown earlier, the assignment process is surprisingly simple. Rather than traversing the Huffman
+                tree again, we can derive each code from the previous one. We increment the previous code, then shift it
+                left when the next code is longer, appending zero bits to account for the additional length.
+            </p>
+            <p>
+                The recurrence is \(C_i = (C_{i-1} + 1) \ll (\ell_i - \ell_{i-1})\). In words, increment the previous
+                code, then shift it left by the increase in code length. This recurrence makes assigning canonical
+                codes straightforward and is used by many implementations.
+            </p>
+            <p>
+                The implementation follows this recurrence directly. For each sorted symbol, the encoder shifts
+                current_code to account for any increase in code length, stores the resulting code alongside its length,
+                and increments the code in preparation for the next symbol.
+            </p>
+            <pre class="line-numbers" data-remove-indent="true" tabindex="0" aria-label="Canonical code assignment"><code class="language-c">
+                        for (size_t index = 0; index &lt; code_count; ++index) {
+                            // Append zero bits when moving to a longer code length.
+                            current_code &lt;&lt;= sorted_symbols[index].length - previous_length;
+
+                            codes[sorted_symbols[index].symbol] =
+                                (huffman_code){(uint16_t)current_code, sorted_symbols[index].length};
+                            previous_length = sorted_symbols[index].length;
+                            ++current_code;
+                        }
+                    </code></pre>
+            <div class="code-source"><a
+                    href="https://github.com/teemcck/Canonical-Huffman-Coding/blob/main/src/canonical.c#L65-L83"
+                    target="_blank" rel="noopener noreferrer">View source file</a></div>
+
+            <h4>Writing the header and payload</h4>
+            <p>
+                One advantage of designing a compression format is that you can choose its header, as long as the
+                encoder and decoder use the same format. My header stores all 256 code lengths, which lets the decoder
+                reconstruct the canonical codebook. It also stores the original number of symbols so the decoder
+                knows exactly when to stop. The last payload byte
+                may contain zero padding bits, so the decoder cannot use the end of the file alone to tell when the
+                original message is complete. The format therefore starts with a fixed 260-byte header, followed by
+                the encoded payload:
+            </p>
+            $$
+            \begin{array}{|c|c|c|}
+            \hline
+            \text{Code lengths} & \text{Original symbol count} & \text{Encoded payload} \\
+            \hline
+            \ell_0\;\ell_1\;\cdots\;\ell_{255} & N_0\;N_1\;N_2\;N_3 & \text{compressed bits} \\
+            \hline
+            256\text{ bytes }(0\text{-}255) & 4\text{ bytes }(256\text{-}259) & \text{starts at byte }260 \\
+            \hline
+            \end{array}
+            $$
+            <p>
+                Each \(\ell_s\) is the code length for byte value \(s\), with zero marking a byte that does not
+                appear in the input. The four count bytes store \(N\) least-significant byte first, so
+                \(N = N_0 + 2^8N_1 + 2^{16}N_2 + 2^{24}N_3\).
+            </p>
+            <pre class="line-numbers" data-remove-indent="true" tabindex="0"
+                aria-label="Writing the Huffman file header"><code class="language-c">
+                int write_header(FILE *output, const uint8_t code_lengths[SYMBOL_COUNT], uint32_t total_symbols) {
+                    if (fwrite(code_lengths, 1, SYMBOL_COUNT, output) != SYMBOL_COUNT) {
+                        return EXIT_FAILURE;
+                    }
+
+                    for (unsigned byte = 0; byte &lt; 4; ++byte) {
+                        if (fputc((int)((total_symbols >> (8 * byte)) &amp; 255), output) == EOF) {
+                            return EXIT_FAILURE;
+                        }
+                    }
+                    return EXIT_SUCCESS;
+                }
+            </code></pre>
+            <div class="code-source"><a
+                    href="https://github.com/teemcck/Canonical-Huffman-Coding/blob/main/src/huffman_header.c#L19-L32"
+                    target="_blank" rel="noopener noreferrer">View source file</a></div>
+
+            <h4>Bit-Level Output</h4>
+            <p>
+                Originally, I tried to bundle bit-level writing into the encoding logic, but found that it made the
+                core loop difficult to read. Without a bit writer or a similar abstraction, the encoder loop needed to
+                manage the output byte, its current bit position, full-byte writes, and final padding inline. I no
+                longer use that version, but I recreated an approximation of what the loop looked like:
+            </p>
+            <pre class="line-numbers" data-remove-indent="true" tabindex="0"
+                aria-label="Encoder loop with inline bit packing"><code class="language-c">
+                uint8_t buffer = 0;
+                unsigned bits_used = 0;
+
+                for (uint32_t index = 0; index &lt; total_symbols; ++index) {
+                    int symbol = fgetc(input);
+                    if (symbol == EOF || codebook[symbol].length == 0) {
+                        return EXIT_FAILURE;
+                    }
+
+                    huffman_code code = codebook[symbol];
+                    for (unsigned remaining = code.length; remaining &gt; 0; --remaining) {
+                        unsigned bit = (code.bits &gt;&gt; (remaining - 1)) &amp; 1;
+                        buffer |= (uint8_t)(bit &lt;&lt; bits_used++);
+
+                        if (bits_used == 8) {
+                            if (fputc(buffer, output) == EOF) {
+                                return EXIT_FAILURE;
+                            }
+                            buffer = 0;
+                            bits_used = 0;
+                        }
+                    }
+                }
+
+                // Flush the last partial byte; its unused high bits remain zero.
+                if (bits_used != 0 &amp;&amp; fputc(buffer, output) == EOF) {
+                    return EXIT_FAILURE;
+                }
+            </code></pre>
+            <p>
+                That version has a lot of bookkeeping. I moved this logic into bit-writer and bit-reader helpers that
+                the encoder and decoder can reuse. Here is the current encoder loop, using the bit writer:
+            </p>
+            <pre class="line-numbers" data-remove-indent="true" tabindex="0"
+                aria-label="Encoder loop using the bit writer"><code class="language-c">
+                bit_writer writer;
+                bit_writer_init(&amp;writer, output);
+
+                for (uint32_t index = 0; index &lt; total_symbols; ++index) {
+                    int symbol = fgetc(input);
+                    if (symbol == EOF || codebook[symbol].length == 0) {
+                        return EXIT_FAILURE;
+                    }
+
+                    huffman_code code = codebook[symbol];
+                    if (bit_writer_write_bits(&amp;writer, code.bits, code.length) == EOF) {
+                        return EXIT_FAILURE;
+                    }
+                }
+
+                if (bit_writer_flush(&amp;writer) == EOF || fflush(output) == EOF) {
+                    return EXIT_FAILURE;
+                }
+            </code></pre>
+            <div class="code-source"><a
+                    href="https://github.com/teemcck/Canonical-Huffman-Coding/blob/main/src/huffman_encode.c#L71-L91"
+                    target="_blank" rel="noopener noreferrer">View source file</a></div>
+            <p>
+                This version is easier to read and safer because all bit-level operations are handled consistently in
+                one place, reducing the chance of bugs in encoding or decoding. Separating these concerns also makes
+                the bit-level logic easier to test independently.
+            </p>
+            <p>
+                To explain the writer and reader: the writer accepts one bit or a whole code at a time. It emits each
+                code from its most significant bit to its least significant bit, packs those bits into the current
+                byte, and writes the byte when full. <code class="language-c">bit_writer_flush()</code> writes any
+                final partial byte with zero padding.
+            </p>
+            <pre class="line-numbers" data-remove-indent="true" tabindex="0" aria-label="Bit writer"><code class="language-c">
+                int bit_writer_write_bit(bit_writer *writer, int bit) {
+                    if (writer->stream == NULL || writer->bits_used >= 8) {
+                        return EOF;
+                    }
+
+                    writer->buffer |= (uint8_t)((bit &amp; 1) &lt;&lt; writer->bits_used++);
+                    return writer->bits_used == 8 ? bit_writer_flush(writer) : 0;
+                }
+
+                int bit_writer_write_bits(bit_writer *writer, uint16_t bits, uint8_t length) {
+                    if (length > 16) {
+                        return EOF;
+                    }
+
+                    // Emit the code from its highest used bit down to bit zero.
+                    for (unsigned remaining = length; remaining > 0; --remaining) {
+                        if (bit_writer_write_bit(writer, (bits >> (remaining - 1)) &amp; 1) == EOF) {
+                            return EOF;
+                        }
+                    }
+
                     return 0;
                 }
             </code></pre>
-
-            <!-- Elaborate more here and outline algorithm -->
-            <!-- After outlining, walk through each point giving implementation details. -->
-            <!-- - Give code snippets and things here to help explain. -->
-            <!-- Optional compression diagnostics. -->
-            <!-- Give limitations of the project. -->
-
-            <!-- <h3 id="implementation">How is this implemented?</h3>
+            <div class="code-source"><a
+                    href="https://github.com/teemcck/Canonical-Huffman-Coding/blob/main/src/bitio.c#L29-L50"
+                    target="_blank" rel="noopener noreferrer">View source file</a></div>
             <p>
-                For the sake of this project being an educational delve into Huffman Coding, I define my symbols as
-                being bytes. Apart from being able to be representing by small types like uint8_t, the real
-                benefit of this selection of symbol is that there are \(2^8\) possibilities for symbols which keeps the
-                data
-                structures used in this project relatively small. When building a binary tree, we constrain our total
-                number of leaf nodes
-                to be less then \(2^8\). This is also the standard approach given in any textbook Huffman implementation
-            </p> -->
+                The reader does the reverse: it loads a byte when its current one is exhausted,
+                then returns its bits one at a time. Both helpers keep this byte-level bookkeeping out of the encoder
+                and decoder logic.
+            </p>
+            <pre class="line-numbers" data-remove-indent="true" tabindex="0"
+                aria-label="Reading one bit from the input"><code class="language-c">
+                int bit_reader_read_bit(bit_reader *reader) {
+                    if (reader-&gt;stream == NULL) {
+                        return EOF;
+                    }
+
+                    if (reader-&gt;next_bit == 8) {
+                        int byte = fgetc(reader-&gt;stream);
+                        if (byte == EOF) {
+                            return EOF;
+                        }
+                        reader-&gt;buffer = (uint8_t)byte;
+                        reader-&gt;next_bit = 0;
+                    }
+
+                    return (reader-&gt;buffer &gt;&gt; reader-&gt;next_bit++) &amp; 1;
+                }
+            </code></pre>
+            <div class="code-source"><a
+                    href="https://github.com/teemcck/Canonical-Huffman-Coding/blob/main/src/bitio.c#L7-L23"
+                    target="_blank" rel="noopener noreferrer">View source file</a></div>
+
+            <h4>Decoding Implementation</h4>
+            <p>
+                Because the header stores code lengths, the decoder reconstructs the canonical codes using the same
+                procedure as the encoder. This adds a small amount of work during decoding, but the benefits of the
+                format make that worthwhile. After rebuilding the codebook, the decoder reads the payload and writes
+                the decoded bytes to the output file.
+            </p>
+            <p>
+                To validate the code lengths from the header, <code class="language-c">validate_code_lengths()</code>
+                counts how many
+                symbols have each length, then checks whether those counts could form a valid prefix code. It does
+                not build a tree: it tracks the number of code prefixes still available at each length. Each unused
+                prefix can be extended in two ways at the next length, while each code of the current length uses one
+                available prefix. It rejects the table if any length has more codes assigned than prefixes available.
+                It accepts complete tables, as well as two special cases: an empty table and a single one-bit code.
+            </p>
+            <pre class="line-numbers" data-remove-indent="true" tabindex="0" aria-label="Validating code lengths"><code class="language-c">
+                // Each unused prefix has two children at the next tree level.
+                // Assigning a code consumes a slot, so it cannot be reused as a prefix.
+                size_t available = 1;
+                for (size_t length = 1; length &lt;= MAX_CODE_LEN; ++length) {
+                    available *= 2;
+                    if (codes_per_length[length] > available) {
+                        return EXIT_FAILURE;
+                    }
+                    available -= codes_per_length[length];
+                }
+            </code></pre>
+            <div class="code-source"><a
+                    href="https://github.com/teemcck/Canonical-Huffman-Coding/blob/main/src/canonical.c#L29-L63"
+                    target="_blank" rel="noopener noreferrer">View source file</a></div>
+            <p>
+                Decoding then uses the canonical structure directly, in the style of Mark Adler's
+                <a href="https://github.com/madler/zlib/blob/master/contrib/puff/puff.c" target="_blank"
+                    rel="noopener noreferrer">puff.c</a>. The decoder reads one bit at a
+                time, extending the current code, and tracks the first code value of each length. Because codes of one
+                length are consecutive, a code belongs to that length exactly when it falls in the range
+                [first_code, first_code + count), and its offset in that range indexes the sorted symbol
+                table.
+            </p>
+            <pre class="line-numbers" data-remove-indent="true" tabindex="0" aria-label="Canonical decoding"><code class="language-c">
+                for (size_t length = 1; length &lt;= MAX_CODE_LEN; ++length) {
+                    int bit = bit_reader_read_bit(reader);
+                    if (bit == EOF) {
+                        return EXIT_FAILURE;
+                    }
+
+                    code = (code &lt;&lt; 1) | (unsigned)bit;
+                    if (code >= first_code &amp;&amp; code - first_code &lt; codes_per_length[length]) {
+                        // Convert the position in the sorted table back to the original byte.
+                        *symbol = sorted_symbols[first_index + code - first_code].symbol;
+                        return EXIT_SUCCESS;
+                    }
+
+                    // Move to the next group, whose codes have one more bit.
+                    first_index += codes_per_length[length];
+                    first_code = (first_code + (unsigned)codes_per_length[length]) &lt;&lt; 1;
+                }
+            </code></pre>
+            <div class="code-source"><a
+                    href="https://github.com/teemcck/Canonical-Huffman-Coding/blob/main/src/huffman_decode.c#L9-L36"
+                    target="_blank" rel="noopener noreferrer">View source file</a></div>
+            <p>
+                The decoder outputs exactly the number of symbols specified by <code>total_symbols</code>, which is
+                why the original byte count is stored in the header: the final payload byte may contain padding bits
+                that must not be interpreted as data. After the last symbol, it also checks that the padding bits are
+                zero and that no
+                trailing bytes remain, so malformed files are rejected rather than silently accepted.
+            </p>
+
+
+            <h3>Project Limitations</h3>
+            <p>
+                Every algorithm involves trade-offs. I chose a few limitations to keep this project simple and
+                educational rather than production-oriented:
+            </p>
+            <ul>
+                <li><strong>Inputs are capped at 4 GiB minus one byte.</strong> The original size is stored in a
+                    32-bit header field, which sets an upper bound on the size of files that can be compressed. I
+                    made this choice because this implementation is aimed at learning rather than archiving large
+                    files, and four bytes was enough for everything I planned to test it on.</li>
+                <li><strong>Small files can grow.</strong> The header is always 260 bytes: 256 code lengths plus a
+                    4-byte count mentioned previously. Whether a small file ends up larger depends on how well its
+                    contents compress, but the fixed header cost makes that more likely than with a format that stores
+                    only the symbols it uses.</li>
+                <li><strong>Decoding is bit-at-a-time.</strong> <code class="language-c">decode_next_symbol()</code>
+                    reads up to 15 bits
+                    per symbol and checks each length group in turn. A table-driven decoder could peek at several
+                    upcoming bits at once and use them as an index to look up a symbol and its code length. Since this
+                    format emits each code from its most significant bit first but packs the first bit into the lowest
+                    position of each byte, a lookup table arranged for low-bit-first indexing would also need reversed
+                    code patterns. That extra machinery would obscure the canonical decoding logic I wanted to show.
+                </li>
+                <li><strong>Length limiting is a heuristic.</strong> MiniZ's approach gives near-optimal lengths,
+                    while package-merge gives the exact optimum. I chose the heuristic because it's a short
+                    histogram-and-repair routine rather than per-level list bookkeeping. It also runs rarely: a
+                    code only exceeds 15 bits on a strongly skewed frequency distribution, and otherwise the
+                    function returns after the first pass.</li>
+            </ul>
+
+            <h3>Compression Diagnostics</h3>
+            <p>
+                I compressed the 11 files in the <a href="https://corpus.canterbury.ac.nz/" target="_blank"
+                    rel="noopener noreferrer">Canterbury Corpus</a>, a benchmark set of English and technical text,
+                source code, markup, and binary files, with this project and with gzip at its strongest setting
+                (<code>gzip -9</code>, using DEFLATE). The bars show each output as a percentage of its input
+                size, including the project format's 260-byte header and gzip's wrapper; lower bars mean smaller
+                output. The entropy reference estimates an ideal byte-frequency prefix code and includes the
+                project's header for context.
+            </p>
+            <figure style="margin: 1rem 0;">
+                <img src="images/huffman-compression-diagnostics.svg"
+                    alt="Bar chart comparing per-file compression ratios for the project Huffman encoder, gzip DEFLATE, and an entropy estimate with header"
+                    style="display: block; width: 100%; height: auto;">
+                <figcaption style="color: var(--light-gray); font-size: 0.85rem; margin-top: 0.5rem; text-align: center;">
+                    Canterbury corpus compression ratios; the original input size is 100% for each file.
+                </figcaption>
+            </figure>
+            <p>
+                The <code>ptt5</code> result sits farther above its entropy estimate because its byte distribution is
+                highly skewed: byte 0 makes up about 87% of the file, but still needs a one-bit code, while the many
+                rare byte values require longer codes.
+            </p>
+            <p>
+                Across these files, the project produced 46.8% of the original data size versus 26.0% for gzip,
+                consistent with DEFLATE gaining additional savings by matching repeated sequences that standalone
+                byte-by-byte Huffman coding cannot exploit.
+            </p>
+
+            <h3>Conclusion</h3>
+            <p>
+                I had a lot of fun working on this project, and my interest in compression algorithms has only grown
+                since I started it. I'd love to revisit the compressor in the future and add techniques like LZ77 to
+                move toward a more complete DEFLATE-like implementation.
+            </p>
+            <p>
+                Beyond the algorithm's internals, this project taught me how to design abstractions that make complex
+                operations easier to reason about. Because this was my first substantial C project, implementing my
+                own data structures and managing memory manually forced me to think more carefully about how data is
+                represented and accessed.
+            </p>
+
+            <h3>Source Code &amp; References</h3>
+            <ul>
+                <li><a href="https://github.com/teemcck/Canonical-Huffman-Coding" target="_blank"
+                        rel="noopener noreferrer">Project GitHub repository</a></li>
+                <li><a href="https://github.com/richgel999/miniz/blob/master/miniz_tdef.c#L194" target="_blank"
+                        rel="noopener noreferrer">MiniZ length-limiting implementation</a></li>
+                <li><a href="https://github.com/madler/zlib/blob/master/contrib/puff/puff.c" target="_blank"
+                        rel="noopener noreferrer">Mark Adler's puff.c decoder</a></li>
+            </ul>
         </div>
     </div>
 </body>

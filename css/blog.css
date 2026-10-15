@@ -11,7 +11,7 @@
     --border-width-medium: 2px;
     --border-width-small: 1px;
     --body-padding: 18px;
-    --body-width: 950px;
+    --body-width: 1000px;
 }
 
 html {
@@ -131,17 +131,19 @@ header {
     font-size: 0.95rem;
     font-weight: 450;
     color: var(--light-gray);
-    margin: 1rem 0;
+    margin: 1.35rem 0;
 }
 
 #blog-content {
     flex: 1;
     min-width: 0;
-    line-height: 1.65;
+    line-height: 1.75;
 }
 
 #blog-content h3 {
-    margin: 1.25rem 0 0.75rem;
+    margin: 2rem 0 0.85rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 1px solid var(--gray);
     line-height: 1.4;
     scroll-margin-top: 1.5rem;
 }
@@ -165,6 +167,10 @@ header {
     list-style-type: disc;
 }
 
+#blog-content ol {
+    padding-left: 2.65rem;
+}
+
 #blog-content li + li {
     margin-top: 0.5rem;
 }
@@ -176,17 +182,17 @@ header {
     color: var(--light-gray);
 }
 
-/* Blue-based palette with muted syntax accents for Prism code blocks */
+/* Neutral charcoal palette with varied, vibrant syntax accents */
 #blog-content pre {
     margin: 1rem 0;
-    padding: 1rem;
+    padding: 0.9rem 1rem;
     overflow-x: auto;
-    border: 1px solid #2d3c50;
+    border: 1px solid #3b414a;
     border-radius: 2px;
-    background-color: #16191e;
-    color: #ced9e8;
+    background-color: #191b20;
+    color: #e0e3e8;
     font-family: var(--font-fira);
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     font-weight: 400;
     line-height: 1.6;
     tab-size: 4;
@@ -201,12 +207,35 @@ header {
     padding-left: 3.8em;
 }
 
+#blog-content .code-source {
+    margin: -1rem 0 1rem;
+    padding: 0.2rem 1rem;
+    border: 1px solid #3b414a;
+    border-top: 0;
+    border-radius: 0 0 2px 2px;
+    background-color: #191b20;
+    font-family: var(--font-fira);
+    font-size: 0.75rem;
+    text-align: right;
+}
+
+#blog-content .code-source a {
+    color: var(--light-blue);
+    text-decoration: none;
+}
+
+#blog-content .code-source a:hover,
+#blog-content .code-source a:focus-visible {
+    color: var(--black);
+    text-decoration: underline;
+}
+
 #blog-content .line-numbers-rows {
-    border-right-color: #2d3c50;
+    border-right-color: #3b414a;
 }
 
 #blog-content .line-numbers-rows > span::before {
-    color: #8396ae;
+    color: #858d99;
 }
 
 #blog-content pre:focus-visible {
@@ -215,37 +244,38 @@ header {
 }
 
 code[class*="language-"] .token.comment {
-    color: #8396ae;
+    color: #858d99;
+    font-style: italic;
 }
 
 code[class*="language-"] .token.keyword,
 code[class*="language-"] .token.property {
-    color: #82b4f4;
+    color: #c5a0ed;
 }
 
 code[class*="language-"] .token.macro,
 code[class*="language-"] .token.directive {
-    color: #a1b5df;
+    color: #8eb8e8;
 }
 
 code[class*="language-"] .token.keyword-type,
 code[class*="language-"] .token.class-name {
-    color: #a6c8ed;
+    color: #78c6d0;
 }
 
 code[class*="language-"] .token.string,
 code[class*="language-"] .token.char {
-    color: #afc6a0;
+    color: #a8cc8b;
 }
 
 code[class*="language-"] .token.function {
-    color: #d6bf94;
+    color: #e6b875;
 }
 
 code[class*="language-"] .token.number,
 code[class*="language-"] .token.boolean,
 code[class*="language-"] .token.constant {
-    color: #c5addb;
+    color: #e58f9b;
 }
 
 #section-nav {
@@ -290,8 +320,9 @@ code[class*="language-"] .token.constant {
 }
 
 #section-links {
-    list-style-position: inside;
+    list-style-position: outside;
     list-style-type: disc;
+    padding-left: 1.25rem;
 }
 
 #section-links li {
@@ -317,8 +348,8 @@ code[class*="language-"] .token.constant {
 
 @media screen and (min-width: 800px) {
     #section-nav {
-        flex: 0 0 220px;
-        padding: 0 12px;
+        flex: 0 0 240px;
+        padding-left: 16px;
         position: sticky;
         top: 16px;
         align-self: flex-start;
@@ -345,4 +376,9 @@ code[class*="language-"] .token.constant {
     .blog-body p {
         width: 80%
     }
+}
+
+#blog-content strong {
+    color: var(--light);
+    font-weight: 650;
 }
