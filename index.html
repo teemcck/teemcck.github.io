@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="css/reset.css">
     <link rel="stylesheet" href="css/home.css">
     <script src="js/home-nav.js" defer></script>
+    <script src="js/image-preview.js" defer></script>
 </head>
 
 <body>
@@ -48,7 +49,7 @@
                                 <button data-section="projects">[Projects]</button>
                                 <button data-section="game-jams">[Game Jams]</button>
                                 <button data-section="blog">[Blog]</button>
-                                <!-- <button data-section="resume">[Resume]</button> -->
+                                <button data-section="resume">[Resume]</button>
                             </div>
                         </nav>
                     </li>
@@ -58,8 +59,9 @@
     </header>
     <section id="about">
         <div class="subsection-container">
-            <div class="subsection">
-                <h2>Overview</h2>
+            <div class="subsection overview">
+                <div class="overview-text">
+                    <h2>Overview</h2>
                 <p>
                     Hi there! I'm Tristan, an engineering student studying computer science at the University of
                     Michigan.
@@ -70,6 +72,14 @@
                     through games that motivate others to explore their passions. I have many things yet to learn and
                     use this site to document the advances I make in my journey.
                 </p>
+                </div>
+                <figure class="about-photo">
+                    <div class="about-photo-frame">
+                        <img data-preview src="images/profile/GDC2026.jpg" alt="Team photo of students kneeling in front of the GDC sign at the Moscone Center"
+                            width="1280" height="960">
+                    </div>
+                    <figcaption>Team photo taken at GDC 2026.</figcaption>
+                </figure>
             </div>
             <div class="subsection">
                 <h2>Current Pursuits</h2>
@@ -77,7 +87,7 @@
                     My academic interests shift quite a bit. Right now, I am quite interested in computer architecture
                     and am researching how I may develop my own ISA, assembler, linker, and emulator. I worked on
                     implementing a similar toolchain for EECS370, Intro to Computer Organization. However, the main
-                    difference is that I previously implemented an mock (albiet turing complete) instruction set, <a
+                    difference is that I previously implemented a mock (albeit Turing complete) instruction set, <a
                         href="https://eecs370.github.io/project_1_spec/#2-lc-2k-instruction-set-architecture"
                         target="_blank" rel="noopener noreferrer">LC2K</a>,
                     which is a reduced instruction set designed by EECS370 staff to make learning the concepts
@@ -85,8 +95,8 @@
                 </p>
                 <p class="section-paragraph">
                     While I have not yet figured the exact logistics of my own instruction set, I would like to support
-                    a wider array of instructions then those offered by LC2K. Another direction I am thinking of taking
-                    this project is emulating an existing ISA for a more complicated chip then the one designed for
+                    a wider array of instructions than those offered by LC2K. Another direction I am thinking of taking
+                    this project is emulating an existing ISA for a more complicated chip than the one designed for
                     LC2K. Recently, I saw a project emulating the <a
                         href="https://www.masswerk.at/6502/6502_instruction_set.html" target="_blank"
                         rel="noopener noreferrer">6502 Instruction Set</a>, which was ran on early
@@ -123,7 +133,7 @@
                         </div>
                         <div class="blog-description">
                             <p>
-                                Detailed writeup on implemention, compression diagnostics, and limitations of my
+                                Detailed writeup on implementation, compression diagnostics, and limitations of my
                                 Canonical, Length-Limited Huffman file compression and decompression algorithm.
                             </p>
                         </div>
@@ -134,31 +144,78 @@
                     </div>
                 </div>
             </a>
-            <div class="blog-card">
-                <div class="blog-info">
-                    <div class="blog-header">
-                        <h3>Blog Title 1</h3>
-                    </div>
-                    <div class="blog-date">
-                        <p>July 7th, 2026</p>
-                    </div>
-                    <div class="blog-description">
-                        <p>
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Ut, ducimus perspiciatis?
-                            Laboriosam,
-                            earum reiciendis tenetur itaque laudantium minima sint est eum, fuga magnam facilis
-                            expedita
-                            sequi nemo quae officia ab.
-                        </p>
-                    </div>
-                    <div class="blog-skills">
-                        <p>C++</p>
-                        <p>OpenGL</p>
+            <a class="unstyled-link" href="cachi-blog.html">
+                <div class="blog-card">
+                    <img class="blog-thumbnail" alt="Diagram of a 4-way set-associative cache (Ferry24.Milan, CC BY-SA 3.0, via Wikimedia Commons)"
+                        loading="lazy" src="images/thumbnails/cachi-thumbnail.png">
+                    <div class="blog-info">
+                        <div class="blog-header">
+                            <h3>Cachi: Developing a Multi-level Processor Cache Simulator</h3>
+                        </div>
+                        <div class="blog-date">
+                            <p>Project writeup</p>
+                        </div>
+                        <div class="blog-description">
+                            <p>
+                                A C simulator for configurable cache hierarchies. Explore address mapping, replacement
+                                policies, memory trace analysis, and how locality affects cache performance.
+                            </p>
+                        </div>
+                        <div class="blog-skills">
+                            <p>C</p>
+                            <p>Computer Architecture</p>
+                        </div>
                     </div>
                 </div>
-                <img class="blog-thumbnail" alt="Example Project" loading="lazy"
-                    src="images/thumbnails/default-thumbnail.png">
-            </div>
+            </a>
+            <a class="unstyled-link" href="file-not-found-blog.html">
+                <div class="blog-card">
+                    <img class="blog-thumbnail" alt="Placeholder image for FILE NOT FOUND"
+                        loading="lazy" src="images/thumbnails/default-thumbnail.png">
+                    <div class="blog-info">
+                        <div class="blog-header">
+                            <h3>File Not Found: an Isometric 2D Roguelike</h3>
+                        </div>
+                        <div class="blog-date">
+                            <p>Project writeup</p>
+                        </div>
+                        <div class="blog-description">
+                            <p>
+                                Implementation notes on authored map chunks, tile-based enemy spawning, floor XP,
+                                data-driven upgrades, and the Worm boss encounter.
+                            </p>
+                        </div>
+                        <div class="blog-skills">
+                            <p>C#</p>
+                            <p>Unity</p>
+                        </div>
+                    </div>
+                </div>
+            </a>
+            <a class="unstyled-link" href="witches-blog.html">
+                <div class="blog-card">
+                    <img class="blog-thumbnail" alt="Mystic Garden key art"
+                        loading="lazy" src="images/thumbnails/mystic-garden-key-art.jpg">
+                    <div class="blog-info">
+                        <div class="blog-header">
+                            <h3>Mystic Garden: Factorio meets Stardew Valley</h3>
+                        </div>
+                        <div class="blog-date">
+                            <p>Project writeup</p>
+                        </div>
+                        <div class="blog-description">
+                            <p>
+                                Implementation notes on the Flowvine item network, seasons, hydration and harvest
+                                chance, plant spells, quest saving, and the Raphael Lotus.
+                            </p>
+                        </div>
+                        <div class="blog-skills">
+                            <p>C#</p>
+                            <p>Unity</p>
+                        </div>
+                    </div>
+                </div>
+            </a>
         </div>
     </section>
     <section id="projects">
@@ -188,7 +245,7 @@
                             </li>
                             <li>
                                 <a href="huffman-blog.html" target="_blank" rel="noopener noreferrer">
-                                    Blog
+                                    View More
                                 </a>
                             </li>
                         </ul>
@@ -196,29 +253,89 @@
                 </ul>
             </div>
             <div class="project-card">
-                <img class="project-thumbnail" alt="Example Project" loading="lazy"
-                    src="images/thumbnails/default-thumbnail.png">
+                <img class="project-thumbnail" alt="Diagram of a 4-way set-associative cache (Ferry24.Milan, CC BY-SA 3.0, via Wikimedia Commons)" loading="lazy"
+                    src="images/thumbnails/cachi-thumbnail.png">
                 <ul class="project-info">
                     <li>
-                        <h3>Project Title 2</h3>
+                        <h3>Cachi: Multi-level Processor Cache Simulator</h3>
                     </li>
                     <li>
                         <p class="project-description">
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Ut, ducimus perspiciatis?
-                            Laboriosam, earum reiciendis tenetur itaque laudantium minima sint est eum, fuga magnam
-                            facilis expedita sequi nemo quae officia ab.
+                            A C simulator that models configurable L1 and L2 cache hierarchies from memory-access
+                            traces. Supports per-level capacity, block size, associativity, and LRU, FIFO, MRU, or
+                            random replacement policies, with hit, miss, eviction, and writeback statistics.
                         </p>
                     </li>
                     <li>
                         <ul class="project-links">
                             <li>
-                                <a href="https://google.com" target="_blank" rel="noopener noreferrer">
+                                <a href="https://github.com/teemcck/Cachi-Simulator" target="_blank" rel="noopener noreferrer">
                                     Github
                                 </a>
                             </li>
                             <li>
-                                <a href="https://google.com" target="_blank" rel="noopener noreferrer">
-                                    Blog
+                                <a href="cachi-blog.html" target="_blank" rel="noopener noreferrer">
+                                    View More
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <div class="project-card">
+                <img class="project-thumbnail" alt="Placeholder image for FILE NOT FOUND" loading="lazy"
+                    src="images/thumbnails/default-thumbnail.png">
+                <ul class="project-info">
+                    <li>
+                        <h3>File Not Found: an Isometric 2D Roguelike</h3>
+                    </li>
+                    <li>
+                        <p class="project-description">
+                            A WolverineSoft Unity roguelike with generated floors built from authored chunks,
+                            data-driven upgrades, and boss encounters. Programmer on the Winter 2026 prototype and
+                            programming director for Fall 2026.
+                        </p>
+                    </li>
+                    <li>
+                        <ul class="project-links">
+                            <li>
+                                <a href="https://github.com/teemcck/StudioW26RnD" target="_blank" rel="noopener noreferrer">
+                                    Github
+                                </a>
+                            </li>
+                            <li>
+                                <a href="file-not-found-blog.html" target="_blank" rel="noopener noreferrer">
+                                    View More
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <div class="project-card">
+                <img class="project-thumbnail" alt="Mystic Garden key art" loading="lazy"
+                    src="images/thumbnails/mystic-garden-key-art.jpg">
+                <ul class="project-info">
+                    <li>
+                        <h3>Mystic Garden: Factorio meets Stardew Valley</h3>
+                    </li>
+                    <li>
+                        <p class="project-description">
+                            A WolverineSoft Unity game about growing magical plants through changing seasons.
+                            Built the Flowvine item network, season system, hydration and harvest chance, plant
+                            spells, quest saving, and the Raphael Lotus and Frostberry plants.
+                        </p>
+                    </li>
+                    <li>
+                        <ul class="project-links">
+                            <li>
+                                <a href="https://store.steampowered.com/app/4316230/Mystic_Garden/" target="_blank" rel="noopener noreferrer">
+                                    Steam
+                                </a>
+                            </li>
+                            <li>
+                                <a href="witches-blog.html" target="_blank" rel="noopener noreferrer">
+                                    View More
                                 </a>
                             </li>
                         </ul>
@@ -261,7 +378,7 @@
                     <h3>Block Party</h3>
                     <p class="game-jam-description">A rhythm game inspired by Friday Night Funkin', which placed 3rd in
                         the
-                        2024 WolverineSoft Pumpkin Jam. Polishing for this game continued ittermitently
+                        2024 WolverineSoft Pumpkin Jam. Polishing for this game continued intermittently
                         after the jam concluded.</p>
                     <ul class="project-links">
                         <li><a href="https://jegjegjeg.itch.io/block-party-official" target="_blank"

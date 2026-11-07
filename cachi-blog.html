@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Cachi: Developing a Multi-level Processor Cache Simulator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/line-numbers/prism-line-numbers.min.css">
+    <link rel="stylesheet" href="css/blog.css">
+    <script defer src="js/blog-nav.js"></script>
+    <script defer src="js/image-preview.js"></script>
+    <!-- Prism: core, C-like dependency, and C grammar. -->
+    <script defer src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-core.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-clike.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-c.min.js"></script>
+    <script defer
+        src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/normalize-whitespace/prism-normalize-whitespace.min.js"></script>
+    <script defer
+        src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+    <!-- KaTeX renders the cache geometry equations below. -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body, {
+        delimiters: [
+            {left: '$$', right: '$$', display: true},
+            {left: '\\(', right: '\\)', display: false}
+        ]
+        });"></script>
+</head>
+
+<body>
+    <header>
+        <div class="breadcrumb">
+            <a href="index.html" target="_blank" rel="noopener noreferrer">~/portfolio</a><span
+                class="path-sep">/</span><span class="path-current">blog</span>
+        </div>
+        <div id="hero">
+            <h1>Tristan's Blog</h1>
+        </div>
+        <ul id="social-list">
+            <li><a href="https://github.com/teemcck" target="_blank" rel="noopener noreferrer">Github</a></li>
+            <li><a href="https://www.linkedin.com/in/tristan-mccaskill/" target="_blank"
+                    rel="noopener noreferrer">LinkedIn</a></li>
+        </ul>
+        <hr class="divider">
+    </header>
+    <h2>Cachi: Developing a Multi-level Processor Cache Simulator</h2>
+    <div id="blog-body">
+        <div id="blog-content">
+            <h3>Project Inspiration</h3>
+            <p>
+                This project was inspired by the <a
+                    href="https://eecs370.github.io/project_4_spec/#3-cache-simulator" target="_blank"
+                    rel="noopener noreferrer">LC2K assembly cache simulator</a> I built for EECS 370. That simulator
+                modeled a single cache, supported only LRU replacement, and used LC2K word addresses instead of
+                conventional byte addresses. It also took input directly from an LC2K assembly simulator, so it could
+                not process general memory trace files.
+            </p>
+            <figure class="blog-image-placeholder">
+                <img src="images/eecs370-lc2k-cache-sim.png" width="1080" height="653" alt="Diagram of the EECS 370 LC2K cache simulator: simulator.c calls cache_init, cache_access, and printStats in cache.c, and cache_access calls back into mem_access on a miss or dirty writeback.">
+                <figcaption>How the original LC2K cache simulator was structured. Image from the <a href="https://eecs370.github.io/project_4_spec/#3-cache-simulator" target="_blank" rel="noopener noreferrer">EECS 370 Project 4 spec</a>.</figcaption>
+            </figure>
+            <p>
+                I enjoyed working on this LC2K cache simulator and wanted to revisit the idea by creating a sort of "remastered"
+                version. This project, "Cachi," supports multiple cache levels, several replacement policies, conventional
+                byte-addressed memory, and external trace files. I also implemented it in C rather than C++, which
+                gave me more practice with C.
+            </p>
+
+            <h3>Project Overview</h3>
+            <p>
+                This simulator reads memory-access traces line by line and models how addresses move
+                through a configurable cache hierarchy. I wanted each level to be configurable on its own: an L1 and
+                an L2 can have different capacities, block sizes, associativities, and replacement policies. This
+                makes it possible to explore how the organization of each cache affects hits, misses, and evictions.
+                Each run follows the same steps:
+            </p>
+            <ol>
+                <li>Read the configuration file and build one cache per section, deriving its offset and index bits.</li>
+                <li>Read the trace file one record at a time, skipping instruction fetches.</li>
+                <li>Send each data access through the hierarchy, starting at L1 and stopping at the first hit, and split any access that crosses a block boundary.</li>
+                <li>Print hits, misses, evictions, and writebacks for every level.</li>
+            </ol>
+            <p>
+                I decided that the simulator should not store any data. A cache simulator only needs to know
+                whether an address would hit and which line a miss would replace, so Cachi tracks tags, valid bits,
+                and timestamps and nothing else. Storing the actual bytes would have meant a lot more code without
+                changing any of the actual benchmarking statistics.
+            </p>
+
+            <h3>Deriving the Cache Layout</h3>
+            <p>
+                As was mentioned, the cache configuration structure defines capacity, block size, and associativity. Capacity is the total
+                storage in bytes; a block is the unit transferred into a cache; and associativity is the number of
+                lines in each set. These values determine how the cache is divided:
+            </p>
+            $$
+            \begin{aligned}
+            \text{num\_blocks} &= \frac{\text{capacity}}{\text{block\_size}} \\
+            \text{num\_sets} &= \frac{\text{num\_blocks}}{\text{associativity}}
+            \end{aligned}
+            $$
+            <p>
+                For example, a 32 KiB cache with 64-byte blocks and 8-way associativity contains 512 blocks and 64
+                sets. Cachi checks that the block size and set count are powers of two, and that the configuration
+                divides evenly, so the address can be split into bit fields.
+            </p>
+            <figure class="blog-image-placeholder">
+                <img src="images/commons-cache-addressing.png" width="960" height="658" alt="A 32-bit address split into a 10-bit tag, 14-bit index, and 8-bit offset, with the block size, cache size, and address range each field covers.">
+                <figcaption>How the field widths line up with block size, cache size, and the full address range. Image: Ferry24.Milan, <a href="https://creativecommons.org/licenses/by-sa/3.0/" target="_blank" rel="noopener noreferrer">CC BY-SA 3.0</a>, via <a href="https://commons.wikimedia.org/wiki/File:Cache_Addressing.svg" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a>.</figcaption>
+            </figure>
+            <p>
+                I added that check because the lookup
+                pulls the offset and set index straight out of the address with shifts and masks. With 48 sets, for
+                example, masking with <code>num_sets - 1</code> (47, or <code>101111</code> in binary) can never
+                produce set numbers 16 through 31, so a third of the cache would sit unused, and the tag would no
+                longer start at a clean bit boundary. Rejecting those configurations up front was simpler than making
+                every lookup handle them.
+            </p>
+
+            <h4>Address Fields</h4>
+            <p>
+                For a 64-bit address, the low bits select a byte within a block, the next bits select a set, and the
+                remaining high bits are the tag. The offset and index widths follow directly from the block and set
+                counts:
+            </p>
+            $$
+            \begin{aligned}
+            \text{offset\_bits} &= \log_2(\text{block\_size}) \\
+            \text{index\_bits} &= \log_2(\text{num\_sets}) \\
+            \text{tag\_bits} &= 64 - \text{index\_bits} - \text{offset\_bits}
+            \end{aligned}
+            $$
+            <p>
+                In the 32 KiB example, the byte offset uses 6 bits and the set index uses 6 bits. The remaining 52
+                bits identify the memory block within that set. The cache only needs to compare this tag against the
+                valid lines in the selected set.
+            </p>
+            <figure class="blog-image-placeholder">
+                <img src="images/commons-address-fields.png" width="960" height="182" alt="An address split into tag, index, and offset fields, with bit positions marked.">
+                <figcaption>An address split into tag, index, and offset fields. Image: User:KCVelaga, <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener noreferrer">CC BY-SA 4.0</a>, via <a href="https://commons.wikimedia.org/wiki/File:Address_direct_mapped_cache.svg" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a>.</figcaption>
+            </figure>
+            <p>
+                Cachi computes those widths once, when it builds each cache from its config:
+            </p>
+            <pre class="line-numbers" data-remove-indent="true" tabindex="0" aria-label="Deriving cache geometry"><code class="language-c">
+                const size_t num_blocks = capacity / block_size;
+                const size_t num_sets = num_blocks / associativity;
+
+                const uint8_t index_bits = log2_power_of_two(num_sets);
+                const uint8_t offset_bits = log2_power_of_two(block_size);
+                cache->tag_bits = ADDRESS_BITS - index_bits - offset_bits;
+            </code></pre>
+            <div class="code-source"><a href="https://github.com/teemcck/Cachi-Simulator/blob/main/src/cache.c#L39-L67"
+                    target="_blank" rel="noopener noreferrer">src/cache.c: cache geometry and address widths</a></div>
+            <p>
+                The code above is how I derive each cache's layout from its config. I split the capacity into blocks and sets, then take the base-2 log of the set count and block size to get the index and offset widths, leaving the rest of the 64-bit address for the tag.
+            </p>
+
+            <h3>Mapping Memory Blocks to Cache Lines</h3>
+            <p>
+                A cache needs a rule for deciding which lines can hold each memory block. My simulator uses the standard
+                set-associative mapping: the memory block number modulo the number of sets selects its set. In other
+                words, blocks whose numbers differ by the number of sets map to the same set, forming a repeating
+                stripe across the cache.
+            </p>
+            <figure class="blog-image-placeholder">
+                <img src="images/commons-direct-vs-2way-fill.png" width="546" height="271" alt="Comparison of where main memory locations can be cached in a direct-mapped cache versus a 2-way set-associative cache.">
+                <figcaption>Direct-mapped versus 2-way set-associative placement. Image: Hellisp, <a href="https://creativecommons.org/licenses/by-sa/3.0/" target="_blank" rel="noopener noreferrer">CC BY-SA 3.0</a>, via <a href="https://commons.wikimedia.org/wiki/File:Cache,associative-fill-both.png" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a>.</figcaption>
+            </figure>
+            $$
+            \text{set\_index} = \text{block\_number} \bmod \text{num\_sets}
+            $$
+            <p>
+                With a power-of-two number of sets, the modulo is implemented by taking the index bits from the
+                address after removing its block offset. This is why cache dimensions are almost always powers of
+                two: division and modulo would normally need arithmetic hardware on every access, but with powers of
+                two they reduce to selecting a fixed range of address bits, which is just wiring. 
+                Strangely, not every design follows this convention: Intel processors whose last-level cache is split into a non-power-of-two
+                number of slices (one per core on six- or ten-core chips, for example) pick the slice with a hash of
+                many address bits instead. The tag is everything above those fields. For a 64-byte
+                block and 64 sets, for example, address <code>A</code> maps to the set selected by
+                <code>(A &gt;&gt; 6) &amp; 63</code>.
+            </p>
+
+            <h4>Representing Sets in an Array</h4>
+            <p>
+                The cache stores all of its lines in one flat array. Lines belonging to a set occupy a contiguous
+                range, so the simulator computes the start and end indices for that set and scans only those ways.
+                This gives each configurable cache level a single allocation while the indexing arithmetic preserves
+                the set boundaries.
+            </p>
+            <figure class="blog-image-placeholder">
+                <img src="images/commons-associative-read-path.png" width="960" height="686" alt="Read path of a 2-way set-associative cache: index bits select an entry in the tag and data arrays, and both ways' tags are compared.">
+                <figcaption>Read path for a 2-way set-associative cache. Image: A5b, <a href="https://creativecommons.org/licenses/by-sa/3.0/" target="_blank" rel="noopener noreferrer">CC BY-SA 3.0</a>, via <a href="https://commons.wikimedia.org/wiki/File:Cache,associative-read.svg" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a>.</figcaption>
+            </figure>
+            <p>
+                An alternative design for this would be to create cache set structures, with the cache holding an
+                array of sets and each set holding its own lines. That mirrors the conceptual model more directly
+                and gives per-set bookkeeping an obvious home, but it adds a layer of allocation and indirection I 
+                thought would be unnecessary for this project.
+            </p>
+            <pre class="line-numbers" data-remove-indent="true" tabindex="0" aria-label="Searching one cache set"><code class="language-c">
+                const uint64_t set_index =
+                    (address >> cache->offset_bits) &amp; (cache->num_sets - 1);
+                const uint64_t tag =
+                    address >> (cache->offset_bits + cache->set_index_bits);
+
+                const size_t ways = (size_t)cache->config.associativity;
+                const size_t start = (size_t)set_index * ways;
+                const size_t end = start + ways;
+
+                for (size_t i = start; i &lt; end; ++i) {
+                    CacheLine* line = &amp;cache->cache_lines[i];
+                    if (line->valid &amp;&amp; line->tag == tag) {
+                        return CACHE_HIT;
+                    }
+                }
+            </code></pre>
+            <div class="code-source"><a href="https://github.com/teemcck/Cachi-Simulator/blob/main/src/cache.c#L90-L112"
+                    target="_blank" rel="noopener noreferrer">src/cache.c: address lookup within a set</a></div>
+            <p>
+                The code above is how I implemented a lookup. I pull the set index and tag out of the address with a shift and a mask, then scan only that set's slice of the array for a valid line with a matching tag.
+            </p>
+            <p>
+                For the earlier example, set 3 occupies array indices 24 through 31: index 3 multiplied by 8 ways,
+                followed by the next 8 lines. A hit requires both a valid line and a matching tag. The offset does
+                not affect the lookup because the cache tracks whole blocks, not individual bytes.
+            </p>
+
+            <h3>Replacement Policies</h3>
+            <p>
+                When every way in a set is occupied and a new block maps there, the simulator needs to choose a
+                victim. I wanted to implement four fairly simple policies, while leaving room to add something more
+                complex in the future:
+            </p>
+            <ul>
+                <li><strong>Least recently used (LRU):</strong> evicts the line with the oldest last access.</li>
+                <li><strong>First in, first out (FIFO):</strong> evicts the line that was inserted first.</li>
+                <li><strong>Most recently used (MRU):</strong> evicts the line with the newest last access.</li>
+                <li><strong>Random:</strong> evicts any line in the set (as a fun bonus policy).</li>
+            </ul>
+            <figure class="blog-image-placeholder">
+                <img src="images/commons-4way-set-associative.png" width="960" height="591" alt="A 4-way set-associative cache: the address index selects a set, and each line stores state, LRU, and tag bits alongside its data.">
+                <figcaption>A 4-way set-associative cache, with per-line LRU bits next to the tag. Image: Ferry24.Milan, <a href="https://creativecommons.org/licenses/by-sa/3.0/" target="_blank" rel="noopener noreferrer">CC BY-SA 3.0</a>, via <a href="https://commons.wikimedia.org/wiki/File:Set_Associative_Cache.svg" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a>.</figcaption>
+            </figure>
+            <p>
+                When implementing LRU and FIFO, I found that each cache line needed to store two timestamps: when it
+                was last accessed and when it was inserted. I stored both as fields in each line's
+                <code class="language-c">CacheLine</code> struct, stamped from a per-cache access counter, because
+                every policy only compares lines within one set and can read them straight off the lines it is
+                already scanning. MRU reuses the last-access time, and random replacement doesn't need either.
+            </p>
+            <pre class="line-numbers" data-remove-indent="true" tabindex="0" aria-label="Choosing a replacement policy"><code class="language-c">
+                size_t replacement_choose_victim(const Cache* cache,
+                                                 size_t start, size_t end) {
+                    switch (cache->config.replacement) {
+                        case LRU:  return choose_lru_line(cache, start, end);
+                        case FIFO: return choose_fifo_line(cache, start, end);
+                        case MRU:  return choose_mru_line(cache, start, end);
+                        case RR:   return choose_random_line(start, end);
+                    }
+                    return start;
+                }
+            </code></pre>
+            <div class="code-source"><a href="https://github.com/teemcck/Cachi-Simulator/blob/main/src/replacement.c#L5-L50"
+                    target="_blank" rel="noopener noreferrer">src/replacement.c: victim selection</a></div>
+            <p>
+                The code above is how I implemented choosing a victim. Each policy is its own small function over the set's range, and a switch on the cache's configured policy picks which one runs; it is only called once the set has no empty lines left.
+            </p>
+            <h4>Investigating MRU</h4>
+            <p>
+                MRU was a policy I was curious about. It came up on quite a bit while I was researching replacement
+                policies, but evicting the line you just used seemed a bit odd. I figured the only case in which MRU may do 
+                well is when a program loops over data that is slightly too big for the
+                cache (which is where LRU falls apart). I wanted to see if my simulator would show confirm this hypothesis, 
+                so I built that case and ran it.
+            </p>
+            <p>
+                The setup is a 4 KiB, 8-way L1 with 64-byte blocks, which works out to 64 lines in 8 sets. I only
+                changed the replacement policy between runs:
+            </p>
+            <pre class="line-numbers" data-remove-indent="true" tabindex="0" aria-label="Small L1 configuration for the MRU test"><code class="language-none">
+                [L1]
+                capacity = 4096
+                block_size = 64
+                associativity = 8
+                replacement = MRU
+            </code></pre>
+            <div class="code-source">configs/loop-mru.cfg</div>
+            <p>
+                The trace loops over an array of 80 blocks, which is 25% more than the cache can hold, 100 times. It
+                reads once per block, so every hit comes from a block surviving until the next pass, not from
+                neighboring reads in the same block.
+            </p>
+            <pre class="line-numbers" data-remove-indent="true" tabindex="0" aria-label="First lines of the looping trace"><code class="language-none">
+                 L 10000,8
+                 L 10040,8
+                 L 10080,8
+                 ...
+                 L 113c0,8
+                 L 10000,8
+            </code></pre>
+            <div class="code-source">benchmarks/traces/loop-125-trace.txt: 8,000 loads</div>
+            <p>
+                Here is what each policy did with it:
+            </p>
+            <figure class="blog-image-placeholder">
+                <img src="images/cachi-mru-test-output.png" width="1794" height="349"
+                    alt="Terminal output from running Cachi with each replacement policy on the looping trace. LRU and FIFO show a 0.00% hit rate, MRU shows 77.00%, and random shows 61.29%.">
+                <figcaption>Running each policy on loop-125-trace.txt</figcaption>
+            </figure>
+            <p>
+                LRU and FIFO never hit once. In a sequential loop, the oldest block in a set is always the next one
+                the loop is about to need, so both policies throw it out right before it comes back. MRU keeps most
+                of the array in place and only gives up the line it just finished with, which got it to \(\mathbf{77\%}\).
+            </p>
+            <p>
+                Random ended up in between at \(\mathbf{61.29\%}\), and it gave exactly that number on every run. I never call
+                <code>srand</code>, so <code>rand()</code> produces the same sequence each time. I left it that way
+                because it makes runs comparable. Doubling the array to twice the cache size keeps the same order:
+                LRU and FIFO at \(\mathbf{0\%}\), MRU at \(\mathbf{46.38\%}\), and random at \(\mathbf{19.20\%}\). When the array fits in the cache, all four
+                policies score the same \(\mathbf{99\%}\), since nothing ever gets evicted.
+            </p>
+
+            <h3>Building a Configurable Hierarchy</h3>
+            <p>
+                Cache levels are defined in a small configuration file. Each section describes one cache, including
+                the replacement policy. The sample below defines an 8-way L1 and a 4-way L2 with different block
+                sizes and policies:
+            </p>
+            <pre class="line-numbers" data-remove-indent="true" tabindex="0" aria-label="Two-level cache configuration"><code class="language-c">
+                [L1]
+                capacity = 32768
+                block_size = 64
+                associativity = 8
+                replacement = LRU
+
+                [L2]
+                capacity = 262144
+                block_size = 64
+                associativity = 4
+                replacement = FIFO
+            </code></pre>
+            <p>
+                On each access, Cachi checks levels in order. A hit ends the search; a miss fetches the block from
+                the next level. Each lower level therefore only sees the misses from the level above it, plus any
+                dirty blocks written back from above, which is why their access counts are smaller than L1's.
+            </p>
+            <figure class="blog-image-placeholder">
+                <img src="images/commons-cache-hierarchy-example.png" width="960" height="640" alt="Cache hierarchy of an AMD K8 processor: split L1 instruction and data caches feeding a unified L2 cache and main memory.">
+                <figcaption>A real cache hierarchy (AMD K8, circa 2004). Image: Traced by User:Stannered, <a href="https://creativecommons.org/licenses/by-sa/3.0/" target="_blank" rel="noopener noreferrer">CC BY-SA 3.0</a>, via <a href="https://commons.wikimedia.org/wiki/File:Cache,hierarchy-example.svg" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a>.</figcaption>
+            </figure>
+            <p>
+                Cachi's hierarchy is a lot simpler than the one pictured. Each level is a single unified cache, so
+                there is no split between instruction and data caches, and there are no TLBs, since trace addresses
+                are used as-is without any virtual-to-physical translation. It also models one core, so nothing like
+                the "other CPUs" link or coherence between caches. Finally, there is no main memory at the bottom: a
+                miss in the last level simply ends the access, and the last level's dirty evictions are counted as
+                writebacks to memory without going anywhere. In exchange, the number of levels and each level's size,
+                associativity, and replacement policy all come from the config file.
+            </p>
+            <pre class="line-numbers" data-remove-indent="true" tabindex="0" aria-label="Passing a miss through the hierarchy"><code class="language-c">
+                // Visit every block this access touches, one request per block.
+                uint64_t block = cache_block_address(cache, address);
+                const uint64_t last_block = cache_block_address(cache, last_byte);
+                while (1) {
+                    const uint64_t request = block > address ? block : address;
+
+                    CacheEviction eviction;
+                    const CacheAccessResult result =
+                        cache_access(cache, request, operation, &amp;eviction);
+
+                    // A dirty victim is written back to the next level.
+                    if (eviction.dirty) {
+                        access_level(hierarchy, level + 1, eviction.address,
+                                     block_size, CACHE_WRITE);
+                    }
+                    // A miss fetches the whole block from the next level.
+                    if (result == CACHE_MISS) {
+                        access_level(hierarchy, level + 1, block,
+                                     block_size, CACHE_READ);
+                    }
+
+                    if (block == last_block) break;
+                    block += block_size;
+                }
+            </code></pre>
+            <div class="code-source"><a href="https://github.com/teemcck/Cachi-Simulator/blob/main/src/hierarchy.c#L46-L84"
+                    target="_blank" rel="noopener noreferrer">src/hierarchy.c: access propagation</a></div>
+            <p>
+                The code above is how each level handles an access. The access is split by that level's block size,
+                so an 8-byte read that starts 4 bytes before a block boundary becomes two requests. Each
+                <code class="language-c">cache_access()</code> call returns a hit or a miss and reports whether it
+                evicted a dirty line. A dirty victim is written to the next level as a full block, and a miss
+                fetches the whole block from the next level, which can cascade further down.
+            </p>
+
+            <h3>Reading Memory Traces</h3>
+            <p>
+                Instead of writing traces by hand, I made the reader accept the output of Valgrind's Lackey tool with
+                <code>--trace-mem=yes</code>, so any C program I could compile became a test case. A record contains an operation, a
+                hexadecimal address, and an access size. For example:
+            </p>
+            <pre tabindex="0" aria-label="Examples of Lackey memory trace records"><code>S 1ffeffffa8,8
+M 040373f6,1
+L 04035e58,8</code></pre>
+            <p>
+                The reader handles each operation like this:
+            </p>
+            <ul>
+                <li><code>L</code> (load) is sent through as a read.</li>
+                <li><code>S</code> (store) is sent through as a write.</li>
+                <li><code>M</code> (modify) is sent through as a read followed by a write.</li>
+                <li><code>I</code> (instruction fetch) is ignored, since this project models data caches.</li>
+            </ul>
+            <p>
+                The parsed address, size, and operation are passed to the hierarchy through a callback:
+            </p>
+            <pre class="line-numbers" data-remove-indent="true" tabindex="0" aria-label="Interpreting trace operations"><code class="language-c">
+                if (operation == 'I') continue;
+                if (operation == 'L' || operation == 'S') {
+                    CacheOperation op = operation == 'L'
+                        ? CACHE_READ : CACHE_WRITE;
+                    callback(address, size, op, context);
+                } else if (operation == 'M') {
+                    callback(address, size, CACHE_READ, context);
+                    callback(address, size, CACHE_WRITE, context);
+                }
+            </code></pre>
+            <div class="code-source"><a href="https://github.com/teemcck/Cachi-Simulator/blob/main/src/trace.c#L37-L54"
+                    target="_blank" rel="noopener noreferrer">src/trace.c: operation handling</a></div>
+            <p>
+                Passing the size through is what lets the hierarchy split an access that crosses a block boundary
+                into one request per block, instead of counting it as a single access.
+            </p>
+
+            <h3>Benchmarking with C Programs</h3>
+            <p>
+                I added small C programs to generate different access patterns, including sequential array access,
+                Fibonacci recursion, and strided access. I compiled and ran them under Lackey, then saved the
+                resulting traces so simulations are repeatable.
+            </p>
+            <p>
+                In the array benchmark, I marked the array <code>volatile</code> so the compiler wouldn't vectorize
+                the loops. That keeps every read and write as its own 8-byte access, so the trace matches the code:
+            </p>
+            <pre class="line-numbers" data-remove-indent="true" tabindex="0" aria-label="Array benchmark access pattern"><code class="language-c">
+                #define N 10000
+
+                volatile uint64_t data[N] = {0};
+
+                for (int i = 0; i &lt; N; i++) {
+                    data[i] = i;
+                }
+
+                for (int i = 0; i &lt; N; i++) {
+                    data[i] += 1;
+                }
+            </code></pre>
+            <div class="code-source"><a href="https://github.com/teemcck/Cachi-Simulator/blob/main/benchmarks/programs/array.c#L4-L16"
+                    target="_blank" rel="noopener noreferrer">benchmarks/programs/array.c</a></div>
+            <p>
+                Sequential and strided patterns make it easier to see how block size and mapping affect locality.
+                The simulator reports hits, misses, evictions, and dirty-line writebacks separately for each level.
+                A run can be reproduced with <code>./cachi configs/example-multilevel.cfg
+                benchmarks/traces/array-trace.txt</code>.
+            </p>
+
+            <h3>Current Limitations and Next Steps</h3>
+            <p>
+                Cachi still cuts a few corners, and each one points to what I would change if I keep working on it:
+            </p>
+            <ul>
+                <li><strong>Simple replacement policies:</strong> real caches often use cheaper approximations of LRU
+                    or policies that predict which blocks will be reused. I would add more complex policies, such as
+                    tree pseudo-LRU and RRIP.</li>
+                <li><strong>One write policy:</strong> every level is write-back and write-allocate. I would make the
+                    write policy configurable per level, including write-through and no-write-allocate.</li>
+                <li><strong>Non-inclusive levels only:</strong> when a lower level evicts a block, copies of it in the
+                    levels above are left alone. I would add inclusive and exclusive modes, so the same trace could be
+                    compared under all three.</li>
+            </ul>
+            <h3>Source Code &amp; References</h3>
+            <ul>
+                <li><a href="https://github.com/teemcck/Cachi-Simulator" target="_blank"
+                        rel="noopener noreferrer">Project GitHub repository</a></li>
+                <li><a href="https://eecs370.github.io/project_4_spec/#3-cache-simulator" target="_blank"
+                        rel="noopener noreferrer">EECS 370 Project 4: LC2K cache simulator spec</a></li>
+                <li><a href="https://valgrind.org/docs/manual/lk-manual.html" target="_blank"
+                        rel="noopener noreferrer">Valgrind Lackey manual (memory trace format)</a></li>
+                <li><a href="https://commons.wikimedia.org/" target="_blank"
+                        rel="noopener noreferrer">Wikimedia Commons (cache diagrams)</a></li>
+            </ul>
+        </div>
+    </div>
+</body>
+
+</html>

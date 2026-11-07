@@ -204,6 +204,25 @@ section {
     margin: 1rem 0;
 }
 
+.about-photo {
+    margin: 0 0 1rem;
+}
+
+.about-photo img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border: var(--border-width-small) solid var(--gray);
+    border-radius: var(--radius-medium);
+}
+
+.about-photo figcaption {
+    margin-top: 0.5rem;
+    font-size: 0.8rem;
+    color: var(--medium-gray);
+    text-align: center;
+}
+
 .subsection + .subsection {
     margin-top: 1.25rem;
 }
@@ -437,7 +456,97 @@ section a:hover {
 
 /* Desktop View */
 
+/* Click-to-enlarge image preview (js/image-preview.js) */
+img.previewable {
+    cursor: zoom-in;
+}
+
+#image-preview {
+    box-sizing: border-box;
+    max-width: none;
+    max-height: none;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 2rem;
+    border: none;
+    background: transparent;
+    cursor: zoom-out;
+}
+
+#image-preview[open] {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+}
+
+#image-preview::backdrop {
+    background: rgba(0, 0, 0, 0.8);
+}
+
+#image-preview img {
+    max-width: min(100%, 1600px);
+    max-height: 80vh;
+    width: auto;
+    height: auto;
+    border-radius: var(--radius-small);
+}
+
+.image-preview-caption {
+    max-width: min(90vw, 900px);
+    color: var(--light-gray);
+    font-family: var(--font-fira);
+    font-size: 0.85rem;
+    line-height: 1.5;
+    text-align: center;
+}
+
 @media screen and (min-width: 712px) {
+  /* The photo stretches to the height of the overview text and never taller */
+  .overview {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 40%);
+    column-gap: 1.75rem;
+  }
+
+  /* Heading spans the full width; the photo sits beside the paragraph only */
+  .overview-text {
+    display: contents;
+  }
+
+  .overview h2 {
+    grid-column: 1 / -1;
+    margin-bottom: 0;
+  }
+
+  .overview p {
+    margin-bottom: 0;
+  }
+
+  .about-photo {
+    grid-column: 2;
+    grid-row: 2;
+    display: flex;
+    flex-direction: column;
+    margin: 1rem 0 0;
+  }
+
+  .about-photo-frame {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+  }
+
+  .about-photo img {
+    position: absolute;
+    inset: 0;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 65%;
+  }
+
   /* Header */
   #nav-bar {
     border: none;

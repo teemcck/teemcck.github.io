@@ -152,6 +152,10 @@ header {
     margin-top: 0;
 }
 
+#blog-content h4 {
+    margin-top: 1.5rem;
+}
+
 #blog-content ol,
 #blog-content ul {
     border-left: 4px solid var(--light-blue);
@@ -180,6 +184,43 @@ header {
     font-family: var(--font-fira);
     font-size: 0.9em;
     color: var(--light-gray);
+}
+
+#blog-content p code.language-csharp,
+#blog-content li code.language-csharp {
+    color: #78c6d0;
+}
+
+.blog-image-placeholder {
+    margin: 1.4rem 0;
+}
+
+.blog-image-placeholder img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius-small);
+}
+
+.blog-image-placeholder figcaption {
+    margin-top: 0.4rem;
+    color: var(--medium-gray);
+    font-size: 0.75rem;
+    line-height: 1.5;
+    text-align: center;
+}
+
+/* Keep wide display equations inside the article on narrow screens. */
+#blog-content .katex-display {
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 0.25rem 0;
+    -webkit-overflow-scrolling: touch;
+}
+
+#blog-content .katex-display > .katex {
+    max-width: none;
 }
 
 /* Neutral charcoal palette with varied, vibrant syntax accents */
@@ -341,6 +382,10 @@ code[class*="language-"] .token.constant {
         scroll-margin-top: 60px;
     }
 
+    #blog-content .katex-display {
+        font-size: clamp(0.75rem, 3.5vw, 1rem);
+    }
+
     #section-nav:not(.is-collapsed) #section-links {
         padding-bottom: 12px;
     }
@@ -381,4 +426,51 @@ code[class*="language-"] .token.constant {
 #blog-content strong {
     color: var(--light);
     font-weight: 650;
+}
+
+/* Click-to-enlarge image preview (js/image-preview.js) */
+#blog-content img.previewable {
+    cursor: zoom-in;
+}
+
+#image-preview {
+    box-sizing: border-box;
+    max-width: none;
+    max-height: none;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 2rem;
+    border: none;
+    background: transparent;
+    cursor: zoom-out;
+}
+
+#image-preview[open] {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+}
+
+#image-preview::backdrop {
+    background: rgba(0, 0, 0, 0.8);
+}
+
+#image-preview img {
+    max-width: min(100%, 1600px);
+    max-height: 80vh;
+    width: auto;
+    height: auto;
+    border-radius: var(--radius-small);
+}
+
+.image-preview-caption {
+    max-width: min(90vw, 900px);
+    color: var(--light-gray);
+    font-family: var(--font-fira);
+    font-size: 0.85rem;
+    line-height: 1.5;
+    text-align: center;
 }

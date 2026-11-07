@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Mystic Garden: Factorio meets Stardew Valley</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/line-numbers/prism-line-numbers.min.css">
+    <link rel="stylesheet" href="css/blog.css">
+    <script defer src="js/blog-nav.js"></script>
+    <script defer src="js/image-preview.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-core.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-clike.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-csharp.min.js"
+        onload="Prism.highlightAll()"></script>
+</head>
+
+<body>
+    <header>
+        <div class="breadcrumb">
+            <a href="index.html" target="_blank" rel="noopener noreferrer">~/portfolio</a><span
+                class="path-sep">/</span><span class="path-current">blog</span>
+        </div>
+        <div id="hero">
+            <h1>Tristan's Blog</h1>
+        </div>
+        <ul id="social-list">
+            <li><a href="https://github.com/teemcck" target="_blank" rel="noopener noreferrer">Github</a></li>
+            <li><a href="https://www.linkedin.com/in/tristan-mccaskill/" target="_blank"
+                    rel="noopener noreferrer">LinkedIn</a></li>
+        </ul>
+        <hr class="divider">
+    </header>
+    <h2>Mystic Garden: Factorio meets Stardew Valley</h2>
+    <div id="blog-body">
+        <div id="blog-content">
+            <h3>Project Context</h3>
+            <p>
+                Mystic Garden is a WolverineSoft game made in the Unity Game Engine. The premise is about growing
+                magical plants on a tile-based farm. Plants need water, react to the weather and seasons, and
+                interact with each other through status effects. I worked on it as a programmer from October 2025
+                through August 2026, alongside a team of other programmers, artists, and designers.
+            </p>
+            <figure class="blog-image-placeholder">
+                <img src="images/mystic-garden-farm.jpg" width="1280" height="720" loading="lazy"
+                    alt="Mystic Garden gameplay: the witch tending rows of crops on a tile-based farm, with the season tracker, day counter, and item hotbar.">
+                <figcaption>A farm in early summer. Screenshot from <a href="https://store.steampowered.com/app/4316230/Mystic_Garden/" target="_blank"
+                        rel="noopener noreferrer">Mystic Garden on Steam</a>.</figcaption>
+            </figure>
+            <p>
+                Most of my work was on the plants themselves: the Flowvine item network, hydration and harvest
+                chance, plant spells, the season system, quest saving, and two late-game plants, the Raphael
+                Lotus and the Frostberry. The sections below go through those systems and the decisions behind
+                them. The repository is private, so the code excerpts are trimmed copies rather than links.
+            </p>
+
+            <h3>Flowvines: A Plant That Moves Items</h3>
+            <p>
+                My first task was a "pipe plant": a vine the player grows tile by tile that picks up items and
+                carries them to storage containers, like a conveyor in a factory game. I divided this logic into
+                three systems: a pipe manager, a pipe system, and a pipe segment. They were later renamed to
+                <code class="language-csharp">FlowvineManager</code>, <code class="language-csharp">FlowvineSystem</code>,
+                and <code class="language-csharp">FlowvineSegment</code> to fit the game's theme.
+            </p>
+            <ul>
+                <li><strong>Manager:</strong> a single shared registry of every segment by tile position and every
+                    system that currently exists.</li>
+                <li><strong>Segment:</strong> one tile of flowvine. It knows its four connections, its neighbors, and
+                    which system it belongs to.</li>
+                <li><strong>System:</strong> one connected network of segments. It knows its inputs and outputs,
+                    finds routes between them, and moves items along those routes.</li>
+            </ul>
+            <p>
+                The manager is deliberately tiny. Segments use it to find their neighbors by position, and systems
+                register themselves in it when they are built:
+            </p>
+            <pre tabindex="0" aria-label="The Flowvine manager"><code class="language-csharp">public class FlowvineManager : Singleton&lt;FlowvineManager&gt;
+{
+    public Dictionary&lt;Vector2Int, FlowvineSegment&gt; flowvines = new();
+    public List&lt;FlowvineSystem&gt; systems = new();
+}</code></pre>
+            <div class="code-source">FlowvineManager.cs: the manager (condensed)</div>
+            <p>
+                Each segment is a component on the plant. I assigned each segment four connection flags that
+                indicate whether that side is connected to another vine, pulling items in, pushing items out, or not
+                connected at all. Segments also have a mode that marks them as an input, an output, or a plain
+                transfer piece:
+            </p>
+            <pre tabindex="0" aria-label="The fields that describe a Flowvine segment"><code class="language-csharp">public enum FlowvineConnection { OtherFlowvine, Pull, Push, None }
+public enum FlowvineMode { Transfer, Output, Input }
+
+public class FlowvineSegment : MonoBehaviour, IMouseInteractable
+{
+    private FlowvineConnection upConnection = FlowvineConnection.None;
+    // ...down, left, and right connections
+
+    public List&lt;FlowvineSegment&gt; neighborsList = new();
+    public FlowvineMode mode = FlowvineMode.Transfer;
+    public FlowvineSystem system;
+}</code></pre>
+            <div class="code-source">FlowvineSegment.cs: segment state (condensed)</div>
+            <p>
+                A system is built from any one segment with a breadth-first search, which collects everything that
+                segment is connected to and records the inputs and outputs it finds:
+            </p>
+            <pre tabindex="0" aria-label="Building a Flowvine system with breadth-first search"><code class="language-csharp">public FlowvineSystem(FlowvineSegment root)
+{
+    List&lt;FlowvineSegment&gt; queue = new() { root };
+    AddSegment(root);
+
+    while (queue.Count &gt; 0)
+    {
+        FlowvineSegment current = queue[0];
+        queue.RemoveAt(0);
+
+        foreach (FlowvineSegment neighbor in current.neighborsList)
+        {
+            if (neighbor == null || !neighbor.ActiveInNetwork)
+                continue;
+            // ...skip neighbors on a side that isn't connected
+
+            if (!neighbor.BFSExplored)
+            {
+                queue.Add(neighbor);
+                AddSegment(neighbor);
+            }
+        }
+        TrackEndpoint(current); // Records inputs and outputs.
+    }
+    FlowvineManager.Instance.systems.Add(this);
+}</code></pre>
+            <div class="code-source">FlowvineManager.cs: FlowvineSystem constructor (condensed)</div>
+            <p>
+                The three connect when a vine changes. Placing, removing, or reconfiguring a segment flags it and its
+                neighbors for an update, and on its next frame the segment throws away its old system and builds a
+                new one from itself. Adding a segment to the new system disables whatever system it belonged to
+                before, so two systems never own the same vine.
+            </p>
+            <pre tabindex="0" aria-label="Rebuilding a segment's system"><code class="language-csharp">void UpdateSystem()
+{
+    system?.DisableSystem();
+    // ...also disable any connected neighbor's system
+    system = new FlowvineSystem(this);
+}</code></pre>
+            <div class="code-source">FlowvineSegment.cs: rebuilding a system (condensed)</div>
+            <p>
+                Splitting it up this way kept each piece small enough to reason about on its own. A segment only
+                cares about itself and its neighbors, a system only cares about the vines connected within it, and the
+                manager is just the shared lookup that ties them together. It also kept the expensive work local:
+                moving an item only searches its own system, and cutting a vine only rebuilds the network it
+                touched instead of every vine on the map.
+            </p>
+            <figure class="blog-image-placeholder">
+                <img src="images/mystic-garden-flowvine-network.jpg" alt="A Flowvine network carrying items into storage" width="1920" height="1080" loading="lazy">
+                <figcaption>A Flowvine network carrying harvested items into storage.</figcaption>
+            </figure>
+            <p>
+                The four connection flags also decide how the vine looks. I pack them into a 4-bit mask and map each
+                of the 16 values to a sprite, so straight pieces, corners, T-junctions, and crossings all come from
+                one lookup instead of a chain of conditions.
+            </p>
+            <pre tabindex="0" aria-label="Choosing a Flowvine sprite from its connections"><code class="language-csharp">int bitmask = (upConnection != FlowvineConnection.None ? 1 : 0)
+    | (downConnection != FlowvineConnection.None ? 2 : 0)
+    | (leftConnection != FlowvineConnection.None ? 4 : 0)
+    | (rightConnection != FlowvineConnection.None ? 8 : 0);
+
+return bitmask switch
+{
+    3 =&gt; upDown,
+    12 =&gt; leftRight,
+    15 =&gt; fourWay,
+    // ...corner, T-junction, and end-piece cases
+    _ =&gt; none,
+};</code></pre>
+            <div class="code-source">FlowvineSegment.cs: sprite selection (condensed)</div>
+            <p>
+                Because every shape is just a case in that switch, supporting a new piece of vine art only means
+                adding one line.
+            </p>
+
+            <h4>Routing Items by Transfer Time</h4>
+            <p>
+                Once networks could branch, an item needed to know which output to go to. Each segment moves an item
+                after a delay that comes from the plant's own action delay (which is based on the plants upgrade level), so different routes take different
+                amounts of time. I had just learned Dijkstra's algorithm in EECS 281 and thought it was a good fit,
+                so I implemented it myself for the system: it treats the network as a weighted graph, finds the
+                fastest route from the input to each output, and picks the fastest of those. Networks are small, so a simple linear scan for the closest unsettled segment was
+                fast enough and easier to read than a priority queue.
+            </p>
+            <p>
+                To give a brief overview: Dijkstra's algorithm finds the shortest path from a starting node in a graph with non-negative edge weights. Each step settles the closest unsettled node, then updates its neighbors if going through it gives them a shorter distance. Once the target is settled, following each node's previous node back gives the path.
+            </p>
+            <p>
+                In Mystic Garden, the nodes are vine segments, the edge weights are each segment's transfer time, and
+                the distance is how long an item takes to arrive. My implementation follows the same steps:
+            </p>
+            <pre tabindex="0" aria-label="Finding the fastest route through a Flowvine system"><code class="language-csharp">while (unsettled.Count &gt; 0)
+{
+    FlowvineSegment current = ClosestUnsettledSegment(unsettled, traversalTimes);
+    unsettled.Remove(current);
+
+    if (current == outputFlowvine)
+    {
+        // ...record the total transfer time
+        path = ReconstructPath(inputFlowvine, outputFlowvine, previousSegments);
+        return path != null;
+    }
+
+    foreach (FlowvineSegment neighbor in current.neighborsList)
+    {
+        // ...skip missing or unconnected neighbors
+        float newTime = traversalTimes[current] + current.GetTransferRate();
+
+        // Only update if this is a faster route
+        if (!traversalTimes.ContainsKey(neighbor) || newTime &lt; traversalTimes[neighbor])
+        {
+            traversalTimes[neighbor] = newTime;
+            previousSegments[neighbor] = current;
+            if (!unsettled.Contains(neighbor))
+                unsettled.Add(neighbor);
+        }
+    }
+}</code></pre>
+            <div class="code-source">FlowvineManager.cs: FlowvineSystem shortest transfer path (condensed)</div>
+            <p>
+                Items in transit were the main source of bugs. If the player cut a vine while an item was moving,
+                the item could disappear. The transfer now runs as a coroutine that checks every frame whether
+                its system is still enabled. If not, it drops the item back where it started. If the destination
+                inventory is full or missing, the item drops at the output instead.
+            </p>
+            <pre tabindex="0" aria-label="Returning items when a system is broken mid-transfer"><code class="language-csharp">while (elapsed &lt; transferTime)
+{
+    if (!systemEnabled)
+    {
+        ItemEntityManager.Spawn(item, respawnPos); // System broke mid-transfer
+        yield break;
+    }
+    elapsed += Time.deltaTime;
+    yield return null;
+}
+
+if (targetInventory == null || !targetInventory.InsertItem(item /* ... */).inserted)
+    ItemEntityManager.Spawn(item, outputPos);</code></pre>
+            <div class="code-source">FlowvineManager.cs: FlowvineSystem transfer coroutine (condensed)</div>
+            <p>
+                Either way, the player never loses an item to the network. With branching networks, though, it
+                isn't obvious where an item will end up. As a finishing touch to this task, I reused the same route search logic
+                to create an overlay to show the player where items are flowing when they hover over a flowvine system.
+            </p>
+            <figure class="blog-image-placeholder">
+                <img src="images/mystic-garden-flowvine-hover.jpg" alt="Hovering over a Flowvine segment" width="1920" height="1080" loading="lazy">
+                <figcaption>Hovering a segment shows its tooltip, including its current mode (Transfer), harvest chance, and edit controls. (The mouse pointer was not captured in the screenshot.)</figcaption>
+            </figure>
+            <p>
+                Hovering over a matured segment highlights every route that passes through it, so the player can
+                see which output each input will feed before any items move.
+            </p>
+
+            <h3>Seasons as an Event</h3>
+            <p>
+                The original season code stored a single <code class="language-csharp">isWinter</code> flag. On
+                every change it searched the scene for each <code class="language-csharp">SeasonalSpriteChanger</code>
+                and called it directly. A seasonal sprite changer is a small component placed on objects like trees:
+                it holds a summer sprite and a winter sprite, and swaps the object's sprite to match the season.
+                That tied the manager to every kind of seasonal object, and a flag couldn't grow past two
+                seasons. I refactored <code class="language-csharp">SeasonVisualManager</code> to use a
+                <code class="language-csharp">Season</code> enum with room for all four seasons, and to publish an
+                <code class="language-csharp">OnSeasonChanged</code> event. Seasonal objects now subscribe when they start and unsubscribe
+                when disabled.
+            </p>
+            <pre tabindex="0" aria-label="Subscribing to season changes"><code class="language-csharp">private void Start()
+{
+    if (SeasonVisualManager.Instance != null)
+    {
+        SeasonVisualManager.Instance.OnSeasonChanged += OnSeasonChanged;
+        OnSeasonChanged(SeasonVisualManager.Instance.ActiveSeason);
+    }
+}
+
+private void OnDisable()
+{
+    if (SeasonVisualManager.Instance != null)
+        SeasonVisualManager.Instance.OnSeasonChanged -= OnSeasonChanged;
+}</code></pre>
+            <div class="code-source">SeasonalSpriteChanger.cs: season subscription</div>
+            <p>
+                Calling the handler once with the current season right after subscribing matters. An object
+                created in the middle of winter shows its winter sprite immediately instead of waiting for the next
+                season change.
+            </p>
+
+            <h3>Hydration and Harvest Chance</h3>
+            <p>
+                Seed drops originally didn't depend on how well a plant was cared for, so I tied seed refunds to a
+                new harvest chance value rather than a random range.
+            </p>
+            <figure class="blog-image-placeholder">
+                <img src="images/mystic-garden-harvest-chance.jpg" width="1280" height="720" loading="lazy"
+                    alt="A plant tooltip in Mystic Garden showing its level, growth stage, and a mature harvest chance of 85 percent.">
+                <figcaption>A plant tooltip showing its mature harvest chance (85%, the maximum). Screenshot from <a href="https://store.steampowered.com/app/4316230/Mystic_Garden/" target="_blank"
+                        rel="noopener noreferrer">Mystic Garden on Steam</a>.</figcaption>
+            </figure>
+            <p>
+                Each plant starts at a maximum chance, which is lowered if the plant is
+                dehydrated or exposed to the cold and raised by active spells. Larger seed drops scale by the
+                chance, and single seeds become a roll. That way watering and planning pay off without the player
+                ever being completely blocked.
+            </p>
+            <pre tabindex="0" aria-label="Combining penalties and bonuses into a harvest chance"><code class="language-csharp">private float GetHarvestChance()
+{
+    float dehydrationPenalty = plantHydration.GetDehydrationPenalty();
+
+    float harvestChance = maxHarvestChance
+        - dehydrationPenalty
+        + SpellEffectHandler.HarvestSpellBoost
+        - (hasStoredWarmthPenalty ? storedWarmthPenalty : GetWarmthPenalty());
+
+    return Mathf.Clamp(harvestChance, 0f, maxHarvestChance);
+}</code></pre>
+            <div class="code-source">Plant.cs: harvest chance</div>
+            <p>
+                At first, hydration logic was mixed into <code class="language-csharp">Plant</code>, which was
+                already one of the largest classes in the project, so I moved it into its own <code
+                    class="language-csharp">PlantHydration</code> component. One design choice there was recovery
+                time. A plant that dips below its water threshold becomes dehydrated right away, but it must stay
+                watered for a set time before the penalty is removed. Without that delay, players could ignore their
+                plants and water them right before harvesting.
+            </p>
+            <pre tabindex="0" aria-label="Dehydration with a recovery period"><code class="language-csharp">if (!IsHydrated(hydration))
+{
+    dehydrated = true;
+    hydratedTime = 0f;
+    return wasDehydrated != dehydrated;
+}
+
+if (!dehydrated) return false;
+
+hydratedTime += deltaTime;
+if (hydratedTime &gt;= dehydrationRecoveryTime)
+{
+    dehydrated = false;
+    hydratedTime = 0f;
+}</code></pre>
+            <div class="code-source">PlantHydration.cs: dehydration state</div>
+            <p>
+                Dipping below the threshold again resets the recovery timer, so the plant has to stay watered for
+                the whole recovery period.
+            </p>
+
+            <h3>Spells as Timed Plant Modifiers</h3>
+            <p>
+                Spells are items the player casts on a plant for a temporary effect. I built a framework that lets
+                a spell apply a temporary status effect to a plant, along with the first spell, the "Spell of
+                Preservation," which raises a plant's harvest chance for a while. Instead of writing that case
+                directly into the plant, I made each spell a serializable <code class="language-csharp">PlantSpellEffect</code>
+                with a duration that returns a list of stat modifiers. Designers set the values on the spell item in
+                the Inspector, and the item hands a copy to the plant when it is used.
+            </p>
+            <figure class="blog-image-placeholder">
+                <img src="images/mystic-garden-spell-of-preservation.jpg" alt="Spell of Preservation active on plants" width="1920" height="1080" loading="lazy">
+                <figcaption>The Spell of Preservation on a set of plants. The tooltip shows the +15% spell increase and its remaining 29 seconds.</figcaption>
+            </figure>
+            <p>
+                I created an additional <code class="language-csharp">PlantSpellEffectHandler</code> on each plant tracks active effects.
+                It applies modifiers when an effect starts and applies the same modifiers with the opposite sign when
+                it expires, so effects always reverse cleanly. Casting a spell that is already active just restarts
+                its timer, so players can't stack the same spell for a huge bonus.
+            </p>
+            <pre tabindex="0" aria-label="Applying and refreshing plant spell effects"><code class="language-csharp">public void ApplyNewEffect(PlantSpellEffect effect)
+{
+    if (TryGetSpellOfType(effect.GetType(), out PlantSpellEffect foundEffect))
+    {
+        foundEffect.TimeActive = 0f; // Combine existing effects.
+    }
+    else
+    {
+        activeSpellEffects.Add(effect);
+        ApplyModifiers(effect, 1f);
+    }
+}
+
+private void RemoveEffect(PlantSpellEffect effect)
+{
+    ApplyModifiers(effect, -1f);
+    activeSpellEffects.Remove(effect);
+}</code></pre>
+            <div class="code-source">PlantSpellEffectHandler.cs: applying effects</div>
+            <p>
+                Adding a new spell only takes a new <code class="language-csharp">PlantSpellEffect</code> subclass
+                that returns its modifiers. The Spell of Preservation is
+                <code class="language-csharp">HarvestChanceBonusEffect</code>, which returns a single harvest chance
+                modifier (+15 by default).
+            </p>
+
+            <h3>Saving Quest Sequences</h3>
+            <p>
+                Quests were originally a single linear list, and the save file stored only the current quest. When
+                the team added side quests and separate quest lines, I updated <code
+                    class="language-csharp">QuestManager</code> and the world saver to support several active
+                sequences at once. The save now stores each active sequence's name, its current quest, and that
+                quest's progress, plus which sequence the player is tracking. Loading looks each sequence up by name
+                and restores it.
+            </p>
+            <figure class="blog-image-placeholder">
+                <img src="images/mystic-garden-quest-log.jpg" alt="The quest log after loading a save" width="1920" height="1080" loading="lazy">
+                <figcaption>The quest log after loading a save, with the tutorial quests restored.</figcaption>
+            </figure>
+            <p>
+                The save system itself came from WolverineSoft's shared library, which already handled writing
+                player data to a file and restoring it later. I didn't build that part. My work was adapting the
+                quest system so that nonlinear quest progress could be saved and loaded through it.
+            </p>
+            <pre tabindex="0" aria-label="Saving the state of each active quest sequence"><code class="language-csharp">foreach (var sequence in questManager.GetActiveSequences())
+{
+    var quest = sequence.GetCurrentQuest();
+    if (quest == null) continue; // sequence already fully completed
+
+    int progress = 0;
+    if (quest.completionCondition is CounterQuestCondition counter)
+        progress = counter.GetProgress();
+
+    result.Add(new QuestState
+    {
+        sequenceName = sequence.sequenceName,
+        questName = quest.name,
+        progress = progress,
+        dialoguePlayed = tutorialManager != null &amp;&amp; tutorialManager.HasDialoguePlayed(quest)
+    });
+}</code></pre>
+            <div class="code-source">WorldDataSaver.cs: saving active sequences (condensed)</div>
+            <p>
+                Saving by name rather than by list position was deliberate. Quests change often during development,
+                and a save that stored positions would point old save files at the wrong quest as soon as the list
+                was reordered.
+            </p>
+
+            <h3>The Raphael Lotus</h3>
+            <p>
+                The Raphael Lotus is the plant that ends the game, so growing it is meant to be a puzzle. It must be
+                watered above 95%, be under the effect of a nearby Caxius plant, and get rain within a day of
+                planting. If any condition fails, the lotus decays at its next growth stage instead of maturing.
+            </p>
+            <figure class="blog-image-placeholder">
+                <img src="images/mystic-garden-raphael-lotus.jpg" alt="A matured Raphael Lotus beside a Caxius" width="1920" height="1080" loading="lazy">
+                <figcaption>A matured Raphael Lotus growing next to a Caxius.</figcaption>
+            </figure>
+            <p>
+                The rules are checked in <code class="language-csharp">RaphaelInvalidator</code>, but only when the
+                plant moves to a new growth phase rather than every frame. Checking every frame would let a brief
+                dip in water ruin the lotus before the player could react. Checking at phase changes matches how
+                players think about the plant: each stage is a checkpoint.
+            </p>
+            <pre tabindex="0" aria-label="Checking lotus conditions once per growth phase"><code class="language-csharp">int currentPhase = plant.PhaseIndex;
+if (currentPhase == lastCheckedPhase) return;
+lastCheckedPhase = currentPhase;
+
+if (currentPhase == 0) return; // Skip the first stage.
+
+bool missingCaxius = !plant.StatusEffects().Any(c =&gt; c is CaxiusIncreaseEffect);
+bool underwatered = plant.PercentWatered() &lt; 0.95;
+invalid = missingCaxius || underwatered;</code></pre>
+            <div class="code-source">RaphaelInvalidator.cs: per-phase validation</div>
+            <p>
+                One bug came from Unity's update order. The lotus and its invalidator are separate components, and
+                Unity doesn't guarantee which one updates first. On the frame the lotus matured, the invalidator
+                could still report it as invalid and schedule a decay. I fixed it by checking maturity first in the
+                lotus itself. Once it has matured, decay can no longer be triggered, whatever the other component
+                reads.
+            </p>
+            <pre tabindex="0" aria-label="Checking maturity before decay"><code class="language-csharp">if (!matured &amp;&amp; plant.lifecycleStage == Plant.LifecycleStage.Matured)
+{
+    matured = true;
+    OnMaturity();
+}
+
+if (!matured &amp;&amp; invalidator.Invalid &amp;&amp; !decayed)
+{
+    decayed = true;
+    plant.ScheduleDecay(invalidator.InvalidReason);
+}</code></pre>
+            <div class="code-source">RaphaelLotus.cs: maturity before decay</div>
+            <p>
+                Once it matures, the lotus pauses its growth, expands to take up the tiles around it, and publishes
+                a <code class="language-csharp">RaphaelLotusMaturedEvent</code> for the rest of the game to react to.
+            </p>
+
+            <h3>Frostberry and Water Walking</h3>
+            <figure class="blog-image-placeholder">
+                <img src="images/mystic-garden-frostberry.jpg" alt="Walking across a pond after eating a Frostberry" width="1920" height="1080" loading="lazy">
+                <figcaption>Walking across the pond after eating a Frostberry.</figcaption>
+            </figure>
+            <p>
+                The Frostberry lets the player walk on water for a while after eating one. It also freezes nearby
+                water so lilypads can be placed there. Water tiles block movement through their tile colliders.
+                Rather than turning collision off for the whole map, I clear the colliders only on water tiles in the
+                3×3 area around the player and remember each tile's original collider so it can be restored.
+            </p>
+            <pre tabindex="0" aria-label="Opening water colliders around the player"><code class="language-csharp">Vector2Int center = World.Round(transform.position);
+HashSet&lt;Vector2Int&gt; needed = new();
+for (int x = -1; x &lt;= 1; x++)
+{
+    for (int y = -1; y &lt;= 1; y++)
+    {
+        Vector2Int position = center + new Vector2Int(x, y);
+        if (!GroundManager.IsBodyOfWater(position)) continue;
+
+        needed.Add(position);
+        if (modifiedWaterColliders.ContainsKey(position)) continue;
+
+        Tile.ColliderType original = World.Instance.GameplayTilemap.GetColliderType((Vector3Int)position);
+        modifiedWaterColliders.Add(position, original);
+        World.Instance.SetTileCollision(position, Tile.ColliderType.None);
+    }
+}
+// Tiles no longer near the player get their original collider back.</code></pre>
+            <div class="code-source">PlayerMovementController.cs: water walking</div>
+            <p>
+                The difficult case was the effect running out while the player was standing on water. If the
+                colliders came back at that moment, the player would be stuck inside one. So the path stays open
+                after the timer ends until the player steps back onto land, and only then are the colliders
+                restored.
+            </p>
+
+            <h3>Implementation Scope</h3>
+            <p>
+                My commits run from October 2025 to August 2026. They start with the pipe system and its art. Next
+                came the Flowvine rework and the season refactor, then hydration, spells, and quest saving. They end
+                with the Raphael Lotus, the Frostberry, and lilypads for the final builds.
+            </p>
+            <figure class="blog-image-placeholder">
+                <img src="images/thumbnails/default-thumbnail.png" alt="Default placeholder image">
+                <figcaption>Suggested image: my commit history or contribution graph on the Mystic Garden repository
+                    from October 2025 to August 2026.</figcaption>
+            </figure>
+            <p>
+                Many of these systems touch <code class="language-csharp">Plant</code>, which several programmers were editing at the
+                same time, so I tried to put new behavior in separate components (hydration, spell handling,
+                invalidation) instead of growing that class. That kept merges smaller and gave each feature an
+                obvious place to live.
+            </p>
+
+            <h3>Project Source</h3>
+            <p>
+                Mystic Garden is developed in WolverineSoft's private studio repository, so source links aren't
+                available. The excerpts above are trimmed from the code I wrote. You can find the game on
+                <a href="https://store.steampowered.com/app/4316230/Mystic_Garden/" target="_blank"
+                    rel="noopener noreferrer">Steam</a>.
+            </p>
+        </div>
+    </div>
+</body>
+
+</html>
