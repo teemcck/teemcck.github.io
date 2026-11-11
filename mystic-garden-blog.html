@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/base.css">
     <link rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/line-numbers/prism-line-numbers.min.css">
     <link rel="stylesheet" href="css/blog.css">
@@ -23,14 +24,14 @@
 <body>
     <header>
         <div class="breadcrumb">
-            <a href="index.html" target="_blank" rel="noopener noreferrer">~/portfolio</a><span
-                class="path-sep">/</span><span class="path-current">blog</span>
+            <a href="index.html">~/portfolio</a><span
+                class="path-sep">/</span><span class="path-current">mystic-garden-blog</span>
         </div>
         <div id="hero">
             <h1>Tristan's Blog</h1>
         </div>
         <ul id="social-list">
-            <li><a href="https://github.com/teemcck" target="_blank" rel="noopener noreferrer">Github</a></li>
+            <li><a href="https://github.com/teemcck" target="_blank" rel="noopener noreferrer">GitHub</a></li>
             <li><a href="https://www.linkedin.com/in/tristan-mccaskill/" target="_blank"
                     rel="noopener noreferrer">LinkedIn</a></li>
         </ul>
@@ -41,25 +42,28 @@
         <div id="blog-content">
             <h3>Project Context</h3>
             <p>
-                Mystic Garden is a WolverineSoft game made in the Unity Game Engine. The premise is about growing
+                Mystic Garden is a WolverineSoft game made in the Unity game engine. The premise is growing
                 magical plants on a tile-based farm. Plants need water, react to the weather and seasons, and
                 interact with each other through status effects. I worked on it as a programmer from October 2025
                 through August 2026, alongside a team of other programmers, artists, and designers.
             </p>
             <figure class="blog-image-placeholder">
-                <img src="images/mystic-garden-farm.jpg" width="1280" height="720" loading="lazy"
-                    alt="Mystic Garden gameplay: the witch tending rows of crops on a tile-based farm, with the season tracker, day counter, and item hotbar.">
-                <figcaption>A farm in early summer. Screenshot from <a href="https://store.steampowered.com/app/4316230/Mystic_Garden/" target="_blank"
+                <video controls preload="metadata" width="1280" height="720" poster="images/mystic-garden/trailer-poster.jpg">
+                    <source src="videos/mystic-garden-trailer.mp4" type="video/mp4">
+                    Your browser does not support embedded video. You can watch the trailer on
+                    <a href="https://store.steampowered.com/app/4316230/Mystic_Garden/" target="_blank" rel="noopener noreferrer">Steam</a>.
+                </video>
+                <figcaption>The official trailer, from <a href="https://store.steampowered.com/app/4316230/Mystic_Garden/" target="_blank"
                         rel="noopener noreferrer">Mystic Garden on Steam</a>.</figcaption>
             </figure>
             <p>
                 Most of my work was on the plants themselves: the Flowvine item network, hydration and harvest
                 chance, plant spells, the season system, quest saving, and two late-game plants, the Raphael
                 Lotus and the Frostberry. The sections below go through those systems and the decisions behind
-                them. The repository is private, so the code excerpts are trimmed copies rather than links.
+                them.
             </p>
 
-            <h3>Flowvines: A Plant That Moves Items</h3>
+            <h3>Flowvines: Piping Items</h3>
             <p>
                 My first task was a "pipe plant": a vine the player grows tile by tile that picks up items and
                 carries them to storage containers, like a conveyor in a factory game. I divided this logic into
@@ -76,7 +80,7 @@
                     finds routes between them, and moves items along those routes.</li>
             </ul>
             <p>
-                The manager is deliberately tiny. Segments use it to find their neighbors by position, and systems
+                I kept the manager small on purpose. Segments use it to find their neighbors by position, and systems
                 register themselves in it when they are built:
             </p>
             <pre tabindex="0" aria-label="The Flowvine manager"><code class="language-csharp">public class FlowvineManager : Singleton&lt;FlowvineManager&gt;
@@ -149,14 +153,13 @@ public class FlowvineSegment : MonoBehaviour, IMouseInteractable
 }</code></pre>
             <div class="code-source">FlowvineSegment.cs: rebuilding a system (condensed)</div>
             <p>
-                Splitting it up this way kept each piece small enough to reason about on its own. A segment only
-                cares about itself and its neighbors, a system only cares about the vines connected within it, and the
-                manager is just the shared lookup that ties them together. It also kept the expensive work local:
+                Splitting it up this way kept each piece small. Segments only deal with their neighbors, systems only
+                with their own vines, and the manager is just a shared lookup. It also kept the expensive work local:
                 moving an item only searches its own system, and cutting a vine only rebuilds the network it
                 touched instead of every vine on the map.
             </p>
             <figure class="blog-image-placeholder">
-                <img src="images/mystic-garden-flowvine-network.jpg" alt="A Flowvine network carrying items into storage" width="1920" height="1080" loading="lazy">
+                <img src="images/mystic-garden/flowvine-network.jpg" alt="A Flowvine network carrying items into storage" width="1920" height="1080" loading="lazy">
                 <figcaption>A Flowvine network carrying harvested items into storage.</figcaption>
             </figure>
             <p>
@@ -186,7 +189,7 @@ return bitmask switch
             <h4>Routing Items by Transfer Time</h4>
             <p>
                 Once networks could branch, an item needed to know which output to go to. Each segment moves an item
-                after a delay that comes from the plant's own action delay (which is based on the plants upgrade level), so different routes take different
+                after a delay that comes from the plant's own action delay (which is based on the plant's upgrade level), so different routes take different
                 amounts of time. I had just learned Dijkstra's algorithm in EECS 281 and thought it was a good fit,
                 so I implemented it myself for the system: it treats the network as a weighted graph, finds the
                 fastest route from the input to each output, and picks the fastest of those. Networks are small, so a simple linear scan for the closest unsettled segment was
@@ -195,6 +198,12 @@ return bitmask switch
             <p>
                 To give a brief overview: Dijkstra's algorithm finds the shortest path from a starting node in a graph with non-negative edge weights. Each step settles the closest unsettled node, then updates its neighbors if going through it gives them a shorter distance. Once the target is settled, following each node's previous node back gives the path.
             </p>
+            <figure class="blog-image-placeholder">
+                <img src="images/mystic-garden/dijkstra-animation.gif" style="max-width: 420px; margin: 0 auto; padding: 1rem; box-sizing: border-box; background-color: #fff;" alt="Animation of Dijkstra's algorithm settling nodes in a small weighted graph" width="283" height="222" loading="lazy">
+                <figcaption>Dijkstra's algorithm settling one node at a time on a small graph. Image: Ibmua, public
+                    domain, via <a href="https://commons.wikimedia.org/wiki/File:Dijkstra_Animation.gif" target="_blank"
+                        rel="noopener noreferrer">Wikimedia Commons</a>.</figcaption>
+            </figure>
             <p>
                 In Mystic Garden, the nodes are vine segments, the edge weights are each segment's transfer time, and
                 the distance is how long an item takes to arrive. My implementation follows the same steps:
@@ -250,11 +259,14 @@ if (targetInventory == null || !targetInventory.InsertItem(item /* ... */).inser
             <p>
                 Either way, the player never loses an item to the network. With branching networks, though, it
                 isn't obvious where an item will end up. As a finishing touch to this task, I reused the same route search logic
-                to create an overlay to show the player where items are flowing when they hover over a flowvine system.
+                to build an overlay that shows the player where items are flowing when they hover over a flowvine system.
             </p>
             <figure class="blog-image-placeholder">
-                <img src="images/mystic-garden-flowvine-hover.jpg" alt="Hovering over a Flowvine segment" width="1920" height="1080" loading="lazy">
-                <figcaption>Hovering a segment shows its tooltip, including its current mode (Transfer), harvest chance, and edit controls. (The mouse pointer was not captured in the screenshot.)</figcaption>
+                <video controls muted loop playsinline preload="metadata" width="1280" height="720" poster="images/mystic-garden/flowvine-hover-poster.jpg" aria-label="Hovering over a Flowvine segment">
+                    <source src="videos/mystic-garden-flowvine-hover.mp4" type="video/mp4">
+                </video>
+                <figcaption>Hovering a segment shows its tooltip, including its current mode (Transfer), harvest chance, and edit controls.
+                    Note: after this was implemented, I realized there was z-fighting on the seed preview. I haven't fixed it yet, but I'd like to at a later date.</figcaption>
             </figure>
             <p>
                 Hovering over a matured segment highlights every route that passes through it, so the player can
@@ -273,6 +285,11 @@ if (targetInventory == null || !targetInventory.InsertItem(item /* ... */).inser
                 <code class="language-csharp">OnSeasonChanged</code> event. Seasonal objects now subscribe when they start and unsubscribe
                 when disabled.
             </p>
+            <figure class="blog-image-placeholder">
+                <img src="images/mystic-garden/season-event-diagram.svg" width="1236" height="436" loading="lazy" alt="Diagram: SeasonVisualManager raises OnSeasonChanged, which SeasonalSpriteChanger, Plant, RainEvent, and HarpyRescueController each subscribe to">
+                <figcaption><code class="language-csharp">SeasonVisualManager</code> raises one event, and every
+                    seasonal system subscribes to it instead of being called directly.</figcaption>
+            </figure>
             <pre tabindex="0" aria-label="Subscribing to season changes"><code class="language-csharp">private void Start()
 {
     if (SeasonVisualManager.Instance != null)
@@ -289,7 +306,7 @@ private void OnDisable()
 }</code></pre>
             <div class="code-source">SeasonalSpriteChanger.cs: season subscription</div>
             <p>
-                Calling the handler once with the current season right after subscribing matters. An object
+                The handler also runs once with the current season right after subscribing. An object
                 created in the middle of winter shows its winter sprite immediately instead of waiting for the next
                 season change.
             </p>
@@ -300,7 +317,7 @@ private void OnDisable()
                 new harvest chance value rather than a random range.
             </p>
             <figure class="blog-image-placeholder">
-                <img src="images/mystic-garden-harvest-chance.jpg" width="1280" height="720" loading="lazy"
+                <img src="images/mystic-garden/harvest-chance.jpg" width="1280" height="720" loading="lazy"
                     alt="A plant tooltip in Mystic Garden showing its level, growth stage, and a mature harvest chance of 85 percent.">
                 <figcaption>A plant tooltip showing its mature harvest chance (85%, the maximum). Screenshot from <a href="https://store.steampowered.com/app/4316230/Mystic_Garden/" target="_blank"
                         rel="noopener noreferrer">Mystic Garden on Steam</a>.</figcaption>
@@ -362,11 +379,12 @@ if (hydratedTime &gt;= dehydrationRecoveryTime)
                 the Inspector, and the item hands a copy to the plant when it is used.
             </p>
             <figure class="blog-image-placeholder">
-                <img src="images/mystic-garden-spell-of-preservation.jpg" alt="Spell of Preservation active on plants" width="1920" height="1080" loading="lazy">
+                <img src="images/mystic-garden/spell-of-preservation.jpg" alt="Spell of Preservation active on plants" width="1920" height="1080" loading="lazy">
                 <figcaption>The Spell of Preservation on a set of plants. The tooltip shows the +15% spell increase and its remaining 29 seconds.</figcaption>
             </figure>
             <p>
-                I created an additional <code class="language-csharp">PlantSpellEffectHandler</code> on each plant tracks active effects.
+                I created an additional <code class="language-csharp">PlantSpellEffectHandler</code> on each plant that tracks active
+                effects.
                 It applies modifiers when an effect starts and applies the same modifiers with the opposite sign when
                 it expires, so effects always reverse cleanly. Casting a spell that is already active just restarts
                 its timer, so players can't stack the same spell for a huge bonus.
@@ -407,7 +425,7 @@ private void RemoveEffect(PlantSpellEffect effect)
                 and restores it.
             </p>
             <figure class="blog-image-placeholder">
-                <img src="images/mystic-garden-quest-log.jpg" alt="The quest log after loading a save" width="1920" height="1080" loading="lazy">
+                <img src="images/mystic-garden/quest-log.jpg" alt="The quest log after loading a save" width="1920" height="1080" loading="lazy">
                 <figcaption>The quest log after loading a save, with the tutorial quests restored.</figcaption>
             </figure>
             <p>
@@ -434,7 +452,7 @@ private void RemoveEffect(PlantSpellEffect effect)
 }</code></pre>
             <div class="code-source">WorldDataSaver.cs: saving active sequences (condensed)</div>
             <p>
-                Saving by name rather than by list position was deliberate. Quests change often during development,
+                I saved quests by name instead of list position on purpose. Quests change often during development,
                 and a save that stored positions would point old save files at the wrong quest as soon as the list
                 was reordered.
             </p>
@@ -446,7 +464,7 @@ private void RemoveEffect(PlantSpellEffect effect)
                 planting. If any condition fails, the lotus decays at its next growth stage instead of maturing.
             </p>
             <figure class="blog-image-placeholder">
-                <img src="images/mystic-garden-raphael-lotus.jpg" alt="A matured Raphael Lotus beside a Caxius" width="1920" height="1080" loading="lazy">
+                <img src="images/mystic-garden/raphael-lotus.jpg" alt="A matured Raphael Lotus beside a Caxius" width="1920" height="1080" loading="lazy">
                 <figcaption>A matured Raphael Lotus growing next to a Caxius.</figcaption>
             </figure>
             <p>
@@ -491,7 +509,7 @@ if (!matured &amp;&amp; invalidator.Invalid &amp;&amp; !decayed)
 
             <h3>Frostberry and Water Walking</h3>
             <figure class="blog-image-placeholder">
-                <img src="images/mystic-garden-frostberry.jpg" alt="Walking across a pond after eating a Frostberry" width="1920" height="1080" loading="lazy">
+                <img src="images/mystic-garden/frostberry.jpg" alt="Walking across a pond after eating a Frostberry" width="1920" height="1080" loading="lazy">
                 <figcaption>Walking across the pond after eating a Frostberry.</figcaption>
             </figure>
             <p>
@@ -533,15 +551,15 @@ for (int x = -1; x &lt;= 1; x++)
                 with the Raphael Lotus, the Frostberry, and lilypads for the final builds.
             </p>
             <figure class="blog-image-placeholder">
-                <img src="images/thumbnails/default-thumbnail.png" alt="Default placeholder image">
-                <figcaption>Suggested image: my commit history or contribution graph on the Mystic Garden repository
-                    from October 2025 to August 2026.</figcaption>
+                <img src="images/mystic-garden/merge-requests.png" alt="The project-witches merge request list on the studio GitLab, filtered to my eight merged requests, including Raphael lotus, Frostberry implementation, and Lilypad fixes" width="1547" height="768" loading="lazy">
+                <figcaption>My merged requests on the studio GitLab, from the Raphael Lotus through the final
+                    bug fixes and polish. Earlier history was lost when the project moved to the new GitLab.</figcaption>
             </figure>
             <p>
                 Many of these systems touch <code class="language-csharp">Plant</code>, which several programmers were editing at the
                 same time, so I tried to put new behavior in separate components (hydration, spell handling,
-                invalidation) instead of growing that class. That kept merges smaller and gave each feature an
-                obvious place to live.
+                invalidation) instead of growing that class. That kept merges smaller and made it clear where each
+                feature belonged.
             </p>
 
             <h3>Project Source</h3>

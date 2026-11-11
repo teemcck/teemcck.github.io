@@ -1,0 +1,90 @@
+:root {
+    --black: rgb(15, 15, 15);
+    --white: rgb(236, 236, 236);
+    --light-gray: rgb(201, 201, 201);
+    --medium-gray: rgb(132, 132, 132);
+    --gray: rgb(69, 69, 69);
+    --light-blue: rgb(125, 142, 175);
+    --font-fira: "Fira Code", monospace;
+    --radius-small: 6px;
+    --radius-medium: 12px;
+    --border-width-medium: 2px;
+    --border-width-small: 1px;
+    --body-padding: 18px;
+}
+
+html {
+    color: var(--white);
+    background-color: var(--black);
+    font-family: var(--font-fira);
+    font-size: 16px;
+    font-weight: 500;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+body {
+    line-height: 1.2;
+    width: min(var(--body-width), calc(100% - var(--body-padding) * 2));
+}
+
+.breadcrumb {
+    font-size: 0.85rem;
+    color: var(--medium-gray);
+}
+
+.path-current {
+    color: var(--light-gray);
+}
+
+/* Image preview (js/image-preview.js) */
+
+img.previewable {
+    cursor: zoom-in;
+}
+
+#image-preview {
+    box-sizing: border-box;
+    max-width: none;
+    max-height: none;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 2rem;
+    border: none;
+    background: transparent;
+    cursor: zoom-out;
+}
+
+#image-preview[open] {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+}
+
+#image-preview::backdrop {
+    background: rgba(0, 0, 0, 0.8);
+}
+
+#image-preview img {
+    max-width: min(100%, 1600px);
+    max-height: 80vh;
+    width: auto;
+    height: auto;
+    border-radius: var(--radius-small);
+}
+
+.image-preview-caption {
+    max-width: min(90vw, 900px);
+    color: var(--light-gray);
+    font-family: var(--font-fira);
+    font-size: 0.85rem;
+    line-height: 1.5;
+    text-align: center;
+}

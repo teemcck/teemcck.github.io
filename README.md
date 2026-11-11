@@ -1,22 +1,26 @@
 # Portfolio
 
-My static HTML, CSS, and JavaScript portfolio site.
+My personal portfolio site, written in plain HTML, CSS, and JavaScript.
 
-**Live site:** https://teemcck.github.io/ (currently not active)
+**Live site:** https://teemcck.github.io/
 
 ## Structure
 
-- `index.html`: homepage and its About, Projects, Game Jams, Blog, and Resume tabs.
-- `css/reset.css`: shared browser style reset.
-- `css/home.css`: homepage styles.
-- `css/blog.css`: shared article, contents navigation, and code highlighting styles.
-- `js/home-nav.js`: homepage tab switching.
-- Game jam cards use placeholder content and links until submission pages are added.
-- `js/blog-nav.js`: reusable article contents navigation generated from section headings.
-- `images/`: image assets, named with lowercase words separated by hyphens.
+- `index.html`: home page with the About, Projects, Game Jams, and Skills tabs
+- `*-blog.html`: project write-ups
+- `css/reset.css`: browser style reset
+- `css/base.css`: colors, fonts, and styles shared by every page
+- `css/home.css`: home page styles
+- `css/blog.css`: write-up styles
+- `js/home-nav.js`: tab switching on the home page
+- `js/section-reveal.js`: fade-in when a tab opens
+- `js/skills-typing.js`: terminal typing on the Skills tab
+- `js/blog-nav.js`: contents list on the write-ups
+- `js/image-preview.js`: click an image to enlarge it
+- `images/`, `videos/`: media, grouped by project
 
-## Local Preview
+## Running Locally
 
-Run `python3 -m http.server 8000` from this directory and open `http://localhost:8000`.
+Run `python3 -m http.server 8000` in this folder and open `http://localhost:8000`.
 
-Fonts, KaTeX, and Prism load from external services.
+Fonts, KaTeX, and Prism load from CDNs, so you need an internet connection for those.

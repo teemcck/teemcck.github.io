@@ -18,9 +18,13 @@ function showSection(id)
     );
 
     [...navList.children].forEach(button =>
-        button.classList.toggle(
-            "active",
-            button.dataset.section === id
-        )
-    );
+    {
+        const active = button.dataset.section === id;
+        button.classList.toggle("active", active);
+        if (active) button.setAttribute("aria-current", "true");
+        else button.removeAttribute("aria-current");
+    });
+
+    if (id === "skills") typeSkills();
+    revealSection(document.getElementById(id));
 }

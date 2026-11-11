@@ -1,56 +1,57 @@
-// Include with `defer` on entries using css/blog.css and #blog-content.
-// Each h3 gets a sequential ID and a matching contents link.
-(() => {
-    const content = document.getElementById('blog-content');
-    if (!content || document.getElementById('section-nav')) return;
+// Builds the contents list from each h3 in the post
+(() =>
+{
+    const content = document.getElementById("blog-content");
+    if (!content) return;
 
-    const headings = content.querySelectorAll('h3');
+    const headings = content.querySelectorAll("h3");
     if (!headings.length) return;
 
-    const nav = document.createElement('nav');
-    nav.id = 'section-nav';
-    nav.setAttribute('aria-label', 'Article contents');
+    const nav = document.createElement("nav");
+    nav.id = "section-nav";
+    nav.setAttribute("aria-label", "Article contents");
 
-    const toggle = document.createElement('button');
-    toggle.id = 'contents-toggle';
-    toggle.type = 'button';
-    toggle.setAttribute('aria-controls', 'section-links');
-    toggle.append('Contents ');
-    const action = document.createElement('span');
-    action.className = 'contents-action';
+    const toggle = document.createElement("button");
+    toggle.id = "contents-toggle";
+    toggle.type = "button";
+    toggle.setAttribute("aria-controls", "section-links");
+    toggle.append("Contents ");
+    const action = document.createElement("span");
+    action.className = "contents-action";
     toggle.append(action);
 
-    const links = document.createElement('ul');
-    links.id = 'section-links';
-    headings.forEach((heading, index) => {
-        // Sequential IDs keep generation simple; skip any ID already used elsewhere.
-        let id = `section-${index + 1}`;
-        let suffix = index + 1;
-        while (document.getElementById(id) && document.getElementById(id) !== heading) {
-            id = `section-${++suffix}`;
-        }
-        heading.id = id;
+    const links = document.createElement("ul");
+    links.id = "section-links";
+    headings.forEach((heading, index) =>
+    {
+        heading.id = `section-${index + 1}`;
 
-        const item = document.createElement('li');
-        const link = document.createElement('a');
+        const item = document.createElement("li");
+        const link = document.createElement("a");
         link.href = `#${heading.id}`;
         link.textContent = heading.textContent.trim();
         item.append(link);
         links.append(item);
     });
 
-    function setExpanded(expanded) {
-        toggle.setAttribute('aria-expanded', String(expanded));
-        nav.classList.toggle('is-collapsed', !expanded);
-        action.textContent = expanded ? '[hide]' : '[show]';
+    function setExpanded(expanded)
+    {
+        toggle.setAttribute("aria-expanded", String(expanded));
+        nav.classList.toggle("is-collapsed", !expanded);
+        action.textContent = expanded ? "[hide]" : "[show]";
     }
 
     setExpanded(false);
-    toggle.addEventListener('click', () => {
-        setExpanded(toggle.getAttribute('aria-expanded') !== 'true');
+    toggle.addEventListener("click", () =>
+    {
+        setExpanded(toggle.getAttribute("aria-expanded") !== "true");
     });
-    links.addEventListener('click', (event) => {
-        if (event.target.closest('a') && window.matchMedia('(max-width: 799px)').matches) {
+
+    // on mobile, close the list after jumping to a section
+    links.addEventListener("click", e =>
+    {
+        if (e.target.closest("a") && window.matchMedia("(max-width: 799px)").matches)
+        {
             setExpanded(false);
             toggle.focus({ preventScroll: true });
         }

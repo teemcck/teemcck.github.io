@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
@@ -9,12 +9,13 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/base.css">
     <link rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/line-numbers/prism-line-numbers.min.css">
     <link rel="stylesheet" href="css/blog.css">
     <script defer src="js/blog-nav.js"></script>
     <script defer src="js/image-preview.js"></script>
-    <!-- Prism: core, C-like dependency, and C grammar. -->
+    <!-- Syntax Highlighting -->
     <script defer src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-core.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-clike.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-c.min.js"></script>
@@ -36,8 +37,8 @@
 <body>
     <header>
         <div class="breadcrumb">
-            <a href="index.html" target="_blank" rel="noopener noreferrer">~/portfolio</a><span
-                class="path-sep">/</span><span class="path-current">blog</span>
+            <a href="index.html">~/portfolio</a><span
+                class="path-sep">/</span><span class="path-current">huffman-blog</span>
         </div>
         <div id="hero">
             <h1>Tristan's Blog</h1>
@@ -45,7 +46,7 @@
         <ul id="social-list">
             <li>
                 <a href="https://github.com/teemcck" target="_blank" rel="noopener noreferrer">
-                    Github
+                    GitHub
                 </a>
             </li>
             <li>
@@ -59,9 +60,6 @@
     <h2>Writing a Canonical Huffman File Compressor</h2>
     <div id="blog-body">
         <div id="blog-content">
-            <!-- Notes on tweaking blog: -->
-            <!-- https://claude.ai/share/b9a58a46-b5aa-48a1-b1ce-20e58fcb6081 -->
-
             <h3>Project Inspiration</h3>
             <p>
                 I watch quite a bit of low-level and assembly programming content
@@ -114,65 +112,9 @@
                 prefixes for longer codes further down the tree.
             </p>
             <figure style="margin: 1rem 0;">
-            <svg viewBox="0 0 560 270" role="img" style="width:100%; max-width:560px; display:block; margin:1rem auto;"
-                aria-label="Binary code tree. Code 0 is assigned to A. Code 1 branches into 10 and 11, which branch into 100, 101, 110, and 111.">
-                <g stroke="currentColor" stroke-width="1.5" fill="none">
-                    <!-- edges -->
-                    <line x1="280" y1="42" x2="140" y2="80" />
-                    <line x1="280" y1="42" x2="420" y2="80" />
-                    <line x1="420" y1="108" x2="350" y2="145" />
-                    <line x1="420" y1="108" x2="490" y2="145" />
-                    <line x1="350" y1="173" x2="315" y2="210" />
-                    <line x1="350" y1="173" x2="385" y2="210" />
-                    <line x1="490" y1="173" x2="455" y2="210" />
-                    <line x1="490" y1="173" x2="525" y2="210" />
-                </g>
-                <g font-family="'Fira Code', monospace" font-size="14" fill="currentColor" text-anchor="middle">
-                    <!-- edge bit labels -->
-                    <text x="198" y="54" font-size="12" opacity="0.7">0</text>
-                    <text x="362" y="54" font-size="12" opacity="0.7">1</text>
-                    <text x="372" y="132" font-size="12" opacity="0.7">0</text>
-                    <text x="470" y="132" font-size="12" opacity="0.7">1</text>
-                    <text x="322" y="196" font-size="12" opacity="0.7">0</text>
-                    <text x="372" y="196" font-size="12" opacity="0.7">1</text>
-                    <text x="462" y="196" font-size="12" opacity="0.7">0</text>
-                    <text x="512" y="196" font-size="12" opacity="0.7">1</text>
-                    <!-- root -->
-                    <text x="280" y="30" opacity="0.7">start</text>
-                    <!-- level 1 -->
-                    <rect x="115" y="80" width="50" height="28" rx="6" fill="currentColor" fill-opacity="0.15"
-                        stroke="currentColor" stroke-width="1.5" />
-                    <text x="140" y="99">0 → A</text>
-                    <rect x="395" y="80" width="50" height="28" rx="6" fill="none" stroke="currentColor"
-                        stroke-width="1.5" />
-                    <text x="420" y="99">1</text>
-                    <!-- level 2 -->
-                    <rect x="325" y="145" width="50" height="28" rx="6" fill="none" stroke="currentColor"
-                        stroke-width="1.5" />
-                    <text x="350" y="164">10</text>
-                    <rect x="465" y="145" width="50" height="28" rx="6" fill="none" stroke="currentColor"
-                        stroke-width="1.5" />
-                    <text x="490" y="164">11</text>
-                    <!-- level 3 -->
-                    <rect x="290" y="210" width="50" height="28" rx="6" fill="currentColor" fill-opacity="0.15"
-                        stroke="currentColor" stroke-width="1.5" />
-                    <text x="315" y="229">100</text>
-                    <rect x="360" y="210" width="50" height="28" rx="6" fill="currentColor" fill-opacity="0.15"
-                        stroke="currentColor" stroke-width="1.5" />
-                    <text x="385" y="229">101</text>
-                    <rect x="430" y="210" width="50" height="28" rx="6" fill="currentColor" fill-opacity="0.15"
-                        stroke="currentColor" stroke-width="1.5" />
-                    <text x="455" y="229">110</text>
-                    <rect x="500" y="210" width="50" height="28" rx="6" fill="currentColor" fill-opacity="0.15"
-                        stroke="currentColor" stroke-width="1.5" />
-                    <text x="525" y="229">111</text>
-                    <!-- leaf letters -->
-                    <text x="315" y="258" font-size="12">B</text>
-                    <text x="385" y="258" font-size="12">C</text>
-                    <text x="455" y="258" font-size="12">D</text>
-                    <text x="525" y="258" font-size="12">R</text>
-                </g>
-            </svg>
+            <img src="images/huffman/abracadabra-tree.svg" width="560" height="270"
+                alt="Binary code tree. Code 0 is assigned to A. Code 1 branches into 10 and 11, which branch into 100, 101, 110, and 111."
+                style="display: block; width: 100%; max-width: 560px; height: auto; margin: 1rem auto;">
                 <figcaption style="color: var(--light-gray); font-size: 0.85rem; margin-top: 0.5rem; text-align: center;">
                     Huffman tree for the ABRACADABRA example.
                 </figcaption>
@@ -200,12 +142,11 @@
                 component of a larger compressor, not a complete solution to every compression problem.
             </p>
             <p>
-                That does not make it a toy algorithm. Huffman coding still does some of the heavy lifting in compression
-                tools used every day. I built this project as a fun, educational portfolio piece, but it also works well
+                Huffman coding is still part of everyday formats like gzip and PNG. I built this project as a fun, educational portfolio piece, but it also works well
                 as a standalone algorithm.
             </p>
 
-            <h4>What is Canonical Huffman Coding?</h4>
+            <h4>What Is Canonical Huffman Coding?</h4>
             <p>
                 A decoder needs the codebook, so the compressed file has to carry enough information to rebuild it.
                 There are two conventional options:
@@ -263,7 +204,7 @@
                     symbol's, append zeros until the lengths match.</li>
             </ol>
             <p>
-                The two operations each have a job. Adding one moves to the next unused bit pattern of the same
+                Adding one moves to the next unused bit pattern of the same
                 length, so no two symbols collide. Appending zeros when the length grows moves us down into the longer
                 codes, past every pattern that starts with a code we have already handed out, so the result stays a
                 prefix code. Appending zeros is the same as shifting left, so formally, if \(c_k\) is the \(k\)-th code
@@ -292,7 +233,7 @@
                 these codes can be recomputed by anyone who knows the lengths.
             </p>
 
-            <h4>What does the header store?</h4>
+            <h4>What Does the Header Store?</h4>
             <p>
                 The header stores one code length for each possible byte, not the codes or tree structure. In this
                 example, D has length 1, C has length 2, A and B have length 3, and all other entries are zero to mark
@@ -308,7 +249,7 @@
             <h3>Implementation Details</h3>
             <p>
                 This project is a byte-oriented compressor and decompressor written in C. Every input byte is a symbol
-                in the range 0-255. The command-line entry point, <code>main.c</code>, accepts <code>-e</code> to
+                in the range 0-255. The command-line entry point, <code class="file-path">main.c</code>, accepts <code>-e</code> to
                 encode or <code>-d</code> to decode, followed by the input file and the output file.
             </p>
             <p>
@@ -329,7 +270,16 @@
                 The sections below follow the encoder from start to finish, then cover the decoder. Each one shows the
                 code that carries the idea, starting with the first pass over the input.
             </p>
-            <h4>Counting bytes</h4>
+            <figure style="margin: 1rem 0;">
+                <img src="images/huffman/encoder-pipeline-diagram.svg"
+                    alt="Diagram of the encoder pipeline in two rows. Finding code lengths: count bytes, build the Huffman tree, then take code lengths from depth. Writing the file: limit lengths to 15 bits, assign canonical codes, then write the header and payload"
+                    width="944" height="624" loading="lazy"
+                    style="display: block; width: 100%; max-width: 720px; height: auto; margin: 0 auto;">
+                <figcaption style="color: var(--light-gray); font-size: 0.85rem; margin-top: 0.5rem; text-align: center;">
+                    The encoder's steps, in the order the sections below cover them.
+                </figcaption>
+            </figure>
+            <h4>Counting Bytes</h4>
             <p>
                 <code class="language-c">count_frequencies()</code> makes a pass over the file and counts how
                 often each byte appears. It also keeps track of the file's total size, which is written into the
@@ -368,7 +318,7 @@
                 first place. It was a novice mistake, and it taught me to be more cautious when handling unsigned
                 integers.
             </p>
-            <h4>Building the Huffman tree</h4>
+            <h4>Building the Huffman Tree</h4>
             <p>
                 I used the standard Huffman construction. Each observed byte starts as a leaf node in a min-heap
                 ordered by frequency. The algorithm removes the two least-frequent nodes, makes them children of a new
@@ -393,7 +343,7 @@
             </code></pre>
             <div class="code-source"><a
                     href="https://github.com/teemcck/Canonical-Huffman-Coding/blob/main/src/huffman_tree.h#L6-L11"
-                    target="_blank" rel="noopener noreferrer">VIEW SOURCE FILE</a></div>
+                    target="_blank" rel="noopener noreferrer">View source file</a></div>
             <p>
                 I ordered the struct members with memory alignment in mind, placing larger members before
                 smaller ones to minimize padding and reduce memory overhead.
@@ -441,11 +391,10 @@
             <div class="code-source"><a
                     href="https://github.com/teemcck/Canonical-Huffman-Coding/blob/main/src/huffman_tree.c#L42-L55"
                     target="_blank" rel="noopener noreferrer">View source file</a></div>
-            <h4>Extracting code lengths</h4>
+            <h4>Extracting Code Lengths</h4>
             <p>
                 The next step is to find each symbol's code length. Because the Huffman tree provides a simple way to
-                determine these lengths, we define each symbol's code length as its depth in the tree. A recursive
-                function can walk the tree and record that depth for every symbol.
+                determine these lengths, we define each symbol's code length as its depth in the tree.
             </p>
             <p>
                 <code class="language-c">build_code_lengths()</code> walks the tree and records each byte's
@@ -485,13 +434,13 @@
                 The exact optimal length-limited code can be found with the <a
                     href="https://en.wikipedia.org/wiki/Package-merge_algorithm" target="_blank"
                     rel="noopener noreferrer">package-merge algorithm</a>, but it is more complex than I needed here.
-                I chose a fast heuristic based on MiniZ instead, sacrificing a little compression efficiency for a
+                I chose a fast heuristic based on miniz instead, sacrificing a little compression efficiency for a
                 simpler implementation.
             </p>
 
-            <h4>MiniZ Heuristic</h4>
+            <h4>The miniz Heuristic</h4>
             <p>
-                I based my implementation on MiniZ's <a
+                I based my implementation on miniz's <a
                     href="https://github.com/richgel999/miniz/blob/master/miniz_tdef.c#L194" target="_blank"
                     rel="noopener noreferrer">tdefl_huffman_enforce_max_code_size</a>. It operates on a
                 histogram where <code>histogram[L]</code> counts the symbols assigned a code of length \(L\), and
@@ -563,7 +512,7 @@
                 rare case where a code exceeded the limit.
             </p>
 
-            <h4>Assigning canonical codes</h4>
+            <h4>Assigning Canonical Codes</h4>
             <p>
                 After validating the lengths, the encoder sorts symbols by increasing code length, breaking ties by
                 byte value. It then applies the recurrence shown earlier: increment the previous code and shift it left
@@ -584,7 +533,7 @@
                     href="https://github.com/teemcck/Canonical-Huffman-Coding/blob/main/src/canonical.c#L65-L83"
                     target="_blank" rel="noopener noreferrer">View source file</a></div>
 
-            <h4>Writing the header and payload</h4>
+            <h4>Writing the Header and Payload</h4>
             <p>
                 One advantage of designing a compression format is that you can choose its header, as long as the
                 encoder and decoder use the same format. My header stores all 256 code lengths, which lets the decoder
@@ -687,23 +636,22 @@
                     href="https://github.com/teemcck/Canonical-Huffman-Coding/blob/main/src/huffman_encode.c#L71-L91"
                     target="_blank" rel="noopener noreferrer">View source file</a></div>
             <p>
-                This version is easier to read and safer because all bit-level operations are handled consistently in
-                one place, reducing the chance of bugs in encoding or decoding. Separating these concerns also makes
-                the bit-level logic easier to test independently.
+                This version is easier to read, and since all the bit handling lives in one place, there's less room
+                for bugs.
             </p>
             <p>
                 The writer emits each code from its most significant bit to its least significant bit, packs the bits
                 into the current byte, and flushes the byte when it fills. <code>bit_writer_flush()</code> writes any
                 final partial byte with zero padding. The implementation lives in
                 <a href="https://github.com/teemcck/Canonical-Huffman-Coding/blob/main/src/bitio.c#L29-L50"
-                    target="_blank" rel="noopener noreferrer"><code>bitio.c</code></a>.
+                    target="_blank" rel="noopener noreferrer"><code class="file-path">bitio.c</code></a>.
             </p>
             <p>
                 The reader reverses this process: it loads a new byte when the current one is exhausted, then returns
                 its bits one at a time. Keeping the bookkeeping in <code>bit_reader_read_bit()</code> lets the decoder
                 focus on recognizing codes rather than managing input bytes. See
                 <a href="https://github.com/teemcck/Canonical-Huffman-Coding/blob/main/src/bitio.c#L7-L23"
-                    target="_blank" rel="noopener noreferrer"><code>bitio.c</code></a>.
+                    target="_blank" rel="noopener noreferrer"><code class="file-path">bitio.c</code></a>.
             </p>
 
             <h4>Decoding Implementation</h4>
@@ -740,7 +688,7 @@
             <p>
                 Decoding then uses the canonical structure directly, in the style of Mark Adler's
                 <a href="https://github.com/madler/zlib/blob/master/contrib/puff/puff.c" target="_blank"
-                    rel="noopener noreferrer">puff.c</a>. The decoder reads one bit at a
+                    rel="noopener noreferrer"><code class="file-path">puff.c</code></a>. The decoder reads one bit at a
                 time, extending the current code, and tracks the first code value of each length. Because codes of one
                 length are consecutive, a code belongs to that length exactly when it falls in the range
                 [first_code, first_code + count), and its offset in that range indexes the sorted symbol
@@ -779,7 +727,7 @@
 
             <h3>Project Limitations</h3>
             <p>
-                Every algorithm involves trade-offs. I chose a few limitations to keep this project simple and
+                I chose a few limitations to keep this project simple and
                 educational rather than production-oriented:
             </p>
             <ul>
@@ -799,7 +747,7 @@
                     position of each byte, a lookup table arranged for low-bit-first indexing would also need reversed
                     code patterns. That extra machinery would obscure the canonical decoding logic I wanted to show.
                 </li>
-                <li><strong>Length limiting is a heuristic.</strong> MiniZ's approach gives near-optimal lengths,
+                <li><strong>Length limiting is a heuristic.</strong> The miniz approach gives near-optimal lengths,
                     while package-merge gives the exact optimum. I chose the heuristic because it's a short
                     histogram-and-repair routine rather than per-level list bookkeeping. It also runs rarely: a
                     code only exceeds 15 bits on a strongly skewed frequency distribution, and otherwise the
@@ -817,11 +765,11 @@
                 project's header for context.
             </p>
             <figure style="margin: 1rem 0;">
-                <img src="images/huffman-compression-diagnostics.svg"
+                <img src="images/huffman/compression-diagnostics.svg"
                     alt="Bar chart comparing per-file compression ratios for the project Huffman encoder, gzip DEFLATE, and an entropy estimate with header"
                     style="display: block; width: 100%; height: auto;">
                 <figcaption style="color: var(--light-gray); font-size: 0.85rem; margin-top: 0.5rem; text-align: center;">
-                    Canterbury corpus compression ratios; the original input size is 100% for each file.
+                    Canterbury Corpus compression ratios; the original input size is 100% for each file.
                 </figcaption>
             </figure>
             <p>
@@ -842,8 +790,8 @@
                 move toward a more complete DEFLATE-like implementation.
             </p>
             <p>
-                Beyond the algorithm's internals, this project taught me how to design abstractions that make complex
-                operations easier to reason about. Because this was my first substantial C project, implementing my
+                Beyond the algorithm's internals, this project taught me how much a good abstraction, like the bit
+                writer, can clean up messy code. Because this was my first substantial C project, implementing my
                 own data structures and managing memory manually forced me to think more carefully about how data is
                 represented and accessed.
             </p>
@@ -853,7 +801,7 @@
                 <li><a href="https://github.com/teemcck/Canonical-Huffman-Coding" target="_blank"
                         rel="noopener noreferrer">Project GitHub repository</a></li>
                 <li><a href="https://github.com/richgel999/miniz/blob/master/miniz_tdef.c#L194" target="_blank"
-                        rel="noopener noreferrer">MiniZ length-limiting implementation</a></li>
+                        rel="noopener noreferrer">miniz length-limiting implementation</a></li>
                 <li><a href="https://github.com/madler/zlib/blob/master/contrib/puff/puff.c" target="_blank"
                         rel="noopener noreferrer">Mark Adler's puff.c decoder</a></li>
             </ul>

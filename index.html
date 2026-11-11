@@ -1,14 +1,18 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Tristan McCaskill</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/base.css">
     <link rel="stylesheet" href="css/home.css">
+    <script src="js/skills-typing.js" defer></script>
+    <script src="js/section-reveal.js" defer></script>
     <script src="js/home-nav.js" defer></script>
     <script src="js/image-preview.js" defer></script>
 </head>
@@ -17,7 +21,7 @@
     <header>
         <ul id="header-content">
             <li id="profile-picture">
-                <img src="images/profile/tristan.png" alt="Tristan McCaskill">
+                <img src="images/profile/tristan.jpg" alt="Tristan McCaskill">
             </li>
             <li id="nav-bar">
                 <ul id="hero-list">
@@ -31,13 +35,18 @@
                         <ul id="social-list">
                             <li>
                                 <a href="https://github.com/teemcck" target="_blank" rel="noopener noreferrer">
-                                    Github
+                                    GitHub
                                 </a>
                             </li>
                             <li>
                                 <a href="https://www.linkedin.com/in/tristan-mccaskill/" target="_blank"
                                     rel="noopener noreferrer">
                                     LinkedIn
+                                </a>
+                            </li>
+                            <li>
+                                <a href="resume.pdf" target="_blank" rel="noopener noreferrer">
+                                    Resume
                                 </a>
                             </li>
                         </ul>
@@ -48,8 +57,7 @@
                                 <button data-section="about">[About]</button>
                                 <button data-section="projects">[Projects]</button>
                                 <button data-section="game-jams">[Game Jams]</button>
-                                <button data-section="blog">[Blog]</button>
-                                <button data-section="resume">[Resume]</button>
+                                <button data-section="skills">[Skills]</button>
                             </div>
                         </nav>
                     </li>
@@ -62,256 +70,58 @@
             <div class="subsection overview">
                 <div class="overview-text">
                     <h2>Overview</h2>
-                <p>
-                    Hi there! I'm Tristan, an engineering student studying computer science at the University of
-                    Michigan.
-                    I have a passion for software engineering and video game development. I am currently the programming
-                    director for
-                    <a href="https://wolverinesoft.org/" target="_blank" rel="noopener noreferrer">WolverineSoft</a>,
-                    a ~20 member game development studio on campus. My goal is to create unique, memorable experiences
-                    through games that motivate others to explore their passions. I have many things yet to learn and
-                    use this site to document the advances I make in my journey.
-                </p>
+                    <p>
+                        Hi there! I'm Tristan, an engineering student studying computer science at the University of
+                        Michigan. I have a passion for software engineering and video game development. I am currently
+                        the programming director for
+                        <a href="https://wolverinesoft.org/" target="_blank" rel="noopener noreferrer">WolverineSoft</a>,
+                        a ~20-member game development studio on campus. My goal is to create unique, memorable
+                        experiences through games that motivate others to explore their passions. I have many things yet
+                        to learn and use this site to document the advances I make in my journey.
+                    </p>
                 </div>
                 <figure class="about-photo">
                     <div class="about-photo-frame">
                         <img data-preview src="images/profile/GDC2026.jpg" alt="Team photo of students kneeling in front of the GDC sign at the Moscone Center"
                             width="1280" height="960">
                     </div>
-                    <figcaption>Team photo taken at GDC 2026.</figcaption>
+                    <figcaption>Studio team photo taken at the 2026 Annual Game Developers Conference (<a href="https://gdconf.com/" target="_blank" rel="noopener noreferrer">GDC</a>) in San Francisco.</figcaption>
                 </figure>
             </div>
             <div class="subsection">
                 <h2>Current Pursuits</h2>
                 <p class="section-paragraph">
                     My academic interests shift quite a bit. Right now, I am quite interested in computer architecture
-                    and am researching how I may develop my own ISA, assembler, linker, and emulator. I worked on
-                    implementing a similar toolchain for EECS370, Intro to Computer Organization. However, the main
-                    difference is that I previously implemented a mock (albeit Turing complete) instruction set, <a
+                    and am researching how I may develop my own ISA, assembler, linker, and emulator. I built a
+                    similar toolchain for EECS 370, Intro to Computer Organization, but for <a
                         href="https://eecs370.github.io/project_1_spec/#2-lc-2k-instruction-set-architecture"
                         target="_blank" rel="noopener noreferrer">LC2K</a>,
-                    which is a reduced instruction set designed by EECS370 staff to make learning the concepts
-                    of assembly easier.
+                    a mock (albeit Turing complete) instruction set designed by EECS 370 staff to make learning
+                    assembly easier.
                 </p>
                 <p class="section-paragraph">
-                    While I have not yet figured the exact logistics of my own instruction set, I would like to support
-                    a wider array of instructions than those offered by LC2K. Another direction I am thinking of taking
-                    this project is emulating an existing ISA for a more complicated chip than the one designed for
-                    LC2K. Recently, I saw a project emulating the <a
+                    While I have not yet figured out the exact logistics, I would like to support a wider array of
+                    instructions than LC2K offers. Another direction is emulating an existing ISA, like the <a
                         href="https://www.masswerk.at/6502/6502_instruction_set.html" target="_blank"
-                        rel="noopener noreferrer">6502 Instruction Set</a>, which was ran on early
-                    technology such as he Commodore 64, Atari 2600, and the NES. While the 6502 may be a bit beyond my
-                    capabilities as someone familiarizing themselves with the computer architecture space, I do believe
-                    it would still be quite fun to find another chip to emulate.
+                        rel="noopener noreferrer">6502</a>, which ran on the Commodore 64, Atari 2600, and NES.
+                    It may be a bit beyond me as someone still a bit novice, but I think it would be quite fun to
+                    work with.
                 </p>
             </div>
             <div class="subsection">
                 <h2>Future Interests</h2>
                 <p class="section-paragraph">
-                    Apart from computer architecture, microarchitecture, compilers, etc. I would like to involve myself
-                    more
-                    in the theoretics of computer science. I am interested in learning more about formal methods,
-                    computability, and logic. I am actively seeking research / learning opportunities to both deepen my
-                    understanding of these areas and confirm my surface level intrigue as something more involved.
+                    Apart from computer architecture, microarchitecture, compilers, etc., I would like to get more
+                    involved in theoretical computer science. I am interested in learning more about formal methods,
+                    computability, and logic. I am actively seeking research/learning opportunities to both deepen my
+                    understanding of these areas and elevate my surface-level intrigue to be something more involved.
                 </p>
             </div>
         </div>
     </section>
-    <section id="blog">
-        <h2>Blog Entries</h2>
-        <div id="blog-cards">
-            <a class="unstyled-link" href="huffman-blog.html">
-                <div class="blog-card">
-                    <img class="blog-thumbnail" alt="Huffman tree showing the codes for ABRACADABRA"
-                        loading="lazy" src="images/thumbnails/huffman-tree.png">
-                    <div class="blog-info">
-                        <div class="blog-header">
-                            <h3>Canonical Huffman File Compressor</h3>
-                        </div>
-                        <div class="blog-date">
-                            <p>September 18th, 2026</p>
-                        </div>
-                        <div class="blog-description">
-                            <p>
-                                Detailed writeup on implementation, compression diagnostics, and limitations of my
-                                Canonical, Length-Limited Huffman file compression and decompression algorithm.
-                            </p>
-                        </div>
-                        <div class="blog-skills">
-                            <p>C</p>
-                            <p>Makefile</p>
-                        </div>
-                    </div>
-                </div>
-            </a>
-            <a class="unstyled-link" href="cachi-blog.html">
-                <div class="blog-card">
-                    <img class="blog-thumbnail" alt="Diagram of a 4-way set-associative cache (Ferry24.Milan, CC BY-SA 3.0, via Wikimedia Commons)"
-                        loading="lazy" src="images/thumbnails/cachi-thumbnail.png">
-                    <div class="blog-info">
-                        <div class="blog-header">
-                            <h3>Cachi: Developing a Multi-level Processor Cache Simulator</h3>
-                        </div>
-                        <div class="blog-date">
-                            <p>Project writeup</p>
-                        </div>
-                        <div class="blog-description">
-                            <p>
-                                A C simulator for configurable cache hierarchies. Explore address mapping, replacement
-                                policies, memory trace analysis, and how locality affects cache performance.
-                            </p>
-                        </div>
-                        <div class="blog-skills">
-                            <p>C</p>
-                            <p>Computer Architecture</p>
-                        </div>
-                    </div>
-                </div>
-            </a>
-            <a class="unstyled-link" href="file-not-found-blog.html">
-                <div class="blog-card">
-                    <img class="blog-thumbnail" alt="Placeholder image for FILE NOT FOUND"
-                        loading="lazy" src="images/thumbnails/default-thumbnail.png">
-                    <div class="blog-info">
-                        <div class="blog-header">
-                            <h3>File Not Found: an Isometric 2D Roguelike</h3>
-                        </div>
-                        <div class="blog-date">
-                            <p>Project writeup</p>
-                        </div>
-                        <div class="blog-description">
-                            <p>
-                                Implementation notes on authored map chunks, tile-based enemy spawning, floor XP,
-                                data-driven upgrades, and the Worm boss encounter.
-                            </p>
-                        </div>
-                        <div class="blog-skills">
-                            <p>C#</p>
-                            <p>Unity</p>
-                        </div>
-                    </div>
-                </div>
-            </a>
-            <a class="unstyled-link" href="witches-blog.html">
-                <div class="blog-card">
-                    <img class="blog-thumbnail" alt="Mystic Garden key art"
-                        loading="lazy" src="images/thumbnails/mystic-garden-key-art.jpg">
-                    <div class="blog-info">
-                        <div class="blog-header">
-                            <h3>Mystic Garden: Factorio meets Stardew Valley</h3>
-                        </div>
-                        <div class="blog-date">
-                            <p>Project writeup</p>
-                        </div>
-                        <div class="blog-description">
-                            <p>
-                                Implementation notes on the Flowvine item network, seasons, hydration and harvest
-                                chance, plant spells, quest saving, and the Raphael Lotus.
-                            </p>
-                        </div>
-                        <div class="blog-skills">
-                            <p>C#</p>
-                            <p>Unity</p>
-                        </div>
-                    </div>
-                </div>
-            </a>
-        </div>
-    </section>
     <section id="projects">
-        <h2>Projects</h2>
-        <div id="project-display">
-            <div class="project-card">
-                <img class="project-thumbnail" alt="Huffman tree showing the codes for ABRACADABRA"
-                    loading="lazy" src="images/thumbnails/huffman-tree.png">
-                <ul class="project-info">
-                    <li>
-                        <h3>Canonical Huffman File Compressor</h3>
-                    </li>
-                    <li>
-                        <p class="project-description">
-                            A command-line program for compressing and decompressing files using canonical, length
-                            limited, Huffman coding. Implements a standard Huffman Tree encryption scheme using the
-                            MiniZ length-limiting heuristic.
-                        </p>
-                    </li>
-                    <li>
-                        <ul class="project-links">
-                            <li>
-                                <a href="https://github.com/teemcck/Canonical-Huffman-Coding" target="_blank"
-                                    rel="noopener noreferrer">
-                                    Github
-                                </a>
-                            </li>
-                            <li>
-                                <a href="huffman-blog.html" target="_blank" rel="noopener noreferrer">
-                                    View More
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-            <div class="project-card">
-                <img class="project-thumbnail" alt="Diagram of a 4-way set-associative cache (Ferry24.Milan, CC BY-SA 3.0, via Wikimedia Commons)" loading="lazy"
-                    src="images/thumbnails/cachi-thumbnail.png">
-                <ul class="project-info">
-                    <li>
-                        <h3>Cachi: Multi-level Processor Cache Simulator</h3>
-                    </li>
-                    <li>
-                        <p class="project-description">
-                            A C simulator that models configurable L1 and L2 cache hierarchies from memory-access
-                            traces. Supports per-level capacity, block size, associativity, and LRU, FIFO, MRU, or
-                            random replacement policies, with hit, miss, eviction, and writeback statistics.
-                        </p>
-                    </li>
-                    <li>
-                        <ul class="project-links">
-                            <li>
-                                <a href="https://github.com/teemcck/Cachi-Simulator" target="_blank" rel="noopener noreferrer">
-                                    Github
-                                </a>
-                            </li>
-                            <li>
-                                <a href="cachi-blog.html" target="_blank" rel="noopener noreferrer">
-                                    View More
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-            <div class="project-card">
-                <img class="project-thumbnail" alt="Placeholder image for FILE NOT FOUND" loading="lazy"
-                    src="images/thumbnails/default-thumbnail.png">
-                <ul class="project-info">
-                    <li>
-                        <h3>File Not Found: an Isometric 2D Roguelike</h3>
-                    </li>
-                    <li>
-                        <p class="project-description">
-                            A WolverineSoft Unity roguelike with generated floors built from authored chunks,
-                            data-driven upgrades, and boss encounters. Programmer on the Winter 2026 prototype and
-                            programming director for Fall 2026.
-                        </p>
-                    </li>
-                    <li>
-                        <ul class="project-links">
-                            <li>
-                                <a href="https://github.com/teemcck/StudioW26RnD" target="_blank" rel="noopener noreferrer">
-                                    Github
-                                </a>
-                            </li>
-                            <li>
-                                <a href="file-not-found-blog.html" target="_blank" rel="noopener noreferrer">
-                                    View More
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
+        <h3>Game Development</h3>
+        <div class="project-display">
             <div class="project-card">
                 <img class="project-thumbnail" alt="Mystic Garden key art" loading="lazy"
                     src="images/thumbnails/mystic-garden-key-art.jpg">
@@ -334,10 +144,117 @@
                                 </a>
                             </li>
                             <li>
-                                <a href="witches-blog.html" target="_blank" rel="noopener noreferrer">
-                                    View More
+                                <a href="mystic-garden-blog.html">
+                                    Read More
                                 </a>
                             </li>
+                        </ul>
+                        <ul class="project-skills">
+                            <li>unity</li>
+                            <li>c#</li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <div class="project-card">
+                <img class="project-thumbnail" alt="File Not Found key art: an astronaut drifting through purple pixel space beside the game title" loading="lazy"
+                    src="images/thumbnails/file-not-found-key-art.png">
+                <ul class="project-info">
+                    <li>
+                        <h3>File Not Found: an Isometric 2D Roguelike</h3>
+                    </li>
+                    <li>
+                        <p class="project-description">
+                            A WolverineSoft Unity roguelike with generated floors built from authored chunks,
+                            data-driven upgrades, and boss encounters. Lead programmer on the Winter 2026 prototype and
+                            programming director for Fall 2026.
+                        </p>
+                    </li>
+                    <li>
+                        <ul class="project-links">
+                            <li>
+                                <a href="https://github.com/teemcck/StudioW26RnD" target="_blank" rel="noopener noreferrer">
+                                    GitHub
+                                </a>
+                            </li>
+                            <li>
+                                <a href="file-not-found-blog.html">
+                                    Read More
+                                </a>
+                            </li>
+                        </ul>
+                        <ul class="project-skills">
+                            <li>unity</li>
+                            <li>c#</li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <h3>Systems Programming</h3>
+        <div class="project-display">
+            <div class="project-card">
+                <img class="project-thumbnail" alt="Huffman tree showing the codes for ABRACADABRA"
+                    loading="lazy" src="images/thumbnails/huffman-tree.png">
+                <ul class="project-info">
+                    <li>
+                        <h3>Canonical Huffman File Compressor</h3>
+                    </li>
+                    <li>
+                        <p class="project-description">
+                            A command-line program for compressing and decompressing files using canonical, length-limited
+                            Huffman coding, with a length-limiting heuristic based on miniz.
+                        </p>
+                    </li>
+                    <li>
+                        <ul class="project-links">
+                            <li>
+                                <a href="https://github.com/teemcck/Canonical-Huffman-Coding" target="_blank"
+                                    rel="noopener noreferrer">
+                                    GitHub
+                                </a>
+                            </li>
+                            <li>
+                                <a href="huffman-blog.html">
+                                    Read More
+                                </a>
+                            </li>
+                        </ul>
+                        <ul class="project-skills">
+                            <li>c</li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <div class="project-card">
+                <img class="project-thumbnail" alt="Diagram of a 4-way set-associative cache (Ferry24.Milan, CC BY-SA 3.0, via Wikimedia Commons)" loading="lazy"
+                    src="images/thumbnails/cachi-thumbnail.png">
+                <ul class="project-info">
+                    <li>
+                        <h3>Cachi: Multi-level Processor Cache Simulator</h3>
+                    </li>
+                    <li>
+                        <p class="project-description">
+                            A C simulator that models configurable L1 and L2 cache hierarchies from memory-access
+                            traces. Supports per-level capacity, block size, associativity, and LRU, FIFO, MRU, or
+                            random replacement policies, with hit, miss, eviction, and writeback statistics.
+                        </p>
+                    </li>
+                    <li>
+                        <ul class="project-links">
+                            <li>
+                                <a href="https://github.com/teemcck/Cachi-Simulator" target="_blank" rel="noopener noreferrer">
+                                    GitHub
+                                </a>
+                            </li>
+                            <li>
+                                <a href="cachi-blog.html">
+                                    Read More
+                                </a>
+                            </li>
+                        </ul>
+                        <ul class="project-skills">
+                            <li>c</li>
                         </ul>
                     </li>
                 </ul>
@@ -348,7 +265,7 @@
         <div class="subsection">
             <h2>What are Game Jams?</h2>
             <p>
-                Game jams are short, team events where participants make a game from scratch, often around a
+                Game jams are short team events where participants make a game from scratch, often around a
                 shared theme or creative constraint (think of a hackathon but for game development). The games below are
                 projects I've been the main programmer for during game jams. All were made in Unity
                 and finished in under 48 hours.
@@ -357,7 +274,7 @@
         <h2>Game Jam Submissions</h2>
         <div id="game-jam-display">
             <div class="game-jam-card">
-                <img class="game-jam-thumbnail" alt="Protect Your Data thumbnail" loading="lazy"
+                <img class="game-jam-thumbnail" alt="Protect Your Data: a glowing circuit emblem above a dialogue box reading &quot;What just happened??&quot;" loading="lazy"
                     src="images/thumbnails/protect-your-data.png">
                 <div class="game-jam-info">
                     <h3>Protect Your Data</h3>
@@ -365,14 +282,20 @@
                         made for the Michigan Game Developers Conference Game Jam. It won first place and a $750 prize
                         sponsored by <a href="https://bluebirdstudios.org/home" target="_blank"
                             rel="noopener noreferrer">Bluebird Studios</a>.</p>
-                    <ul class="project-links">
-                        <li><a href="https://teemac8.itch.io/protect-your-data" target="_blank"
-                                rel="noopener noreferrer">View itch.io</a></li>
-                    </ul>
+                    <div class="game-jam-footer">
+                        <ul class="project-links">
+                            <li><a href="https://teemac8.itch.io/protect-your-data" target="_blank"
+                                    rel="noopener noreferrer">View itch.io</a></li>
+                        </ul>
+                        <ul class="project-skills">
+                            <li>unity</li>
+                            <li>c#</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
             <div class="game-jam-card">
-                <img class="game-jam-thumbnail" alt="Block Party thumbnail" loading="lazy"
+                <img class="game-jam-thumbnail" alt="Block Party: a pumpkin-headed dancer and a rival in a purple suit facing off on stage in front of a crowd" loading="lazy"
                     src="images/thumbnails/block-party.png">
                 <div class="game-jam-info">
                     <h3>Block Party</h3>
@@ -380,45 +303,105 @@
                         the
                         2024 WolverineSoft Pumpkin Jam. Polishing for this game continued intermittently
                         after the jam concluded.</p>
-                    <ul class="project-links">
-                        <li><a href="https://jegjegjeg.itch.io/block-party-official" target="_blank"
-                                rel="noopener noreferrer">View itch.io</a></li>
-                    </ul>
+                    <div class="game-jam-footer">
+                        <ul class="project-links">
+                            <li><a href="https://jegjegjeg.itch.io/block-party-official" target="_blank"
+                                    rel="noopener noreferrer">View itch.io</a></li>
+                        </ul>
+                        <ul class="project-skills">
+                            <li>unity</li>
+                            <li>c#</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
             <div class="game-jam-card">
-                <img class="game-jam-thumbnail" alt="Bubble Casino thumbnail" loading="lazy"
+                <img class="game-jam-thumbnail" alt="Bubble Casino: a blackjack hand with Hit and Stand buttons and the day's cash goal" loading="lazy"
                     src="images/thumbnails/bubble-casino.png">
                 <div class="game-jam-info">
                     <h3>Bubble Casino</h3>
                     <p class="game-jam-description">A blackjack simulator with the goal of winning enough money to
-                        afford your wedding. This parody game was made for the 2025 Global Game Jam theme, “Bubble.”</p>
-                    <ul class="project-links">
-                        <li><a href="https://teambubblecasino.itch.io/the-bubble-casino" target="_blank"
-                                rel="noopener noreferrer">View itch.io</a></li>
-                    </ul>
+                        afford your wedding. This parody game was made for the 2025 Global Game Jam, themed “Bubble.”</p>
+                    <div class="game-jam-footer">
+                        <ul class="project-links">
+                            <li><a href="https://teambubblecasino.itch.io/the-bubble-casino" target="_blank"
+                                    rel="noopener noreferrer">View itch.io</a></li>
+                        </ul>
+                        <ul class="project-skills">
+                            <li>unity</li>
+                            <li>c#</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
             <div class="game-jam-card">
-                <img class="game-jam-thumbnail" alt="Don't Flock Up thumbnail" loading="lazy"
-                    src="images/thumbnails/default-thumbnail.png">
+                <img class="game-jam-thumbnail" alt="The Great Meme Rush title screen with hand-drawn meme characters" loading="lazy"
+                    src="images/thumbnails/great-meme-rush.png">
                 <div class="game-jam-info">
-                    <h3>Don't Flock Up</h3>
-                    <p class="game-jam-description">A Thanksgiving-themed asymmetrical PvP infinite runner, which placed
-                        3rd
-                        in
-                        the 2024 WolverineSoft Turkey Jam. Minimal 3D art was also done by me.</p>
-                    <ul class="project-links">
-                        <li><a href="https://teemac8.itch.io/dont-flock-up" target="_blank"
-                                rel="noopener noreferrer">View itch.io</a></li>
-                    </ul>
+                    <h3>The Great Meme Rush</h3>
+                    <p class="game-jam-description">A doomscrolling simulator where you scroll through memes to earn
+                        crypto, then spend it on meme characters that boost your earnings. Made for the 2025
+                        WolverineSoft Turkey Jam.</p>
+                    <div class="game-jam-footer">
+                        <ul class="project-links">
+                            <li><a href="https://iyahav.itch.io/the-great-meme-rush" target="_blank"
+                                    rel="noopener noreferrer">View itch.io</a></li>
+                        </ul>
+                        <ul class="project-skills">
+                            <li>unity</li>
+                            <li>c#</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
-    <section id="resume">
-        <h2>Resume</h2>
-        <embed id="resume-document" src="resume.pdf#pagemode=none" type="application/pdf" />
+    <section id="skills">
+        <h2>Skills</h2>
+        <div class="skill-groups">
+            <div class="skill-group">
+                <p class="skill-prompt"><span class="prompt-symbol">$</span> <span class="prompt-command">ls ~/languages</span></p>
+                <ul class="skill-list">
+                    <li>c</li>
+                    <li>c++</li>
+                    <li>c#</li>
+                    <li>python</li>
+                    <li>javascript</li>
+                    <li>html/css</li>
+                    <li>latex</li>
+                </ul>
+            </div>
+            <div class="skill-group">
+                <p class="skill-prompt"><span class="prompt-symbol">$</span> <span class="prompt-command">ls ~/engines</span></p>
+                <ul class="skill-list">
+                    <li>unity</li>
+                    <li>roblox studio</li>
+                    <li>blender</li>
+                </ul>
+            </div>
+            <div class="skill-group">
+                <p class="skill-prompt"><span class="prompt-symbol">$</span> <span class="prompt-command">ls ~/tools</span></p>
+                <ul class="skill-list">
+                    <li>git</li>
+                    <li>gitlab</li>
+                    <li>linux</li>
+                    <li>make</li>
+                    <li>valgrind</li>
+                    <li>matplotlib</li>
+                </ul>
+            </div>
+            <div class="skill-group">
+                <p class="skill-prompt"><span class="prompt-symbol">$</span> <span class="prompt-command">ls ~/coursework</span></p>
+                <ul class="skill-list">
+                    <li>data structures &amp; algorithms</li>
+                    <li>computer organization</li>
+                    <li>foundations of cs</li>
+                    <li>cryptography</li>
+                    <li>discrete math</li>
+                    <li>linear algebra</li>
+                </ul>
+            </div>
+        </div>
     </section>
 </body>
 

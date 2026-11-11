@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/base.css">
     <link rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/line-numbers/prism-line-numbers.min.css">
     <link rel="stylesheet" href="css/blog.css">
@@ -23,14 +24,14 @@
 <body>
     <header>
         <div class="breadcrumb">
-            <a href="index.html" target="_blank" rel="noopener noreferrer">~/portfolio</a><span
-                class="path-sep">/</span><span class="path-current">blog</span>
+            <a href="index.html">~/portfolio</a><span
+                class="path-sep">/</span><span class="path-current">file-not-found-blog</span>
         </div>
         <div id="hero">
             <h1>Tristan's Blog</h1>
         </div>
         <ul id="social-list">
-            <li><a href="https://github.com/teemcck" target="_blank" rel="noopener noreferrer">Github</a></li>
+            <li><a href="https://github.com/teemcck" target="_blank" rel="noopener noreferrer">GitHub</a></li>
             <li><a href="https://www.linkedin.com/in/tristan-mccaskill/" target="_blank"
                     rel="noopener noreferrer">LinkedIn</a></li>
         </ul>
@@ -41,44 +42,77 @@
         <div id="blog-content">
             <h3>Project Context</h3>
             <p>
-                I worked on FILE NOT FOUND as a programmer for WolverineSoft during Winter 2026. The repository
-                begins with isometric map and camera experiments, then grows into a floor-based action game with
-                generated routes, enemy encounters, upgrades, and a boss stage. My work focused on map generation,
-                camera behavior, upgrade selection, and floor progression.
+                I worked on "File Not Found" for WolverineSoft, first as the lead programmer on the research and
+                development team during the Winter/Summer 2026 cycles, then as programming director for the Fall
+                2026 cycle, when the project expanded to the full studio. During the prototype, I was assigned
+                weekly/biweekly tasks to implement features for the game.
+                My work focused on map generation, camera behavior, upgrade selection, and floor progression.
             </p>
             <figure class="blog-image-placeholder">
-                <img src="images/fnf-generated-floor.jpg" alt="Gameplay on a generated floor" width="1920" height="1080" loading="lazy">
-                <figcaption>Gameplay on a procedurally generated floor.</figcaption>
+                <video controls preload="metadata" width="1280" height="720" poster="images/file-not-found/gameplay-poster.jpg">
+                    <source src="videos/file-not-found-gameplay.mp4" type="video/mp4">
+                    Your browser does not support embedded video.
+                </video>
+                <figcaption>Demo gameplay footage recorded from the original "File Not Found" prototype.</figcaption>
             </figure>
             <p>
-                I wanted to document these systems because they connect the main parts of a run: authored chunks
-                create the route, encounters determine the floor reward, and upgrade choices carry player changes
-                into the next floor. The sections below follow those systems from their Unity assets into the code
-                that uses them.
+                As an overview of the game, File Not Found is an isometric 2D roguelike in which the protagonist
+                descends through a corrupting world of procedurally stitched floors, battling waves of
+                enemies with melee, ranged attacks, and dodges. The player earns XP for killing enemies and completing
+                the level quickly. At the end of each floor, the player uses their XP to unlock a choice of upgrade cards, 
+                letting each run grow into a unique build to help them fight stronger enemies in the following worlds.
+            </p>
+            <p>
+                I started on this project as the lead programmer for its research and development team, guiding a small team of two artists,
+                an audio designer, and another programmer through the prototype phase. Out of five prototypes, ours was
+                chosen to move into a full production cycle with the studio. This post covers the systems I built as lead programmer on the prototype, and how I guided the
+                project's continued development after stepping into the role of programming director for production.
             </p>
 
             <h3>Procedural Floors from Authored Chunks</h3>
             <p>
-                The map generator combines hand-authored isometric room and hall prefabs instead of building every
-                tile at runtime. <code class="language-csharp">ChunkGen</code> selects a prefab from the pool for the
-                current world, and <code class="language-csharp">MapSpawner</code> places each chunk after the
-                previous one. This let us reuse level-design work while varying the route between floors.
+                Early on, my team and I decided we wanted floors stitched together from hand-built pieces, similar
+                to how Hades builds each run out of hand-authored chambers. Every space is designed by hand, but the
+                order the player sees them in changes from run to run. That kept level design in our hands while
+                still letting each floor feel different.
             </p>
+            <figure class="blog-image-placeholder">
+                <img src="images/file-not-found/hades-tartarus-chamber.jpg" alt="A hand-authored chamber in Tartarus from Hades" width="1920" height="1080" loading="lazy">
+                <figcaption>A chamber in Tartarus from Hades. Each chamber is built by hand, and a run strings them
+                    together in a different order. Screenshot: Supergiant Games, via the <a
+                        href="https://store.steampowered.com/app/1145360/Hades/" target="_blank"
+                        rel="noopener noreferrer">Hades Steam page</a>.</figcaption>
+            </figure>
+            <p>
+                The main difference is that Hades loads one chamber at a time behind a door, while we wanted a floor
+                to read as one continuous map. To get there, I built the generator around hand-authored isometric
+                room and hall prefabs instead of building every tile at runtime.
+                <code class="language-csharp">ChunkSpawner</code> selects a prefab from the pool for the current world,
+                and <code class="language-csharp">MapSpawner</code> places each chunk directly after the previous one.
+            </p>
+            <figure class="blog-image-placeholder">
+                <img src="images/file-not-found/map-generation-diagram.svg" alt="Diagram: GameplayHandler requests a floor from MapSpawner, MapSpawner asks ChunkSpawner for a chunk, ChunkSpawner returns a prefab, and MapSpawner returns the placed floor to GameplayHandler" width="1236" height="180" loading="lazy">
+                <figcaption>How the gameplay loop, <code class="language-csharp">MapSpawner</code>, and
+                    <code class="language-csharp">ChunkSpawner</code> connect when a floor is generated.</figcaption>
+            </figure>
             <p>
                 It took a few passes to get there. My first version in February just lined chunks up one after
                 another, and most of the next week went into adjusting it: changing the perspective to fit the
                 isometric art, adding smaller chunks so floors didn't feel like the same few rooms repeated, and
                 working on the camera so it followed the player across chunk boundaries. Later I added a camera
-                confiner so the view stayed inside the generated map.
+                confiner, using the <a href="https://docs.unity3d.com/Packages/com.unity.cinemachine@3.1/manual/CinemachineConfiner2D.html"
+                    target="_blank" rel="noopener noreferrer">Cinemachine Confiner 2D</a> extension from Unity's
+                Cinemachine package, so the view stayed inside the generated map.
             </p>
             <figure class="blog-image-placeholder">
-                <img src="images/fnf-chunk-prefabs.png" alt="Three isometric chunk prefabs" width="1910" height="516" loading="lazy">
-                <figcaption>Three of the chunk prefabs the generator picks from, pulled out of the Unity Scene view.</figcaption>
+                <img src="images/file-not-found/chunk-sequence.png" alt="Three isometric chunks laid out in a row, with arrows leading from the start of the level in the first chunk to the end of the level in the last" width="1763" height="448" loading="lazy">
+                <figcaption>Three chunks stitched into one floor in the Unity Scene view. The player enters at the
+                    start of the first chunk and exits at the end of the last.</figcaption>
             </figure>
             <p>
                 The excerpt below shows the placement step; prefab validation and scene references are omitted.
             </p>
-            <pre tabindex="0" aria-label="Placing generated map chunks"><code class="language-csharp">GameObject prefab = chunkGen.GetRandomMapChunk(band);
+            <pre tabindex="0" aria-label="Placing generated map chunks"><code class="language-csharp">GameObject prefab = chunkSpawner.GetRandomMapChunk(band);
 GameObject chunk = Instantiate(prefab, chunkContainer);
 chunk.transform.position = new Vector3(_chunkOffset, 0, 0);
 
@@ -95,12 +129,26 @@ _chunkOffset += width + chunkSpacing;</code></pre>
             <h4>Spawning Enemies</h4>
             <p>
                 Enemy placement uses a separate tilemap layer painted by level designers. The spawner filters out
-                cells near the entry teleporter, shuffles the remaining cells with a Fisher&ndash;Yates shuffle, and
-                raycasts beneath candidates to reject cells over gaps.
+                cells near the entry teleporter, picks from the remaining cells, and raycasts beneath candidates to
+                reject cells over gaps.
             </p>
             <p>
-                Shuffling first and then taking cells in order gives every painted cell the same chance of being
-                picked, without repeats:
+                My first attempt at picking cells was Poisson disk sampling, which spreads points out so no two land
+                closer than a minimum distance. It was on the right track, but it was more complex than this
+                problem needed: I had to tune a radius per chunk size, keep a grid and an active list of candidates,
+                and still throw out any point that fell off the painted layer. Since designers were already choosing
+                where enemies could appear by painting that layer, I didn't need the spacing guarantee on top of it.
+            </p>
+            <figure class="blog-image-placeholder">
+                <img src="images/file-not-found/poisson-vs-random.png" alt="Two square panels of dots: uniform random points clump together and leave gaps, while Poisson disk points are spread evenly" width="964" height="540" loading="lazy">
+                <figcaption>Uniform random points (left) clump and leave gaps, while Poisson disk sampling (right) keeps
+                    every point a minimum distance apart.</figcaption>
+            </figure>
+            <p>
+                I switched to a Fisher&ndash;Yates shuffle instead. Shuffling the painted cells once and taking them
+                in order gives every cell the same chance of being picked, never repeats a cell, and runs in a single
+                pass over the list. It also made difficulty easy to express, since a harder floor just takes a larger
+                fraction of the shuffled cells:
             </p>
             <pre tabindex="0" aria-label="Choosing enemy spawn cells"><code class="language-csharp">int targetCount = Mathf.Clamp(
     Mathf.RoundToInt(availableTiles.Count * fillFraction),
@@ -122,8 +170,8 @@ for (int i = 0; i &lt; availableTiles.Count &amp;&amp; placed &lt; targetCount; 
                     target="_blank" rel="noopener noreferrer">SpawnEnemies.cs: spawn-cell selection</a></div>
             <p>
                 If too few candidates pass the ground check, a fallback pass uses the remaining painted cells to meet
-                the target count. Difficulty controls the fraction of valid cells selected, so harder floors fill
-                more of the painted area.
+                the target count. In play, the resulting enemy layouts were indistinguishable from the Poisson
+                version, since the painted layer already kept enemies spread out.
             </p>
 
             <h3>Floor Progression as a Coroutine</h3>
@@ -132,6 +180,11 @@ for (int i = 0; i &lt; availableTiles.Count &amp;&amp; placed &lt; targetCount; 
                 owns the floor state
                 and sequences the preview, gameplay, cleanup, reward screen, and next floor.
             </p>
+            <figure class="blog-image-placeholder">
+                <img src="images/file-not-found/gameplay-handler-diagram.svg" alt="Diagram: GameplayHandler runs the floor sequence and calls LevelUI for the preview and reward screens, MapSpawner to build the floor, UpgradeManager for upgrade picks, and SceneManager for the boss floor" width="1236" height="436" loading="lazy">
+                <figcaption>The systems <code class="language-csharp">GameplayHandler</code> calls as it runs a floor,
+                    in the order the sequence reaches them.</figcaption>
+            </figure>
             <p>
                 The loop took longer to settle than anything else I worked on. Between late March and the April
                 build I reworked it several times. Early on, the flow was spread across separate scenes, and
@@ -166,11 +219,10 @@ StartCoroutine(FloorSequence());</code></pre>
             <h4>Scoring a Floor</h4>
             <p>
                 Floor XP combines kills, enemies avoided, and a time bonus. The time component falls toward zero as
-                the player exceeds a par time based on chunk count and difficulty. That gives combat and pace separate
-                contributions, so clearing a floor quickly has value without making kills irrelevant.
+                the player exceeds a par time based on chunk count and difficulty. That way, playing fast is rewarded, but kills still count.
             </p>
             <figure class="blog-image-placeholder">
-                <img src="images/fnf-xp-and-upgrades.jpg" alt="Floor XP breakdown and upgrade cards" width="1920" height="540" loading="lazy">
+                <img src="images/file-not-found/xp-and-upgrades.jpg" alt="Floor XP breakdown and upgrade cards" width="1920" height="540" loading="lazy">
                 <figcaption>The XP breakdown at the end of a floor, followed by the three upgrade cards offered afterward.</figcaption>
             </figure>
             <p>
@@ -184,13 +236,80 @@ StartCoroutine(FloorSequence());</code></pre>
                 <code>upgradeID</code>. An <code class="language-csharp">UpgradeDisplaySO</code> holds the card-facing
                 data: name, description, image, rarity, and category. An
                 <code class="language-csharp">UpgradeEffectsSO</code> holds the gameplay side: the shared ID, stack limit, and a
-                list of effect objects. This lets the UI display an upgrade without knowing how its mechanics work.
+                list of effect objects.
+            </p>
+            <p>
+                The display asset is plain data. Nothing in it affects gameplay, so an artist or designer can change a
+                card's name, art, or rarity without touching code:
+            </p>
+            <pre tabindex="0" aria-label="UpgradeDisplaySO fields"><code class="language-csharp">[CreateAssetMenu(fileName = "UpgradeDisplay_", menuName = "Upgrades/Upgrade Display")]
+public class UpgradeDisplaySO : ScriptableObject
+{
+    [Header("Identity")]
+    public string upgradeID;  // must match the paired UpgradeEffectsSO
+
+    [Header("Card Face")]
+    public string upgradeName;
+    [TextArea(2, 5)]
+    public string upgradeDescription;
+    public Sprite cardImage;
+
+    [Header("Upgrade Meta")]
+    public UpgradeRarity rarity;
+    public UpgradeCategory category;
+}</code></pre>
+            <div class="code-source"><a href="https://github.com/teemcck/StudioW26RnD/blob/main/Assets/Scripts/Upgrades/Definitions/UpgradeDisplaySO.cs"
+                    target="_blank" rel="noopener noreferrer">UpgradeDisplaySO.cs (tooltips omitted)</a></div>
+            <p>
+                The effects asset carries the same ID, plus everything the game needs to apply the upgrade. Its
+                methods only loop over the effect list, so the asset itself never needs to know what any one effect
+                does:
+            </p>
+            <pre tabindex="0" aria-label="UpgradeEffectsSO fields and Apply"><code class="language-csharp">[CreateAssetMenu(fileName = "UpgradeEffects_", menuName = "Upgrades/UpgradeEffects")]
+public class UpgradeEffectsSO : ScriptableObject
+{
+    [Header("Identity")]
+    public string upgradeID;  // primary key shared with the display asset
+
+    [Header("Stacking")]
+    public int maxStacks = 1;  // -1 = unlimited
+    public bool scaleWithStacks = false;
+    public UpgradeTrait[] traits;
+
+    [Header("Effects")]
+    [SerializeReference]
+    public List&lt;UpgradeEffect&gt; effects = new();
+
+    public void Apply(UpgradeContext ctx, int stackCount = 1)
+    {
+        foreach (UpgradeEffect effect in effects)
+            effect?.Apply(ctx);
+    }
+
+    // Remove, Tick, and BuildAutoDescription follow the same pattern
+}</code></pre>
+            <div class="code-source"><a href="https://github.com/teemcck/StudioW26RnD/blob/main/Assets/Scripts/Upgrades/Definitions/UpgradeEffectsSO.cs"
+                    target="_blank" rel="noopener noreferrer">UpgradeEffectsSO.cs (abbreviated)</a></div>
+            <figure class="blog-image-placeholder">
+                <img src="images/file-not-found/upgrade-representation-diagram.svg" alt="Diagram: UpgradeDisplaySO, holding the name, description, art, and rarity, is linked by the same upgradeID to UpgradeEffectsSO, holding the stack limit and effects list. Below it, a tree branches to three different effect subclasses: StatChangeEffect, OnKillHealEffect, and LifestealEffect" width="916" height="820" loading="lazy"
+                    style="max-width: 600px; margin: 0 auto;">
+                <figcaption>How one upgrade is represented: a display asset and an effects asset joined by a
+                    shared <code>upgradeID</code> (dashed line). The effects list can mix different effect
+                    subclasses in one upgrade.</figcaption>
+            </figure>
+            <p>
+                The three effects in the tree are just an example of what an effects asset might contain. A
+                simple upgrade may hold a single effect, while another can combine several different effect
+                types, each with its own values, in the same list.
+            </p>
+            <p>
+                Because of this split, the card UI and the upgrade manager don't depend on each other.
             </p>
 
             <h4>Adding a New Upgrade</h4>
             <p>
                 The manager has serialized registries for both asset types. At startup it builds dictionaries keyed
-                by ID, warning about duplicates. To add a card, I create one display asset and one effects asset,
+                by ID. To add a card, I create one display asset and one effects asset,
                 assign the same ID to each, then add the pair to the manager's registries. If an effects asset has
                 no matching display, it cannot be offered; if the ID is duplicated, the manager reports it instead
                 of silently treating two cards as one.
@@ -206,10 +325,14 @@ StartCoroutine(FloorSequence());</code></pre>
                     types.</li>
                 <li>Add the two assets to the <code class="language-csharp">UpgradeManager</code> display and effect registries.</li>
             </ol>
+            <figure class="blog-image-placeholder">
+                <img src="images/file-not-found/assassin-inspector.jpg" alt="Assassin display and effects assets in the Inspector" width="1920" height="575" loading="lazy">
+                <figcaption>The paired Assassin display and effects assets in the Unity Inspector.</figcaption>
+            </figure>
 
             <h4>Effects as Interchangeable Classes</h4>
             <p>
-                The effects list is polymorphic: it is serialized with <code>[SerializeReference]</code> and stores
+                The effects list is polymorphic: it is serialized with <code class="language-csharp">[SerializeReference]</code> and stores
                 instances of classes derived from <code class="language-csharp">UpgradeEffect</code>. Each effect implements the same small
                 contract. <code>Apply</code> changes the run, <code>Remove</code> reverses that change, and
                 <code>GetDescription</code> provides readable text. An effect can also opt into per-frame updates
@@ -286,76 +409,12 @@ public override void Remove(UpgradeContext ctx)
                 <code class="language-csharp">UpgradeContext</code> containing the player, stats, status effects, spawn manager, and game
                 rules.
             </p>
-
-            <h4>Example: the Assassin Upgrade</h4>
-            <p>
-                The <em>Assassin</em> upgrade shows how small effect types can be composed into one card. Its display
-                asset contains the title, description, art, and rarity; its effects asset uses the same ID and stores
-                two <code class="language-csharp">PlayerUpgradeModifierEffect</code> instances: one sets the post-dash damage multiplier and
-                the other sets its duration. The behavior lives in reusable effect code, while the values live in
-                the asset. I worked on this upgrade UI and the progression path that offers these assets after a
-                level threshold is crossed.
-            </p>
             <figure class="blog-image-placeholder">
-                <img src="images/fnf-assassin-inspector.jpg" alt="Assassin display and effects assets in the Inspector" width="1920" height="575" loading="lazy">
-                <figcaption>The paired Assassin display and effects assets in the Unity Inspector.</figcaption>
+                <img src="images/file-not-found/upgrade-runtime-diagram.svg" alt="Diagram: UpgradeDisplaySO and UpgradeEffectsSO share an upgradeID and are both registered with UpgradeManager. UpgradeEffectsSO holds a list of UpgradeEffect subclasses. UpgradeManager offers choices to UpgradeUIHandler, receives the picked card, and applies the upgrade with an UpgradeContext, which the effects use to change the run" width="1716" height="537" loading="lazy">
+                <figcaption>The same two assets at runtime: the manager registers them by ID, offers cards to the
+                    upgrade UI, and applies the picked card's effects through an
+                    <code class="language-csharp">UpgradeContext</code>.</figcaption>
             </figure>
-            <p>
-                <a href="https://github.com/teemcck/StudioW26RnD/tree/main/Assets/Data/Upgrades"
-                    target="_blank" rel="noopener noreferrer">Browse the upgrade display and effect assets.</a>
-            </p>
-
-            <h3>Combat and Encounter Structure</h3>
-            <p>
-                The project added melee, ranged, lobbing, shield, splitting, and plague-doctor enemies. Their
-                different attack ranges and movement patterns make spawn composition matter, so the map generator
-                uses world-specific weighted enemy pools rather than choosing every prefab uniformly. Teammates
-                implemented much of the enemy behavior; my contributions centered on fitting encounters into the
-                generated floor and reward flow.
-            </p>
-
-            <h4>The Worm Boss</h4>
-            <figure class="blog-image-placeholder">
-                <img src="images/fnf-worm-boss.jpg" alt="The Worm boss arena" width="1920" height="1080" loading="lazy">
-                <figcaption>The Worm boss arena, with the boss health bar along the top.</figcaption>
-            </figure>
-            <p>
-                The final encounter is a Worm boss in its own scene. Its controller is split across partial classes
-                for attacks, burrowing, lasers, phases, presentation, and settings. That structure keeps the Unity
-                component and serialized settings together while isolating attack logic that would otherwise make
-                one controller difficult to navigate. The attack set expands by phase:
-            </p>
-            <pre tabindex="0" aria-label="Worm boss attack types"><code class="language-csharp">public enum BossAttackType
-{
-    Melee,
-    Shoot,
-    Dig,
-    Laser
-}</code></pre>
-            <div class="code-source"><a href="https://github.com/teemcck/StudioW26RnD/blob/main/Assets/Scripts/Combat/Boss/WormBossController.cs"
-                    target="_blank" rel="noopener noreferrer">WormBossController.cs: attack types</a></div>
-            <p>
-                Later phases also get faster. The recovery time after an attack drops from 2.0 to 1.4 to 0.9
-                seconds across the three phases, and in phase three the boss can chain a second attack right after
-                the first.
-            </p>
-
-            <h3>Implementation Scope</h3>
-            <p>
-                The repository moves from map and camera experiments in February to the floor loop, leveling UI,
-                enemy variety, scene flow, audio, and a dedicated boss encounter by April.
-            </p>
-            <figure class="blog-image-placeholder">
-                <img src="images/thumbnails/default-thumbnail.png" alt="Default placeholder image">
-                <figcaption>Suggested image: the repository's commit history from February to April 2026.</figcaption>
-            </figure>
-            <p>
-                My implementation work
-                concentrated on map generation, camera behavior, upgrade selection, and floor progression. Boss and
-                enemy behavior was developed with the rest of the programming team. The integration boundary mattered
-                most at floor transitions: the player state had to survive reward selection and carry into the next
-                generated level or boss scene.
-            </p>
 
             <h3>Fall 2026: Programming Director</h3>
             <p>
@@ -377,7 +436,7 @@ public override void Remove(UpgradeContext ctx)
                 <li><strong>Core systems:</strong> a weapon framework built on <code class="language-csharp">WeaponData</code>, a save
                     system, a basic inventory, data-driven world setup, and enemy defeat progression.</li>
                 <li><strong>Enemies and bosses:</strong> enemy pathfinding, a grabber enemy, shield enemy reflection,
-                    boss refactoring and boss room fixes, and the Verifier mini boss for World 2.</li>
+                    boss refactoring and boss room fixes, and the Verifier miniboss for World 2.</li>
                 <li><strong>Weapons:</strong> a flamethrower and a time bomb, plus a fix for projectiles passing
                     through obstacles.</li>
                 <li><strong>UI and tools:</strong> the pause menu, a settings menu with master volume, UI hotkeys,
@@ -388,35 +447,196 @@ public override void Remove(UpgradeContext ctx)
 
             <h4>Refactoring for a Larger Team</h4>
             <p>
-                Several of my own changes were aimed at making the codebase easier to share.
+                Several of my own changes were aimed at making the codebase easier to share. With more people
+                working at once, the files everyone had to touch were where merge conflicts piled up, so most of
+                these refactors break one shared file into smaller pieces with a clear place for new work to go.
+            </p>
+
+            <h4>Upgrade Behaviors</h4>
+            <p>
+                <code class="language-csharp">PlayerUpgradeRuntime</code> had grown into one large class that held the
+                logic for every upgrade, so adding a card meant editing the same file as everyone else. I split it into
+                small behavior classes (dash, on-hit, on-kill, defense, status, and conditional damage), each
+                implementing only the interfaces it needs:
+            </p>
+            <pre tabindex="0" aria-label="Upgrade behavior interfaces"><code class="language-csharp">public interface IUpgradeBehavior
+{
+    void Initialize(UpgradeBehaviorContext context);
+    void Activate();
+    void Deactivate();
+}
+
+public interface ITickingUpgradeBehavior
+{
+    void Tick(float deltaTime);
+}
+
+public interface IAttackDamageModifier
+{
+    void ModifyAttack(UpgradeAttackQuery query, ref UpgradeAttackBonuses bonuses);
+}
+
+public interface IIncomingDamageModifier
+{
+    float GetDamageReduction();
+}
+
+// ...plus on-attack, status-rule, and energy bolt hooks</code></pre>
+            <div class="code-source">UpgradeBehaviorInterfaces.cs (abbreviated, studio GitLab)</div>
+            <p>
+                The runtime now just keeps a list of registered behaviors and asks each one whether it cares about an
+                event. Building an attack's damage, for example, only touches behaviors that implement
+                <code class="language-csharp">IAttackDamageModifier</code>:
+            </p>
+            <pre tabindex="0" aria-label="Building an attack damage snapshot"><code class="language-csharp">public AttackDamageSnapshot BuildAttackSnapshot(AttackKind attackKind, Vector2 origin,
+    EnemyBase target, int nearbyEnemyCount)
+{
+    var query = new UpgradeAttackQuery(attackKind, origin, target, nearbyEnemyCount);
+    var bonuses = new UpgradeAttackBonuses();
+    foreach (var registration in _snapshot)
+        if (registration.Behavior is IAttackDamageModifier modifier)
+            modifier.ModifyAttack(query, ref bonuses);
+    return new AttackDamageSnapshot(bonuses.Flat, bonuses.Multiplier, bonuses.ConsumeSpiteStacks);
+}</code></pre>
+            <div class="code-source">PlayerUpgradeRuntime.cs: BuildAttackSnapshot (studio GitLab)</div>
+            <figure class="blog-image-placeholder">
+                <img src="images/file-not-found/attack-behaviors-diagram.svg" alt="Diagram: PlayerUpgradeRuntime's BuildAttackSnapshot asks only the behaviors that implement IAttackDamageModifier, which are the dash, conditional damage, and spite behaviors. Other behaviors such as defense, on-hit, and on-kill are skipped" width="1108" height="628" loading="lazy">
+                <figcaption>Which behaviors take part when an attack's damage is built. Only those implementing
+                    <code class="language-csharp">IAttackDamageModifier</code> are asked; the rest are skipped.</figcaption>
+            </figure>
+            <p>
+                The arrows lead to the dash, conditional damage, and spite behaviors because each of them changes how
+                hard an attack hits, so each implements <code class="language-csharp">IAttackDamageModifier</code>.
+                The dash behavior adds a damage multiplier for a short window after the player dashes. The
+                conditional damage behavior adds flat damage based on the situation: the number of nearby enemies
+                for a melee attack, the distance to the target for a ranged one, and how much health the player is
+                missing. The spite behavior builds up stacks when the player takes damage, then spends them on a
+                damage multiplier for the next attack. Defense, on-hit, and on-kill behaviors respond to other
+                events, so building an attack's damage never calls them.
+            </p>
+            <p>
+                This was my first time using the C# <code class="language-csharp">interface</code> keyword for a Unity project,
+                and I was very happy with how much more organized the code became after the change.
+            </p>
+            <p>
+                
+            </p>
+
+            <h4>UI Manager</h4>
+            <p>
+                Before, each menu and HUD panel managed its own visibility. I added a central
+                <code class="language-csharp">UIManager</code> that every panel registers with by ID, so showing or hiding
+                any screen goes through one place:
             </p>
             <figure class="blog-image-placeholder">
-                <img src="images/fnf-hud-and-summary.jpg" alt="The HUD and the floor summary screen" width="1920" height="537" loading="lazy">
+                <img src="images/file-not-found/hud-and-summary.jpg" alt="The HUD and the floor summary screen" width="1920" height="540" loading="lazy">
                 <figcaption>The in-game HUD (left) and the floor summary screen (right), both driven by the new UI manager.</figcaption>
             </figure>
             <p>
-                The main ones:
+                Panels can share an exclusive group, and showing one menu in a group hides the rest, so two menus
+                in the same group can never be open at once:
             </p>
-            <ul>
-                <li><strong>Upgrade behaviors:</strong> I split the large <code class="language-csharp">PlayerUpgradeRuntime</code> into
-                    small behavior classes behind shared interfaces (dash, on-hit, on-kill, defense, status, and
-                    conditional damage), so a new upgrade adds a class instead of growing one file.</li>
-                <li><strong>UI manager:</strong> I added a central <code class="language-csharp">UIManager</code> that the HUD, tooltips,
-                    boss health bar, and floor summary screens go through, instead of each panel managing itself.</li>
-                <li><strong>Map and audio:</strong> I reworked map stitching around a chunk catalog and lookup,
-                    and refactored the audio manager to use a pooled set of audio sources.</li>
-                <li><strong>Debug tools and input:</strong> I improved the debug menu controls and switched all
-                    player weapons to manual input.</li>
-            </ul>
+            <pre tabindex="0" aria-label="UIManager panels and ShowPanel"><code class="language-csharp">[Serializable]
+private sealed class ManagedPanel
+{
+    public string id;
+    public GameObject panel;
+    public string exclusiveGroup;
+    public bool initiallyVisible;
+}
+
+public bool ShowPanel(string panelId)
+{
+    if (!TryGetPanel(panelId, out ManagedPanel requested))
+        return false;
+
+    // Showing a menu hides every other panel in its group
+    if (!string.IsNullOrWhiteSpace(requested.exclusiveGroup))
+        foreach (ManagedPanel panel in _panelsById.Values)
+            if (panel.id != requested.id &amp;&amp; panel.exclusiveGroup == requested.exclusiveGroup)
+                SetPanelActive(panel, false);
+
+    SetPanelActive(requested, true);
+    if (!string.IsNullOrWhiteSpace(requested.exclusiveGroup))
+        ActiveMenuId = panelId;
+    return true;
+}</code></pre>
+            <div class="code-source">UIManager.cs (abbreviated, studio GitLab)</div>
+            <p>
+                The manager also remembers which menu was open before Settings, so closing Settings returns you to
+                whichever menu you opened it from.
+            </p>
+
+            <h4>Chunk Lookup</h4>
+            <p>
+                Once floors were stitched from chunks, other systems needed to ask where things are on the floor,
+                such as whether two positions are in the same chunk. I moved that geometry out of <code class="language-csharp">MapSpawner</code> into a
+                small <code class="language-csharp">MapChunkLookup</code> class, which merges each chunk's tilemap bounds and
+                checks which one contains a point:
+            </p>
+            <pre tabindex="0" aria-label="Finding the chunk at a world position"><code class="language-csharp">public bool TryGetChunkIndexAtWorldPosition(Vector2 worldPos, out int index)
+{
+    index = -1;
+    for (int i = 0; i &lt; _chunks.Count; i++)
+    {
+        if (!_chunks[i] || !TryGetMergedTilemapWorldBounds(_chunks[i], out Bounds worldBounds))
+            continue;
+
+        Vector3 p = new Vector3(worldPos.x, worldPos.y, worldBounds.center.z);
+        if (worldBounds.Contains(p))
+        {
+            index = i;
+            return true;
+        }
+    }
+    return false;
+}</code></pre>
+            <div class="code-source">MapChunkLookup.cs (abbreviated, studio GitLab)</div>
+            <p>
+                <code class="language-csharp">MapSpawner</code> still owns the list of placed chunks and just forwards these
+                questions to the lookup, so the spawner stays focused on building the floor.
+            </p>
+
+            <h4>Pooled Audio</h4>
+            <p>
+                I refactored the audio manager so sound effects play through a small pool of
+                <code class="language-csharp">AudioSource</code> components. The pool hands back one that has finished
+                playing and only creates a new source when every existing one is busy:
+            </p>
+            <pre tabindex="0" aria-label="Audio source pool"><code class="language-csharp">public AudioSource GetAvailableSource()
+{
+    foreach (var source in _sources)
+        if (source != null &amp;&amp; !source.isPlaying)
+            return source;
+    return CreateSource();  // every source is busy, so grow the pool
+}
+
+// AudioManager: every sound effect goes through the same path
+private void PlaySfxPooled(AudioClip clip, float volumeScale, float pitch, float panStereo)
+{
+    AudioSource src = _sfxPool.GetAvailableSource();
+    src.pitch = Mathf.Clamp(pitch, 0.5f, 2f);
+    src.panStereo = Mathf.Clamp(panStereo, -1f, 1f);
+    float v = sfxVolume * Mathf.Clamp01(volumeScale);
+    src.volume = v;
+    src.PlayOneShot(clip, v);
+}</code></pre>
+            <div class="code-source">AudioSourcePool.cs and AudioManager.cs (abbreviated, studio GitLab)</div>
+            <p>
+                Since every effect goes through <code class="language-csharp">PlaySfxPooled</code>, volume, pitch, and
+                panning are set in one place instead of at every call site, and sources are reused rather than
+                created for each sound.
+            </p>
 
             <h4>Project Wiki</h4>
             <p>
-                The repository includes a wiki in <code>docs/</code>, which has grown to about 35 pages, so new
+                The repository includes a wiki in <code class="file-path">docs/</code>, which has grown to about 35 pages, so new
                 programmers can learn a system before changing it.
             </p>
             <figure class="blog-image-placeholder">
-                <img src="images/thumbnails/default-thumbnail.png" alt="Default placeholder image">
-                <figcaption>Suggested image: the wiki's home page and table of contents.</figcaption>
+                <img src="images/file-not-found/wiki-home.png" alt="The File Not Found wiki home page on the studio GitLab, with the list of wiki pages in the sidebar" width="1523" height="780" loading="lazy">
+                <figcaption>The wiki's home page on the studio GitLab. Its pages are written in the repository's
+                    <code class="file-path">docs/</code> folder and synced to the wiki.</figcaption>
             </figure>
             <p>
                 I kept the home page and table of contents up to
