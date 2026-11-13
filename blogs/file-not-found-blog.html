@@ -8,13 +8,13 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/reset.css">
-    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="../css/reset.css">
+    <link rel="stylesheet" href="../css/base.css">
     <link rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/line-numbers/prism-line-numbers.min.css">
-    <link rel="stylesheet" href="css/blog.css">
-    <script defer src="js/blog-nav.js"></script>
-    <script defer src="js/image-preview.js"></script>
+    <link rel="stylesheet" href="../css/blog.css">
+    <script defer src="../js/blog-nav.js"></script>
+    <script defer src="../js/image-preview.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-core.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-clike.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-csharp.min.js"
@@ -24,7 +24,7 @@
 <body>
     <header>
         <div class="breadcrumb">
-            <a href="index.html">~/portfolio</a><span
+            <a href="../index.html">~/portfolio</a><span
                 class="path-sep">/</span><span class="path-current">file-not-found-blog</span>
         </div>
         <div id="hero">
@@ -49,8 +49,8 @@
                 My work focused on map generation, camera behavior, upgrade selection, and floor progression.
             </p>
             <figure class="blog-image-placeholder">
-                <video controls preload="metadata" width="1280" height="720" poster="images/file-not-found/gameplay-poster.jpg">
-                    <source src="videos/file-not-found-gameplay.mp4" type="video/mp4">
+                <video controls preload="metadata" width="1280" height="720" poster="../images/file-not-found/gameplay-poster.jpg">
+                    <source src="../videos/file-not-found-gameplay.mp4" type="video/mp4">
                     Your browser does not support embedded video.
                 </video>
                 <figcaption>Demo gameplay footage recorded from the original "File Not Found" prototype.</figcaption>
@@ -77,7 +77,7 @@
                 still letting each floor feel different.
             </p>
             <figure class="blog-image-placeholder">
-                <img src="images/file-not-found/hades-tartarus-chamber.jpg" alt="A hand-authored chamber in Tartarus from Hades" width="1920" height="1080" loading="lazy">
+                <img src="../images/file-not-found/hades-tartarus-chamber.jpg" alt="A hand-authored chamber in Tartarus from Hades" width="1920" height="1080" loading="lazy">
                 <figcaption>A chamber in Tartarus from Hades. Each chamber is built by hand, and a run strings them
                     together in a different order. Screenshot: Supergiant Games, via the <a
                         href="https://store.steampowered.com/app/1145360/Hades/" target="_blank"
@@ -91,7 +91,7 @@
                 and <code class="language-csharp">MapSpawner</code> places each chunk directly after the previous one.
             </p>
             <figure class="blog-image-placeholder">
-                <img src="images/file-not-found/map-generation-diagram.svg" alt="Diagram: GameplayHandler requests a floor from MapSpawner, MapSpawner asks ChunkSpawner for a chunk, ChunkSpawner returns a prefab, and MapSpawner returns the placed floor to GameplayHandler" width="1236" height="180" loading="lazy">
+                <img src="../images/file-not-found/map-generation-diagram.svg" alt="Diagram: GameplayHandler requests a floor from MapSpawner, MapSpawner asks ChunkSpawner for a chunk, ChunkSpawner returns a prefab, and MapSpawner returns the placed floor to GameplayHandler" width="1236" height="180" loading="lazy">
                 <figcaption>How the gameplay loop, <code class="language-csharp">MapSpawner</code>, and
                     <code class="language-csharp">ChunkSpawner</code> connect when a floor is generated.</figcaption>
             </figure>
@@ -105,7 +105,7 @@
                 Cinemachine package, so the view stayed inside the generated map.
             </p>
             <figure class="blog-image-placeholder">
-                <img src="images/file-not-found/chunk-sequence.png" alt="Three isometric chunks laid out in a row, with arrows leading from the start of the level in the first chunk to the end of the level in the last" width="1763" height="448" loading="lazy">
+                <img src="../images/file-not-found/chunk-sequence.png" alt="Three isometric chunks laid out in a row, with arrows leading from the start of the level in the first chunk to the end of the level in the last" width="1763" height="448" loading="lazy">
                 <figcaption>Three chunks stitched into one floor in the Unity Scene view. The player enters at the
                     start of the first chunk and exits at the end of the last.</figcaption>
             </figure>
@@ -140,7 +140,7 @@ _chunkOffset += width + chunkSpacing;</code></pre>
                 where enemies could appear by painting that layer, I didn't need the spacing guarantee on top of it.
             </p>
             <figure class="blog-image-placeholder">
-                <img src="images/file-not-found/poisson-vs-random.png" alt="Two square panels of dots: uniform random points clump together and leave gaps, while Poisson disk points are spread evenly" width="964" height="540" loading="lazy">
+                <img src="../images/file-not-found/poisson-vs-random.png" alt="Two square panels of dots: uniform random points clump together and leave gaps, while Poisson disk points are spread evenly" width="964" height="540" loading="lazy">
                 <figcaption>Uniform random points (left) clump and leave gaps, while Poisson disk sampling (right) keeps
                     every point a minimum distance apart.</figcaption>
             </figure>
@@ -181,7 +181,7 @@ for (int i = 0; i &lt; availableTiles.Count &amp;&amp; placed &lt; targetCount; 
                 and sequences the preview, gameplay, cleanup, reward screen, and next floor.
             </p>
             <figure class="blog-image-placeholder">
-                <img src="images/file-not-found/gameplay-handler-diagram.svg" alt="Diagram: GameplayHandler runs the floor sequence and calls LevelUI for the preview and reward screens, MapSpawner to build the floor, UpgradeManager for upgrade picks, and SceneManager for the boss floor" width="1236" height="436" loading="lazy">
+                <img src="../images/file-not-found/gameplay-handler-diagram.svg" alt="Diagram: GameplayHandler runs the floor sequence and calls LevelUI for the preview and reward screens, MapSpawner to build the floor, UpgradeManager for upgrade picks, and SceneManager for the boss floor" width="1236" height="436" loading="lazy">
                 <figcaption>The systems <code class="language-csharp">GameplayHandler</code> calls as it runs a floor,
                     in the order the sequence reaches them.</figcaption>
             </figure>
@@ -222,7 +222,7 @@ StartCoroutine(FloorSequence());</code></pre>
                 the player exceeds a par time based on chunk count and difficulty. That way, playing fast is rewarded, but kills still count.
             </p>
             <figure class="blog-image-placeholder">
-                <img src="images/file-not-found/xp-and-upgrades.jpg" alt="Floor XP breakdown and upgrade cards" width="1920" height="540" loading="lazy">
+                <img src="../images/file-not-found/xp-and-upgrades.jpg" alt="Floor XP breakdown and upgrade cards" width="1920" height="540" loading="lazy">
                 <figcaption>The XP breakdown at the end of a floor, followed by the three upgrade cards offered afterward.</figcaption>
             </figure>
             <p>
@@ -291,7 +291,7 @@ public class UpgradeEffectsSO : ScriptableObject
             <div class="code-source"><a href="https://github.com/teemcck/StudioW26RnD/blob/main/Assets/Scripts/Upgrades/Definitions/UpgradeEffectsSO.cs"
                     target="_blank" rel="noopener noreferrer">UpgradeEffectsSO.cs (abbreviated)</a></div>
             <figure class="blog-image-placeholder">
-                <img src="images/file-not-found/upgrade-representation-diagram.svg" alt="Diagram: UpgradeDisplaySO, holding the name, description, art, and rarity, is linked by the same upgradeID to UpgradeEffectsSO, holding the stack limit and effects list. Below it, a tree branches to three different effect subclasses: StatChangeEffect, OnKillHealEffect, and LifestealEffect" width="916" height="820" loading="lazy"
+                <img src="../images/file-not-found/upgrade-representation-diagram.svg" alt="Diagram: UpgradeDisplaySO, holding the name, description, art, and rarity, is linked by the same upgradeID to UpgradeEffectsSO, holding the stack limit and effects list. Below it, a tree branches to three different effect subclasses: StatChangeEffect, OnKillHealEffect, and LifestealEffect" width="916" height="820" loading="lazy"
                     style="max-width: 600px; margin: 0 auto;">
                 <figcaption>How one upgrade is represented: a display asset and an effects asset joined by a
                     shared <code>upgradeID</code> (dashed line). The effects list can mix different effect
@@ -326,7 +326,7 @@ public class UpgradeEffectsSO : ScriptableObject
                 <li>Add the two assets to the <code class="language-csharp">UpgradeManager</code> display and effect registries.</li>
             </ol>
             <figure class="blog-image-placeholder">
-                <img src="images/file-not-found/assassin-inspector.jpg" alt="Assassin display and effects assets in the Inspector" width="1920" height="575" loading="lazy">
+                <img src="../images/file-not-found/assassin-inspector.jpg" alt="Assassin display and effects assets in the Inspector" width="1920" height="575" loading="lazy">
                 <figcaption>The paired Assassin display and effects assets in the Unity Inspector.</figcaption>
             </figure>
 
@@ -410,7 +410,7 @@ public override void Remove(UpgradeContext ctx)
                 rules.
             </p>
             <figure class="blog-image-placeholder">
-                <img src="images/file-not-found/upgrade-runtime-diagram.svg" alt="Diagram: UpgradeDisplaySO and UpgradeEffectsSO share an upgradeID and are both registered with UpgradeManager. UpgradeEffectsSO holds a list of UpgradeEffect subclasses. UpgradeManager offers choices to UpgradeUIHandler, receives the picked card, and applies the upgrade with an UpgradeContext, which the effects use to change the run" width="1716" height="537" loading="lazy">
+                <img src="../images/file-not-found/upgrade-runtime-diagram.svg" alt="Diagram: UpgradeDisplaySO and UpgradeEffectsSO share an upgradeID and are both registered with UpgradeManager. UpgradeEffectsSO holds a list of UpgradeEffect subclasses. UpgradeManager offers choices to UpgradeUIHandler, receives the picked card, and applies the upgrade with an UpgradeContext, which the effects use to change the run" width="1716" height="537" loading="lazy">
                 <figcaption>The same two assets at runtime: the manager registers them by ID, offers cards to the
                     upgrade UI, and applies the picked card's effects through an
                     <code class="language-csharp">UpgradeContext</code>.</figcaption>
@@ -500,7 +500,7 @@ public interface IIncomingDamageModifier
 }</code></pre>
             <div class="code-source">PlayerUpgradeRuntime.cs: BuildAttackSnapshot (studio GitLab)</div>
             <figure class="blog-image-placeholder">
-                <img src="images/file-not-found/attack-behaviors-diagram.svg" alt="Diagram: PlayerUpgradeRuntime's BuildAttackSnapshot asks only the behaviors that implement IAttackDamageModifier, which are the dash, conditional damage, and spite behaviors. Other behaviors such as defense, on-hit, and on-kill are skipped" width="1108" height="628" loading="lazy">
+                <img src="../images/file-not-found/attack-behaviors-diagram.svg" alt="Diagram: PlayerUpgradeRuntime's BuildAttackSnapshot asks only the behaviors that implement IAttackDamageModifier, which are the dash, conditional damage, and spite behaviors. Other behaviors such as defense, on-hit, and on-kill are skipped" width="1108" height="628" loading="lazy">
                 <figcaption>Which behaviors take part when an attack's damage is built. Only those implementing
                     <code class="language-csharp">IAttackDamageModifier</code> are asked; the rest are skipped.</figcaption>
             </figure>
@@ -529,7 +529,7 @@ public interface IIncomingDamageModifier
                 any screen goes through one place:
             </p>
             <figure class="blog-image-placeholder">
-                <img src="images/file-not-found/hud-and-summary.jpg" alt="The HUD and the floor summary screen" width="1920" height="540" loading="lazy">
+                <img src="../images/file-not-found/hud-and-summary.jpg" alt="The HUD and the floor summary screen" width="1920" height="540" loading="lazy">
                 <figcaption>The in-game HUD (left) and the floor summary screen (right), both driven by the new UI manager.</figcaption>
             </figure>
             <p>
@@ -634,7 +634,7 @@ private void PlaySfxPooled(AudioClip clip, float volumeScale, float pitch, float
                 programmers can learn a system before changing it.
             </p>
             <figure class="blog-image-placeholder">
-                <img src="images/file-not-found/wiki-home.png" alt="The File Not Found wiki home page on the studio GitLab, with the list of wiki pages in the sidebar" width="1523" height="780" loading="lazy">
+                <img src="../images/file-not-found/wiki-home.png" alt="The File Not Found wiki home page on the studio GitLab, with the list of wiki pages in the sidebar" width="1523" height="780" loading="lazy">
                 <figcaption>The wiki's home page on the studio GitLab. Its pages are written in the repository's
                     <code class="file-path">docs/</code> folder and synced to the wiki.</figcaption>
             </figure>

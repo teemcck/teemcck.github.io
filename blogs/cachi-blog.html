@@ -8,13 +8,13 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/reset.css">
-    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="../css/reset.css">
+    <link rel="stylesheet" href="../css/base.css">
     <link rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/line-numbers/prism-line-numbers.min.css">
-    <link rel="stylesheet" href="css/blog.css">
-    <script defer src="js/blog-nav.js"></script>
-    <script defer src="js/image-preview.js"></script>
+    <link rel="stylesheet" href="../css/blog.css">
+    <script defer src="../js/blog-nav.js"></script>
+    <script defer src="../js/image-preview.js"></script>
     <!-- Syntax Highlighting -->
     <script defer src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-core.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-clike.min.js"></script>
@@ -37,7 +37,7 @@
 <body>
     <header>
         <div class="breadcrumb">
-            <a href="index.html">~/portfolio</a><span
+            <a href="../index.html">~/portfolio</a><span
                 class="path-sep">/</span><span class="path-current">cachi-blog</span>
         </div>
         <div id="hero">
@@ -63,7 +63,7 @@
                 not process general memory trace files.
             </p>
             <figure class="blog-image-placeholder">
-                <img src="images/cachi/lc2k-cache-sim.png" width="1080" height="653" alt="Diagram of the EECS 370 LC2K cache simulator: simulator.c calls cache_init, cache_access, and printStats in cache.c, and cache_access calls back into mem_access on a miss or dirty writeback.">
+                <img src="../images/cachi/lc2k-cache-sim.png" width="1080" height="653" alt="Diagram of the EECS 370 LC2K cache simulator: simulator.c calls cache_init, cache_access, and printStats in cache.c, and cache_access calls back into mem_access on a miss or dirty writeback.">
                 <figcaption>How the original LC2K cache simulator was structured. Image from the <a href="https://eecs370.github.io/project_4_spec/#3-cache-simulator" target="_blank" rel="noopener noreferrer">EECS 370 Project 4 spec</a>.</figcaption>
             </figure>
             <p>
@@ -112,7 +112,7 @@
                 divides evenly, so the address can be split into bit fields.
             </p>
             <figure class="blog-image-placeholder">
-                <img src="images/cachi/cache-addressing.png" width="960" height="658" alt="A 32-bit address split into a 10-bit tag, 14-bit index, and 8-bit offset, with the block size, cache size, and address range each field covers.">
+                <img src="../images/cachi/cache-addressing.png" width="960" height="658" alt="A 32-bit address split into a 10-bit tag, 14-bit index, and 8-bit offset, with the block size, cache size, and address range each field covers.">
                 <figcaption>How the field widths line up with block size, cache size, and the full address range. Image: Ferry24.Milan, <a href="https://creativecommons.org/licenses/by-sa/3.0/" target="_blank" rel="noopener noreferrer">CC BY-SA 3.0</a>, via <a href="https://commons.wikimedia.org/wiki/File:Cache_Addressing.svg" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a>.</figcaption>
             </figure>
             <p>
@@ -143,7 +143,7 @@
                 valid lines in the selected set.
             </p>
             <figure class="blog-image-placeholder">
-                <img src="images/cachi/address-fields.png" width="960" height="182" alt="An address split into tag, index, and offset fields, with bit positions marked.">
+                <img src="../images/cachi/address-fields.png" width="960" height="182" alt="An address split into tag, index, and offset fields, with bit positions marked.">
                 <figcaption>An address split into tag, index, and offset fields. Image: User:KCVelaga, <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener noreferrer">CC BY-SA 4.0</a>, via <a href="https://commons.wikimedia.org/wiki/File:Address_direct_mapped_cache.svg" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a>.</figcaption>
             </figure>
             <p>
@@ -171,7 +171,7 @@
                 stripe across the cache.
             </p>
             <figure class="blog-image-placeholder">
-                <img src="images/cachi/direct-vs-2way-fill.png" width="546" height="271" alt="Comparison of where main memory locations can be cached in a direct-mapped cache versus a 2-way set-associative cache.">
+                <img src="../images/cachi/direct-vs-2way-fill.png" width="546" height="271" alt="Comparison of where main memory locations can be cached in a direct-mapped cache versus a 2-way set-associative cache.">
                 <figcaption>Direct-mapped versus 2-way set-associative placement. Image: Hellisp, <a href="https://creativecommons.org/licenses/by-sa/3.0/" target="_blank" rel="noopener noreferrer">CC BY-SA 3.0</a>, via <a href="https://commons.wikimedia.org/wiki/File:Cache,associative-fill-both.png" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a>.</figcaption>
             </figure>
             $$
@@ -197,7 +197,7 @@
                 the set boundaries.
             </p>
             <figure class="blog-image-placeholder">
-                <img src="images/cachi/associative-read-path.png" width="960" height="686" alt="Read path of a 2-way set-associative cache: index bits select an entry in the tag and data arrays, and both ways' tags are compared.">
+                <img src="../images/cachi/associative-read-path.png" width="960" height="686" alt="Read path of a 2-way set-associative cache: index bits select an entry in the tag and data arrays, and both ways' tags are compared.">
                 <figcaption>Read path for a 2-way set-associative cache. Image: A5b, <a href="https://creativecommons.org/licenses/by-sa/3.0/" target="_blank" rel="noopener noreferrer">CC BY-SA 3.0</a>, via <a href="https://commons.wikimedia.org/wiki/File:Cache,associative-read.svg" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a>.</figcaption>
             </figure>
             <p>
@@ -247,7 +247,7 @@
                 <li><strong>Random:</strong> evicts any line in the set (as a fun bonus policy).</li>
             </ul>
             <figure class="blog-image-placeholder">
-                <img src="images/cachi/4way-set-associative.png" width="960" height="591" alt="A 4-way set-associative cache: the address index selects a set, and each line stores state, LRU, and tag bits alongside its data.">
+                <img src="../images/cachi/4way-set-associative.png" width="960" height="591" alt="A 4-way set-associative cache: the address index selects a set, and each line stores state, LRU, and tag bits alongside its data.">
                 <figcaption>A 4-way set-associative cache, with per-line LRU bits next to the tag. Image: Ferry24.Milan, <a href="https://creativecommons.org/licenses/by-sa/3.0/" target="_blank" rel="noopener noreferrer">CC BY-SA 3.0</a>, via <a href="https://commons.wikimedia.org/wiki/File:Set_Associative_Cache.svg" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a>.</figcaption>
             </figure>
             <p>
@@ -312,7 +312,7 @@
                 Here is what each policy did with it:
             </p>
             <figure class="blog-image-placeholder">
-                <img src="images/cachi/mru-test-output.png" width="1794" height="349"
+                <img src="../images/cachi/mru-test-output.png" width="1794" height="349"
                     alt="Terminal output from running Cachi with each replacement policy on the looping trace. LRU and FIFO show a 0.00% hit rate, MRU shows 77.00%, and random shows 61.29%.">
                 <figcaption>Running each policy on <code class="file-path">loop-125-trace.txt</code></figcaption>
             </figure>
@@ -354,7 +354,7 @@
                 dirty blocks written back from above, which is why their access counts are smaller than L1's.
             </p>
             <figure class="blog-image-placeholder">
-                <img src="images/cachi/cache-hierarchy-example.png" width="960" height="640" alt="Cache hierarchy of an AMD K8 processor: split L1 instruction and data caches feeding a unified L2 cache and main memory.">
+                <img src="../images/cachi/cache-hierarchy-example.png" width="960" height="640" alt="Cache hierarchy of an AMD K8 processor: split L1 instruction and data caches feeding a unified L2 cache and main memory.">
                 <figcaption>A real cache hierarchy (AMD K8, circa 2004). Image: Traced by User:Stannered, <a href="https://creativecommons.org/licenses/by-sa/3.0/" target="_blank" rel="noopener noreferrer">CC BY-SA 3.0</a>, via <a href="https://commons.wikimedia.org/wiki/File:Cache,hierarchy-example.svg" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a>.</figcaption>
             </figure>
             <p>
@@ -367,7 +367,7 @@
                 associativity, and replacement policy all come from the config file.
             </p>
             <figure class="blog-image-placeholder">
-                <img src="images/cachi/miss-path-diagram.svg" width="1236" height="180" loading="lazy" alt="Diagram: misses and dirty writebacks from an 8-way LRU L1 cache go to a 4-way FIFO L2 cache, and its misses and dirty writebacks are counted and stopped, since there is no main memory">
+                <img src="../images/cachi/miss-path-diagram.svg" width="1236" height="180" loading="lazy" alt="Diagram: misses and dirty writebacks from an 8-way LRU L1 cache go to a 4-way FIFO L2 cache, and its misses and dirty writebacks are counted and stopped, since there is no main memory">
                 <figcaption>How an access moves through the two-level configuration above. Only misses and dirty
                     writebacks reach the next level, and nothing goes past the last one.</figcaption>
             </figure>
@@ -446,7 +446,7 @@ L 04035e58,8</code></pre>
                 into one request per block, instead of counting it as a single access.
             </p>
             <figure class="blog-image-placeholder">
-                <img src="images/cachi/trace-pipeline-diagram.svg" width="1236" height="180" loading="lazy" alt="Diagram: a C benchmark program is run under Valgrind Lackey to produce a trace file of L, S, and M records, which the trace reader feeds into the cache hierarchy to produce stats for each level">
+                <img src="../images/cachi/trace-pipeline-diagram.svg" width="1236" height="180" loading="lazy" alt="Diagram: a C benchmark program is run under Valgrind Lackey to produce a trace file of L, S, and M records, which the trace reader feeds into the cache hierarchy to produce stats for each level">
                 <figcaption>From a compiled C program to per-level cache statistics.</figcaption>
             </figure>
 

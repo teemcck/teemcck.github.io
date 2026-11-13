@@ -8,13 +8,13 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/reset.css">
-    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="../css/reset.css">
+    <link rel="stylesheet" href="../css/base.css">
     <link rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/line-numbers/prism-line-numbers.min.css">
-    <link rel="stylesheet" href="css/blog.css">
-    <script defer src="js/blog-nav.js"></script>
-    <script defer src="js/image-preview.js"></script>
+    <link rel="stylesheet" href="../css/blog.css">
+    <script defer src="../js/blog-nav.js"></script>
+    <script defer src="../js/image-preview.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-core.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-clike.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-csharp.min.js"
@@ -24,7 +24,7 @@
 <body>
     <header>
         <div class="breadcrumb">
-            <a href="index.html">~/portfolio</a><span
+            <a href="../index.html">~/portfolio</a><span
                 class="path-sep">/</span><span class="path-current">mystic-garden-blog</span>
         </div>
         <div id="hero">
@@ -48,8 +48,8 @@
                 through August 2026, alongside a team of other programmers, artists, and designers.
             </p>
             <figure class="blog-image-placeholder">
-                <video controls preload="metadata" width="1280" height="720" poster="images/mystic-garden/trailer-poster.jpg">
-                    <source src="videos/mystic-garden-trailer.mp4" type="video/mp4">
+                <video controls preload="metadata" width="1280" height="720" poster="../images/mystic-garden/trailer-poster.jpg">
+                    <source src="../videos/mystic-garden-trailer.mp4" type="video/mp4">
                     Your browser does not support embedded video. You can watch the trailer on
                     <a href="https://store.steampowered.com/app/4316230/Mystic_Garden/" target="_blank" rel="noopener noreferrer">Steam</a>.
                 </video>
@@ -159,7 +159,7 @@ public class FlowvineSegment : MonoBehaviour, IMouseInteractable
                 touched instead of every vine on the map.
             </p>
             <figure class="blog-image-placeholder">
-                <img src="images/mystic-garden/flowvine-network.jpg" alt="A Flowvine network carrying items into storage" width="1920" height="1080" loading="lazy">
+                <img src="../images/mystic-garden/flowvine-network.jpg" alt="A Flowvine network carrying items into storage" width="1920" height="1080" loading="lazy">
                 <figcaption>A Flowvine network carrying harvested items into storage.</figcaption>
             </figure>
             <p>
@@ -199,7 +199,7 @@ return bitmask switch
                 To give a brief overview: Dijkstra's algorithm finds the shortest path from a starting node in a graph with non-negative edge weights. Each step settles the closest unsettled node, then updates its neighbors if going through it gives them a shorter distance. Once the target is settled, following each node's previous node back gives the path.
             </p>
             <figure class="blog-image-placeholder">
-                <img src="images/mystic-garden/dijkstra-animation.gif" style="max-width: 420px; margin: 0 auto; padding: 1rem; box-sizing: border-box; background-color: #fff;" alt="Animation of Dijkstra's algorithm settling nodes in a small weighted graph" width="283" height="222" loading="lazy">
+                <img src="../images/mystic-garden/dijkstra-animation.gif" style="max-width: 420px; margin: 0 auto; padding: 1rem; box-sizing: border-box; background-color: #fff;" alt="Animation of Dijkstra's algorithm settling nodes in a small weighted graph" width="283" height="222" loading="lazy">
                 <figcaption>Dijkstra's algorithm settling one node at a time on a small graph. Image: Ibmua, public
                     domain, via <a href="https://commons.wikimedia.org/wiki/File:Dijkstra_Animation.gif" target="_blank"
                         rel="noopener noreferrer">Wikimedia Commons</a>.</figcaption>
@@ -262,8 +262,8 @@ if (targetInventory == null || !targetInventory.InsertItem(item /* ... */).inser
                 to build an overlay that shows the player where items are flowing when they hover over a flowvine system.
             </p>
             <figure class="blog-image-placeholder">
-                <video controls muted loop playsinline preload="metadata" width="1280" height="720" poster="images/mystic-garden/flowvine-hover-poster.jpg" aria-label="Hovering over a Flowvine segment">
-                    <source src="videos/mystic-garden-flowvine-hover.mp4" type="video/mp4">
+                <video controls muted loop playsinline preload="metadata" width="1280" height="720" poster="../images/mystic-garden/flowvine-hover-poster.jpg" aria-label="Hovering over a Flowvine segment">
+                    <source src="../videos/mystic-garden-flowvine-hover.mp4" type="video/mp4">
                 </video>
                 <figcaption>Hovering a segment shows its tooltip, including its current mode (Transfer), harvest chance, and edit controls.
                     Note: after this was implemented, I realized there was z-fighting on the seed preview. I haven't fixed it yet, but I'd like to at a later date.</figcaption>
@@ -286,7 +286,7 @@ if (targetInventory == null || !targetInventory.InsertItem(item /* ... */).inser
                 when disabled.
             </p>
             <figure class="blog-image-placeholder">
-                <img src="images/mystic-garden/season-event-diagram.svg" width="1236" height="436" loading="lazy" alt="Diagram: SeasonVisualManager raises OnSeasonChanged, which SeasonalSpriteChanger, Plant, RainEvent, and HarpyRescueController each subscribe to">
+                <img src="../images/mystic-garden/season-event-diagram.svg" width="1236" height="436" loading="lazy" alt="Diagram: SeasonVisualManager raises OnSeasonChanged, which SeasonalSpriteChanger, Plant, RainEvent, and HarpyRescueController each subscribe to">
                 <figcaption><code class="language-csharp">SeasonVisualManager</code> raises one event, and every
                     seasonal system subscribes to it instead of being called directly.</figcaption>
             </figure>
@@ -317,7 +317,7 @@ private void OnDisable()
                 new harvest chance value rather than a random range.
             </p>
             <figure class="blog-image-placeholder">
-                <img src="images/mystic-garden/harvest-chance.jpg" width="1280" height="720" loading="lazy"
+                <img src="../images/mystic-garden/harvest-chance.jpg" width="1280" height="720" loading="lazy"
                     alt="A plant tooltip in Mystic Garden showing its level, growth stage, and a mature harvest chance of 85 percent.">
                 <figcaption>A plant tooltip showing its mature harvest chance (85%, the maximum). Screenshot from <a href="https://store.steampowered.com/app/4316230/Mystic_Garden/" target="_blank"
                         rel="noopener noreferrer">Mystic Garden on Steam</a>.</figcaption>
@@ -379,7 +379,7 @@ if (hydratedTime &gt;= dehydrationRecoveryTime)
                 the Inspector, and the item hands a copy to the plant when it is used.
             </p>
             <figure class="blog-image-placeholder">
-                <img src="images/mystic-garden/spell-of-preservation.jpg" alt="Spell of Preservation active on plants" width="1920" height="1080" loading="lazy">
+                <img src="../images/mystic-garden/spell-of-preservation.jpg" alt="Spell of Preservation active on plants" width="1920" height="1080" loading="lazy">
                 <figcaption>The Spell of Preservation on a set of plants. The tooltip shows the +15% spell increase and its remaining 29 seconds.</figcaption>
             </figure>
             <p>
@@ -425,7 +425,7 @@ private void RemoveEffect(PlantSpellEffect effect)
                 and restores it.
             </p>
             <figure class="blog-image-placeholder">
-                <img src="images/mystic-garden/quest-log.jpg" alt="The quest log after loading a save" width="1920" height="1080" loading="lazy">
+                <img src="../images/mystic-garden/quest-log.jpg" alt="The quest log after loading a save" width="1920" height="1080" loading="lazy">
                 <figcaption>The quest log after loading a save, with the tutorial quests restored.</figcaption>
             </figure>
             <p>
@@ -464,7 +464,7 @@ private void RemoveEffect(PlantSpellEffect effect)
                 planting. If any condition fails, the lotus decays at its next growth stage instead of maturing.
             </p>
             <figure class="blog-image-placeholder">
-                <img src="images/mystic-garden/raphael-lotus.jpg" alt="A matured Raphael Lotus beside a Caxius" width="1920" height="1080" loading="lazy">
+                <img src="../images/mystic-garden/raphael-lotus.jpg" alt="A matured Raphael Lotus beside a Caxius" width="1920" height="1080" loading="lazy">
                 <figcaption>A matured Raphael Lotus growing next to a Caxius.</figcaption>
             </figure>
             <p>
@@ -509,7 +509,7 @@ if (!matured &amp;&amp; invalidator.Invalid &amp;&amp; !decayed)
 
             <h3>Frostberry and Water Walking</h3>
             <figure class="blog-image-placeholder">
-                <img src="images/mystic-garden/frostberry.jpg" alt="Walking across a pond after eating a Frostberry" width="1920" height="1080" loading="lazy">
+                <img src="../images/mystic-garden/frostberry.jpg" alt="Walking across a pond after eating a Frostberry" width="1920" height="1080" loading="lazy">
                 <figcaption>Walking across the pond after eating a Frostberry.</figcaption>
             </figure>
             <p>
@@ -551,7 +551,7 @@ for (int x = -1; x &lt;= 1; x++)
                 with the Raphael Lotus, the Frostberry, and lilypads for the final builds.
             </p>
             <figure class="blog-image-placeholder">
-                <img src="images/mystic-garden/merge-requests.png" alt="The project-witches merge request list on the studio GitLab, filtered to my eight merged requests, including Raphael lotus, Frostberry implementation, and Lilypad fixes" width="1547" height="768" loading="lazy">
+                <img src="../images/mystic-garden/merge-requests.png" alt="The project-witches merge request list on the studio GitLab, filtered to my eight merged requests, including Raphael lotus, Frostberry implementation, and Lilypad fixes" width="1547" height="768" loading="lazy">
                 <figcaption>My merged requests on the studio GitLab, from the Raphael Lotus through the final
                     bug fixes and polish. Earlier history was lost when the project moved to the new GitLab.</figcaption>
             </figure>

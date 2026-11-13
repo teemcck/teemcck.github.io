@@ -8,13 +8,13 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/reset.css">
-    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="../css/reset.css">
+    <link rel="stylesheet" href="../css/base.css">
     <link rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/line-numbers/prism-line-numbers.min.css">
-    <link rel="stylesheet" href="css/blog.css">
-    <script defer src="js/blog-nav.js"></script>
-    <script defer src="js/image-preview.js"></script>
+    <link rel="stylesheet" href="../css/blog.css">
+    <script defer src="../js/blog-nav.js"></script>
+    <script defer src="../js/image-preview.js"></script>
     <!-- Syntax Highlighting -->
     <script defer src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-core.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-clike.min.js"></script>
@@ -37,7 +37,7 @@
 <body>
     <header>
         <div class="breadcrumb">
-            <a href="index.html">~/portfolio</a><span
+            <a href="../index.html">~/portfolio</a><span
                 class="path-sep">/</span><span class="path-current">huffman-blog</span>
         </div>
         <div id="hero">
@@ -112,7 +112,7 @@
                 prefixes for longer codes further down the tree.
             </p>
             <figure style="margin: 1rem 0;">
-            <img src="images/huffman/abracadabra-tree.svg" width="560" height="270"
+            <img src="../images/huffman/abracadabra-tree.svg" width="560" height="270"
                 alt="Binary code tree. Code 0 is assigned to A. Code 1 branches into 10 and 11, which branch into 100, 101, 110, and 111."
                 style="display: block; width: 100%; max-width: 560px; height: auto; margin: 1rem auto;">
                 <figcaption style="color: var(--light-gray); font-size: 0.85rem; margin-top: 0.5rem; text-align: center;">
@@ -271,7 +271,7 @@
                 code that carries the idea, starting with the first pass over the input.
             </p>
             <figure style="margin: 1rem 0;">
-                <img src="images/huffman/encoder-pipeline-diagram.svg"
+                <img src="../images/huffman/encoder-pipeline-diagram.svg"
                     alt="Diagram of the encoder pipeline in two rows. Finding code lengths: count bytes, build the Huffman tree, then take code lengths from depth. Writing the file: limit lengths to 15 bits, assign canonical codes, then write the header and payload"
                     width="944" height="624" loading="lazy"
                     style="display: block; width: 100%; max-width: 720px; height: auto; margin: 0 auto;">
@@ -765,7 +765,7 @@
                 project's header for context.
             </p>
             <figure style="margin: 1rem 0;">
-                <img src="images/huffman/compression-diagnostics.svg"
+                <img src="../images/huffman/compression-diagnostics.svg"
                     alt="Bar chart comparing per-file compression ratios for the project Huffman encoder, gzip DEFLATE, and an entropy estimate with header"
                     style="display: block; width: 100%; height: auto;">
                 <figcaption style="color: var(--light-gray); font-size: 0.85rem; margin-top: 0.5rem; text-align: center;">

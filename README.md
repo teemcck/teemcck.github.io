@@ -7,7 +7,7 @@ My personal portfolio site, written in plain HTML, CSS, and JavaScript.
 ## Structure
 
 - `index.html`: home page with the About, Projects, Game Jams, and Skills tabs
-- `*-blog.html`: project write-ups
+- `blogs/*-blog.html`: project write-ups
 - `css/reset.css`: browser style reset
 - `css/base.css`: colors, fonts, and styles shared by every page
 - `css/home.css`: home page styles
