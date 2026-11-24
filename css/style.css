@@ -85,6 +85,8 @@ h2.prompt { color: var(--dim); }
 /* ---------------- status bar ---------------- */
 .bar {
     position: relative;
+    z-index: 2;              /* above the scanline overlay, like the windows; 2 keeps the [fx] panel over them */
+    background: var(--bg);
     display: flex;
     flex-wrap: wrap;
     align-items: center;
