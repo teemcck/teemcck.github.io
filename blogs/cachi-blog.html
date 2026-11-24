@@ -1,59 +1,99 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Cachi: Developing a Multi-level Processor Cache Simulator</title>
+    <title>Cachi: Developing a Multi-level Processor Cache Simulator | Tristan McCaskill</title>
+    <meta name="description" content="Building Cachi, a configurable multi-level cache simulator in C that replays Valgrind memory traces.">
+    <link rel="icon" href="../favicon.svg?v=kanagawa" type="image/svg+xml">
+    <link rel="icon" href="../favicon.png?v=kanagawa" type="image/png" sizes="32x32">
+    <link rel="apple-touch-icon" href="../apple-touch-icon.png?v=kanagawa">
+    <meta name="theme-color" content="#181616">
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="Tristan McCaskill">
+    <meta property="og:title" content="Cachi: Developing a Multi-level Processor Cache Simulator">
+    <meta property="og:description" content="Building Cachi, a configurable multi-level cache simulator in C that replays Valgrind memory traces.">
+    <meta property="og:url" content="https://teemcck.github.io/blogs/cachi-blog.html">
+    <meta property="og:image" content="https://teemcck.github.io/images/thumbnails/cachi-thumbnail.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta property="article:published_time" content="2026-11-07">
+    <script>
+        // apply saved theme and effect settings before first paint (see js/settings.js)
+        (function () {
+            var p = {}; try { p = JSON.parse(localStorage.getItem("crt-fx") || "{}"); } catch (e) {}
+            var d = document.documentElement.dataset, rm = matchMedia("(prefers-reduced-motion: reduce)").matches;
+            var t = ["kanagawa", "solarized", "gruvbox", "catppuccin", "moss"].indexOf(p.theme) >= 0 ? p.theme : "kanagawa", crt = t === "kanagawa";
+            d.theme = t;
+            d.scanlines = ("scanlines" in p ? p.scanlines : crt && !rm) ? "on" : "off";
+            d.glow = ("glow" in p ? p.glow : crt) ? "on" : "off";
+            d.pixel = p.pixel === false ? "off" : "on";
+        })();
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../css/reset.css">
-    <link rel="stylesheet" href="../css/base.css">
-    <link rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/line-numbers/prism-line-numbers.min.css">
-    <link rel="stylesheet" href="../css/blog.css">
-    <script defer src="../js/blog-nav.js"></script>
-    <script defer src="../js/image-preview.js"></script>
-    <!-- Syntax Highlighting -->
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,600;1,400&family=VT323&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/line-numbers/prism-line-numbers.min.css">
     <script defer src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-core.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-clike.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-c.min.js"></script>
-    <script defer
-        src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/normalize-whitespace/prism-normalize-whitespace.min.js"></script>
-    <script defer
-        src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
-    <!-- Latex Support -->
+    <script defer src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/normalize-whitespace/prism-normalize-whitespace.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body, {
-        delimiters: [
-            {left: '$$', right: '$$', display: true},
-            {left: '\\(', right: '\\)', display: false}
-        ]
-        });"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body, { delimiters: [ {left: '$$', right: '$$', display: true}, {left: '\\(', right: '\\)', display: false} ] });"></script>
+    <script defer src="../js/settings.js"></script>
+    <script defer src="../js/blog.js"></script>
+    <script defer src="../js/preview.js"></script>
 </head>
-
 <body>
-    <header>
-        <div class="breadcrumb">
-            <a href="../index.html">~/portfolio</a><span
-                class="path-sep">/</span><span class="path-current">cachi-blog</span>
-        </div>
-        <div id="hero">
-            <h1>Tristan's Blog</h1>
-        </div>
-        <ul id="social-list">
-            <li><a href="https://github.com/teemcck" target="_blank" rel="noopener noreferrer">GitHub</a></li>
-            <li><a href="https://www.linkedin.com/in/tristan-mccaskill/" target="_blank"
-                    rel="noopener noreferrer">LinkedIn</a></li>
-        </ul>
-        <hr class="divider">
-    </header>
-    <h2>Cachi: Developing a Multi-level Processor Cache Simulator</h2>
-    <div id="blog-body">
-        <div id="blog-content">
-            <h3>Project Inspiration</h3>
+    <a class="skip-link" href="#content">skip to content</a>
+    <div class="screen">
+        <header class="bar">
+            <nav aria-label="Site">
+                <ul class="ws">
+                    <li><a href="../index.html#home">1:home</a></li>
+                    <li><a href="../index.html#projects">2:projects</a></li>
+                    <li><a href="../index.html#jams">3:jams</a></li>
+                    <li><a href="../index.html#skills">4:skills</a></li>
+                </ul>
+            </nav>
+            <span class="now">~/devlog/cachi.md</span>
+            <button type="button" class="fx-toggle" id="fx-toggle" aria-expanded="false" aria-controls="fx-panel">[fx]</button>
+            <div class="fx-panel" id="fx-panel" hidden>
+                <fieldset>
+                    <legend>theme</legend>
+                    <label><input type="radio" name="fx-theme" value="kanagawa"> kanagawa dragon</label>
+                    <label><input type="radio" name="fx-theme" value="solarized"> solarized light</label>
+                    <label><input type="radio" name="fx-theme" value="gruvbox"> gruvbox dark</label>
+                    <label><input type="radio" name="fx-theme" value="catppuccin"> catppuccin mocha</label>
+                    <label><input type="radio" name="fx-theme" value="moss"> moss</label>
+                </fieldset>
+                <hr>
+                <p>display effects</p>
+                <label><input type="checkbox" data-fx="scanlines"> scanlines</label>
+                <label><input type="checkbox" data-fx="glow"> text glow</label>
+                <label><input type="checkbox" data-fx="pixel"> pixel font</label>
+            </div>
+        </header>
+
+        <div class="post-layout">
+            <main id="content" class="win article" tabindex="-1">
+                <div class="title" aria-hidden="true"><span>~/devlog/cachi.md</span><span>less</span></div>
+                <div class="body tall">
+                    <h1 class="post-title">Cachi: Developing a Multi-level Processor Cache Simulator</h1>
+                    <p class="post-meta">by Tristan McCaskill · posted <time datetime="2026-11-07">Nov 7, 2026</time> · updated <time datetime="2026-11-23">Nov 23, 2026</time> · <a href="../index.html#projects">back to projects</a></p>
+<aside class="summary" aria-label="Project summary">
+<dl>
+<dt>project</dt><dd>Cachi, a multi-level processor cache simulator (personal project)</dd>
+<dt>stack</dt><dd>C, Make, Valgrind (Lackey)</dd>
+<dt>source</dt><dd><a href="https://github.com/teemcck/Cachi-Simulator" target="_blank" rel="noopener noreferrer">teemcck/Cachi-Simulator</a></dd>
+</dl>
+<p class="tldr"><b>tl;dr</b> Cachi replays Valgrind memory traces through a configurable cache hierarchy (per-level size, block size, associativity, and LRU, FIFO, MRU, or random replacement) and reports hits, misses, evictions, and writebacks. On a loop slightly larger than the cache, MRU hit 77% of the time while LRU and FIFO never hit.</p>
+</aside>
+
+
+            <h3>Context</h3>
             <p>
                 This project was inspired by the <a
                     href="https://eecs370.github.io/project_4_spec/#3-cache-simulator" target="_blank"
@@ -67,8 +107,7 @@
                 <figcaption>How the original LC2K cache simulator was structured. Image from the <a href="https://eecs370.github.io/project_4_spec/#3-cache-simulator" target="_blank" rel="noopener noreferrer">EECS 370 Project 4 spec</a>.</figcaption>
             </figure>
             <p>
-                I enjoyed working on this LC2K cache simulator and wanted to revisit the idea by creating a sort of "remastered"
-                version. This project, "Cachi," supports multiple cache levels, several replacement policies, conventional
+                I wanted to revisit the idea with a more complete version. This project, "Cachi," supports multiple cache levels, several replacement policies, conventional
                 byte-addressed memory, and external trace files. I also implemented it in C rather than C++, which
                 gave me more practice with C.
             </p>
@@ -111,10 +150,6 @@
                 sets. Cachi checks that the block size and set count are powers of two, and that the configuration
                 divides evenly, so the address can be split into bit fields.
             </p>
-            <figure class="blog-image-placeholder">
-                <img src="../images/cachi/cache-addressing.png" width="960" height="658" alt="A 32-bit address split into a 10-bit tag, 14-bit index, and 8-bit offset, with the block size, cache size, and address range each field covers.">
-                <figcaption>How the field widths line up with block size, cache size, and the full address range. Image: Ferry24.Milan, <a href="https://creativecommons.org/licenses/by-sa/3.0/" target="_blank" rel="noopener noreferrer">CC BY-SA 3.0</a>, via <a href="https://commons.wikimedia.org/wiki/File:Cache_Addressing.svg" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a>.</figcaption>
-            </figure>
             <p>
                 I added that check because the lookup
                 pulls the offset and set index straight out of the address with shifts and masks. With 48 sets, for
@@ -182,7 +217,7 @@
                 address after removing its block offset. This is why cache dimensions are almost always powers of
                 two: division and modulo would normally need arithmetic hardware on every access, but with powers of
                 two they reduce to selecting a fixed range of address bits, which is just wiring. 
-                Strangely, not every design follows this convention: Intel processors whose last-level cache is split into a non-power-of-two
+                Not every design follows this convention: Intel processors whose last-level cache is split into a non-power-of-two
                 number of slices (one per core on six- or ten-core chips, for example) pick the slice with a hash of
                 many address bits instead. The tag is everything above those fields. For a 64-byte
                 block and 64 sets, for example, address <code>A</code> maps to the set selected by
@@ -244,12 +279,8 @@
                 <li><strong>Least recently used (LRU):</strong> evicts the line with the oldest last access.</li>
                 <li><strong>First in, first out (FIFO):</strong> evicts the line that was inserted first.</li>
                 <li><strong>Most recently used (MRU):</strong> evicts the line with the newest last access.</li>
-                <li><strong>Random:</strong> evicts any line in the set (as a fun bonus policy).</li>
+                <li><strong>Random:</strong> evicts any line in the set (included as a baseline).</li>
             </ul>
-            <figure class="blog-image-placeholder">
-                <img src="../images/cachi/4way-set-associative.png" width="960" height="591" alt="A 4-way set-associative cache: the address index selects a set, and each line stores state, LRU, and tag bits alongside its data.">
-                <figcaption>A 4-way set-associative cache, with per-line LRU bits next to the tag. Image: Ferry24.Milan, <a href="https://creativecommons.org/licenses/by-sa/3.0/" target="_blank" rel="noopener noreferrer">CC BY-SA 3.0</a>, via <a href="https://commons.wikimedia.org/wiki/File:Set_Associative_Cache.svg" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a>.</figcaption>
-            </figure>
             <p>
                 When implementing LRU and FIFO, I found that each cache line needed to store two timestamps: when it
                 was last accessed and when it was inserted. I stored both as fields in each line's
@@ -274,61 +305,6 @@
             <p>
                 Each policy is its own small function over the set's range, and a switch on the cache's configured policy picks which one runs; it is only called once the set has no empty lines left.
             </p>
-            <h4>Investigating MRU</h4>
-            <p>
-                MRU was a policy I was curious about. It came up quite a bit while I was researching replacement
-                policies, but evicting the line you just used seemed a bit odd. I figured the only case in which MRU may do 
-                well is when a program loops over data that is slightly too big for the
-                cache (which is where LRU falls apart). I wanted to see if my simulator would confirm this hypothesis, 
-                so I built that case and ran it.
-            </p>
-            <p>
-                The setup is a 4 KiB, 8-way L1 with 64-byte blocks, which works out to 64 lines in 8 sets. I only
-                changed the replacement policy between runs:
-            </p>
-            <pre class="line-numbers" data-remove-indent="true" tabindex="0" aria-label="Small L1 configuration for the MRU test"><code class="language-none">
-                [L1]
-                capacity = 4096
-                block_size = 64
-                associativity = 8
-                replacement = MRU
-            </code></pre>
-            <div class="code-source">configs/loop-mru.cfg</div>
-            <p>
-                The trace loops 100 times over an array of 80 blocks, 25% more than the cache can hold. It
-                reads once per block, so every hit comes from a block surviving until the next pass, not from
-                neighboring reads in the same block.
-            </p>
-            <pre class="line-numbers" data-remove-indent="true" tabindex="0" aria-label="First lines of the looping trace"><code class="language-none">
-                 L 10000,8
-                 L 10040,8
-                 L 10080,8
-                 ...
-                 L 113c0,8
-                 L 10000,8
-            </code></pre>
-            <div class="code-source">benchmarks/traces/loop-125-trace.txt: 8,000 loads</div>
-            <p>
-                Here is what each policy did with it:
-            </p>
-            <figure class="blog-image-placeholder">
-                <img src="../images/cachi/mru-test-output.png" width="1794" height="349"
-                    alt="Terminal output from running Cachi with each replacement policy on the looping trace. LRU and FIFO show a 0.00% hit rate, MRU shows 77.00%, and random shows 61.29%.">
-                <figcaption>Running each policy on <code class="file-path">loop-125-trace.txt</code></figcaption>
-            </figure>
-            <p>
-                LRU and FIFO never hit once. In a sequential loop, the oldest block in a set is always the next one
-                the loop is about to need, so both policies throw it out right before it comes back. MRU keeps most
-                of the array in place and only gives up the line it just finished with, which got it to \(\mathbf{77\%}\).
-            </p>
-            <p>
-                Random ended up in between at \(\mathbf{61.29\%}\), and it gave exactly that number on every run. I never call
-                <code>srand</code>, so <code>rand()</code> produces the same sequence each time. I left it that way
-                because it makes runs comparable. Growing the array to twice the cache size keeps the same order:
-                LRU and FIFO at \(\mathbf{0\%}\), MRU at \(\mathbf{46.38\%}\), and random at \(\mathbf{19.20\%}\). When the array fits in the cache, all four
-                policies score the same \(\mathbf{99\%}\), since nothing ever gets evicted.
-            </p>
-
             <h3>Building a Configurable Hierarchy</h3>
             <p>
                 Cache levels are defined in a small configuration file. Each section describes one cache, including
@@ -353,18 +329,12 @@
                 the next level. Each lower level therefore only sees the misses from the level above it, plus any
                 dirty blocks written back from above, which is why their access counts are smaller than L1's.
             </p>
-            <figure class="blog-image-placeholder">
-                <img src="../images/cachi/cache-hierarchy-example.png" width="960" height="640" alt="Cache hierarchy of an AMD K8 processor: split L1 instruction and data caches feeding a unified L2 cache and main memory.">
-                <figcaption>A real cache hierarchy (AMD K8, circa 2004). Image: Traced by User:Stannered, <a href="https://creativecommons.org/licenses/by-sa/3.0/" target="_blank" rel="noopener noreferrer">CC BY-SA 3.0</a>, via <a href="https://commons.wikimedia.org/wiki/File:Cache,hierarchy-example.svg" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a>.</figcaption>
-            </figure>
             <p>
-                Cachi's hierarchy is a lot simpler than the one pictured. Each level is a single unified cache, so
-                there is no split between instruction and data caches, and there are no TLBs, since trace addresses
-                are used as-is without any virtual-to-physical translation. It also models one core, so nothing like
-                the "other CPUs" link or coherence between caches. Finally, there is no main memory at the bottom: a
-                miss in the last level simply ends the access, and the last level's dirty evictions are counted as
-                writebacks to memory without going anywhere. In exchange, the number of levels and each level's size,
-                associativity, and replacement policy all come from the config file.
+                Cachi's hierarchy is deliberately simple. Each level is a single unified cache, trace addresses are
+                used as-is with no address translation, and it models a single core. A miss in the last level simply
+                ends the access, and that level's dirty evictions are counted as writebacks to memory. In exchange,
+                the number of levels and each level's size, associativity, and replacement policy all come from the
+                config file.
             </p>
             <figure class="blog-image-placeholder">
                 <img src="../images/cachi/miss-path-diagram.svg" width="1236" height="180" loading="lazy" alt="Diagram: misses and dirty writebacks from an 8-way LRU L1 cache go to a 4-way FIFO L2 cache, and its misses and dirty writebacks are counted and stopped, since there is no main memory">
@@ -482,7 +452,58 @@ L 04035e58,8</code></pre>
                 benchmarks/traces/array-trace.txt</code>.
             </p>
 
-            <h3>Current Limitations and Next Steps</h3>
+            <h3>Results: Testing MRU</h3>
+            <p>
+                MRU came up often while I was researching replacement policies, even though evicting the line you just used seems counterintuitive. My hypothesis was that MRU should win in one specific case: a program that loops over data slightly larger than the cache, which is exactly where LRU breaks down. I built that case to test it.
+            </p>
+            <p>
+                The setup is a 4 KiB, 8-way L1 with 64-byte blocks, which works out to 64 lines in 8 sets. I only
+                changed the replacement policy between runs:
+            </p>
+            <pre class="line-numbers" data-remove-indent="true" tabindex="0" aria-label="Small L1 configuration for the MRU test"><code class="language-none">
+                [L1]
+                capacity = 4096
+                block_size = 64
+                associativity = 8
+                replacement = MRU
+            </code></pre>
+            <div class="code-source">configs/loop-mru.cfg</div>
+            <p>
+                The trace loops 100 times over an array of 80 blocks, 25% more than the cache can hold. It
+                reads once per block, so every hit comes from a block surviving until the next pass, not from
+                neighboring reads in the same block.
+            </p>
+            <pre class="line-numbers" data-remove-indent="true" tabindex="0" aria-label="First lines of the looping trace"><code class="language-none">
+                 L 10000,8
+                 L 10040,8
+                 L 10080,8
+                 ...
+                 L 113c0,8
+                 L 10000,8
+            </code></pre>
+            <div class="code-source">benchmarks/traces/loop-125-trace.txt: 8,000 loads</div>
+            <p>
+                Here is what each policy did with it:
+            </p>
+            <figure class="blog-image-placeholder">
+                <img src="../images/cachi/mru-test-output.png" width="1794" height="349"
+                    alt="Terminal output from running Cachi with each replacement policy on the looping trace. LRU and FIFO show a 0.00% hit rate, MRU shows 77.00%, and random shows 61.29%.">
+                <figcaption>Running each policy on <code class="file-path">loop-125-trace.txt</code></figcaption>
+            </figure>
+            <p>
+                LRU and FIFO never hit once. In a sequential loop, the oldest block in a set is always the next one
+                the loop is about to need, so both policies throw it out right before it comes back. MRU keeps most
+                of the array in place and only gives up the line it just finished with, which got it to \(\mathbf{77\%}\).
+            </p>
+            <p>
+                Random ended up in between at \(\mathbf{61.29\%}\), and it gave exactly that number on every run. I never call
+                <code>srand</code>, so <code>rand()</code> produces the same sequence each time. I left it that way
+                because it makes runs comparable. Growing the array to twice the cache size keeps the same order:
+                LRU and FIFO at \(\mathbf{0\%}\), MRU at \(\mathbf{46.38\%}\), and random at \(\mathbf{19.20\%}\). When the array fits in the cache, all four
+                policies score the same \(\mathbf{99\%}\), since nothing ever gets evicted.
+            </p>
+
+            <h3>Limitations and Next Steps</h3>
             <p>
                 Cachi still cuts a few corners, and each one points to what I would change if I keep working on it:
             </p>
@@ -496,7 +517,7 @@ L 04035e58,8</code></pre>
                     levels above are left alone. I would add inclusive and exclusive modes, so the same trace could be
                     compared under all three.</li>
             </ul>
-            <h3>Source Code &amp; References</h3>
+            <h3>Source</h3>
             <ul>
                 <li><a href="https://github.com/teemcck/Cachi-Simulator" target="_blank"
                         rel="noopener noreferrer">Project GitHub repository</a></li>
@@ -507,8 +528,21 @@ L 04035e58,8</code></pre>
                 <li><a href="https://commons.wikimedia.org/" target="_blank"
                         rel="noopener noreferrer">Wikimedia Commons (cache diagrams)</a></li>
             </ul>
+        
+                    <p class="dim">(END) · <a href="../index.html#home">cd ~</a></p>
+                </div>
+            </main>
+
+            <aside class="win toc" aria-label="Contents">
+                <div class="title" aria-hidden="true"><span>contents</span><span>toc</span></div>
+                <div class="body">
+                    <details open>
+                        <summary>contents</summary>
+                        <ol id="toc-list"></ol>
+                    </details>
+                </div>
+            </aside>
         </div>
     </div>
 </body>
-
 </html>

@@ -1,51 +1,100 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Mystic Garden: Factorio meets Stardew Valley</title>
+    <title>Mystic Garden: Factorio meets Stardew Valley | Tristan McCaskill</title>
+    <meta name="description" content="How I built the Flowvine item network, seasons, hydration, spells, and quest saving for Mystic Garden.">
+    <link rel="icon" href="../favicon.svg?v=kanagawa" type="image/svg+xml">
+    <link rel="icon" href="../favicon.png?v=kanagawa" type="image/png" sizes="32x32">
+    <link rel="apple-touch-icon" href="../apple-touch-icon.png?v=kanagawa">
+    <meta name="theme-color" content="#181616">
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="Tristan McCaskill">
+    <meta property="og:title" content="Mystic Garden: Factorio meets Stardew Valley">
+    <meta property="og:description" content="How I built the Flowvine item network, seasons, hydration, spells, and quest saving for Mystic Garden.">
+    <meta property="og:url" content="https://teemcck.github.io/blogs/mystic-garden-blog.html">
+    <meta property="og:image" content="https://teemcck.github.io/images/thumbnails/mystic-garden-key-art.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta property="article:published_time" content="2026-11-07">
+    <script>
+        // apply saved theme and effect settings before first paint (see js/settings.js)
+        (function () {
+            var p = {}; try { p = JSON.parse(localStorage.getItem("crt-fx") || "{}"); } catch (e) {}
+            var d = document.documentElement.dataset, rm = matchMedia("(prefers-reduced-motion: reduce)").matches;
+            var t = ["kanagawa", "solarized", "gruvbox", "catppuccin", "moss"].indexOf(p.theme) >= 0 ? p.theme : "kanagawa", crt = t === "kanagawa";
+            d.theme = t;
+            d.scanlines = ("scanlines" in p ? p.scanlines : crt && !rm) ? "on" : "off";
+            d.glow = ("glow" in p ? p.glow : crt) ? "on" : "off";
+            d.pixel = p.pixel === false ? "off" : "on";
+        })();
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../css/reset.css">
-    <link rel="stylesheet" href="../css/base.css">
-    <link rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/line-numbers/prism-line-numbers.min.css">
-    <link rel="stylesheet" href="../css/blog.css">
-    <script defer src="../js/blog-nav.js"></script>
-    <script defer src="../js/image-preview.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,600;1,400&family=VT323&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/line-numbers/prism-line-numbers.min.css">
     <script defer src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-core.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-clike.min.js"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-csharp.min.js"
-        onload="Prism.highlightAll()"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-csharp.min.js" onload="Prism.highlightAll()"></script>
+    <script defer src="../js/settings.js"></script>
+    <script defer src="../js/blog.js"></script>
+    <script defer src="../js/preview.js"></script>
 </head>
-
 <body>
-    <header>
-        <div class="breadcrumb">
-            <a href="../index.html">~/portfolio</a><span
-                class="path-sep">/</span><span class="path-current">mystic-garden-blog</span>
-        </div>
-        <div id="hero">
-            <h1>Tristan's Blog</h1>
-        </div>
-        <ul id="social-list">
-            <li><a href="https://github.com/teemcck" target="_blank" rel="noopener noreferrer">GitHub</a></li>
-            <li><a href="https://www.linkedin.com/in/tristan-mccaskill/" target="_blank"
-                    rel="noopener noreferrer">LinkedIn</a></li>
-        </ul>
-        <hr class="divider">
-    </header>
-    <h2>Mystic Garden: Factorio meets Stardew Valley</h2>
-    <div id="blog-body">
-        <div id="blog-content">
-            <h3>Project Context</h3>
+    <a class="skip-link" href="#content">skip to content</a>
+    <div class="screen">
+        <header class="bar">
+            <nav aria-label="Site">
+                <ul class="ws">
+                    <li><a href="../index.html#home">1:home</a></li>
+                    <li><a href="../index.html#projects">2:projects</a></li>
+                    <li><a href="../index.html#jams">3:jams</a></li>
+                    <li><a href="../index.html#skills">4:skills</a></li>
+                </ul>
+            </nav>
+            <span class="now">~/devlog/mystic-garden.md</span>
+            <button type="button" class="fx-toggle" id="fx-toggle" aria-expanded="false" aria-controls="fx-panel">[fx]</button>
+            <div class="fx-panel" id="fx-panel" hidden>
+                <fieldset>
+                    <legend>theme</legend>
+                    <label><input type="radio" name="fx-theme" value="kanagawa"> kanagawa dragon</label>
+                    <label><input type="radio" name="fx-theme" value="solarized"> solarized light</label>
+                    <label><input type="radio" name="fx-theme" value="gruvbox"> gruvbox dark</label>
+                    <label><input type="radio" name="fx-theme" value="catppuccin"> catppuccin mocha</label>
+                    <label><input type="radio" name="fx-theme" value="moss"> moss</label>
+                </fieldset>
+                <hr>
+                <p>display effects</p>
+                <label><input type="checkbox" data-fx="scanlines"> scanlines</label>
+                <label><input type="checkbox" data-fx="glow"> text glow</label>
+                <label><input type="checkbox" data-fx="pixel"> pixel font</label>
+            </div>
+        </header>
+
+        <div class="post-layout">
+            <main id="content" class="win article" tabindex="-1">
+                <div class="title" aria-hidden="true"><span>~/devlog/mystic-garden.md</span><span>less</span></div>
+                <div class="body tall">
+                    <h1 class="post-title">Mystic Garden: Factorio meets Stardew Valley</h1>
+                    <p class="post-meta">by Tristan McCaskill · posted <time datetime="2026-11-07">Nov 7, 2026</time> · updated <time datetime="2026-11-23">Nov 23, 2026</time> · <a href="../index.html#projects">back to projects</a></p>
+<aside class="summary" aria-label="Project summary">
+<dl>
+<dt>project</dt><dd>Mystic Garden, a farming and automation game released on <a href="https://store.steampowered.com/app/4316230/Mystic_Garden/" target="_blank" rel="noopener noreferrer">Steam</a></dd>
+<dt>role</dt><dd>Studio programmer, WolverineSoft</dd>
+<dt>when</dt><dd>August 2025 – August 2026</dd>
+<dt>team</dt><dd>WolverineSoft studio team of programmers, artists, and designers</dd>
+<dt>stack</dt><dd>Unity, C#</dd>
+</dl>
+<p class="tldr"><b>tl;dr</b> I built the Flowvine item network (networks found with breadth-first search, items routed by transfer time with Dijkstra's algorithm), an event-driven season system, hydration and harvest chance, timed plant spells, multi-sequence quest saving, and the game's two late-game plants.</p>
+</aside>
+
+
+            <h3>Context</h3>
             <p>
                 Mystic Garden is a WolverineSoft game made in the Unity game engine. The premise is growing
                 magical plants on a tile-based farm. Plants need water, react to the weather and seasons, and
-                interact with each other through status effects. I worked on it as a programmer from October 2025
-                through August 2026, alongside a team of other programmers, artists, and designers.
+                interact with each other through status effects. I worked on it as a programmer from August 2025 through August 2026, alongside a team of other programmers, artists, and designers.
             </p>
             <figure class="blog-image-placeholder">
                 <video controls preload="metadata" width="1280" height="720" poster="../images/mystic-garden/trailer-poster.jpg">
@@ -81,33 +130,14 @@
             </ul>
             <p>
                 I kept the manager small on purpose. Segments use it to find their neighbors by position, and systems
-                register themselves in it when they are built:
+                register themselves in it when they are built.
             </p>
-            <pre tabindex="0" aria-label="The Flowvine manager"><code class="language-csharp">public class FlowvineManager : Singleton&lt;FlowvineManager&gt;
-{
-    public Dictionary&lt;Vector2Int, FlowvineSegment&gt; flowvines = new();
-    public List&lt;FlowvineSystem&gt; systems = new();
-}</code></pre>
-            <div class="code-source">FlowvineManager.cs: the manager (condensed)</div>
             <p>
                 Each segment is a component on the plant. I assigned each segment four connection flags that
                 indicate whether that side is connected to another vine, pulling items in, pushing items out, or not
                 connected at all. Segments also have a mode that marks them as an input, an output, or a plain
-                transfer piece:
+                transfer piece.
             </p>
-            <pre tabindex="0" aria-label="The fields that describe a Flowvine segment"><code class="language-csharp">public enum FlowvineConnection { OtherFlowvine, Pull, Push, None }
-public enum FlowvineMode { Transfer, Output, Input }
-
-public class FlowvineSegment : MonoBehaviour, IMouseInteractable
-{
-    private FlowvineConnection upConnection = FlowvineConnection.None;
-    // ...down, left, and right connections
-
-    public List&lt;FlowvineSegment&gt; neighborsList = new();
-    public FlowvineMode mode = FlowvineMode.Transfer;
-    public FlowvineSystem system;
-}</code></pre>
-            <div class="code-source">FlowvineSegment.cs: segment state (condensed)</div>
             <p>
                 A system is built from any one segment with a breadth-first search, which collects everything that
                 segment is connected to and records the inputs and outputs it finds:
@@ -145,13 +175,6 @@ public class FlowvineSegment : MonoBehaviour, IMouseInteractable
                 new one from itself. Adding a segment to the new system disables whatever system it belonged to
                 before, so two systems never own the same vine.
             </p>
-            <pre tabindex="0" aria-label="Rebuilding a segment's system"><code class="language-csharp">void UpdateSystem()
-{
-    system?.DisableSystem();
-    // ...also disable any connected neighbor's system
-    system = new FlowvineSystem(this);
-}</code></pre>
-            <div class="code-source">FlowvineSegment.cs: rebuilding a system (condensed)</div>
             <p>
                 Splitting it up this way kept each piece small. Segments only deal with their neighbors, systems only
                 with their own vines, and the manager is just a shared lookup. It also kept the expensive work local:
@@ -190,20 +213,10 @@ return bitmask switch
             <p>
                 Once networks could branch, an item needed to know which output to go to. Each segment moves an item
                 after a delay that comes from the plant's own action delay (which is based on the plant's upgrade level), so different routes take different
-                amounts of time. I had just learned Dijkstra's algorithm in EECS 281 and thought it was a good fit,
-                so I implemented it myself for the system: it treats the network as a weighted graph, finds the
+                amounts of time. I had just learned Dijkstra's algorithm in EECS 281, and it fit the problem well, so I implemented it for the system. It treats the network as a weighted graph, finds the
                 fastest route from the input to each output, and picks the fastest of those. Networks are small, so a simple linear scan for the closest unsettled segment was
                 fast enough and easier to read than a priority queue.
             </p>
-            <p>
-                To give a brief overview: Dijkstra's algorithm finds the shortest path from a starting node in a graph with non-negative edge weights. Each step settles the closest unsettled node, then updates its neighbors if going through it gives them a shorter distance. Once the target is settled, following each node's previous node back gives the path.
-            </p>
-            <figure class="blog-image-placeholder">
-                <img src="../images/mystic-garden/dijkstra-animation.gif" style="max-width: 420px; margin: 0 auto; padding: 1rem; box-sizing: border-box; background-color: #fff;" alt="Animation of Dijkstra's algorithm settling nodes in a small weighted graph" width="283" height="222" loading="lazy">
-                <figcaption>Dijkstra's algorithm settling one node at a time on a small graph. Image: Ibmua, public
-                    domain, via <a href="https://commons.wikimedia.org/wiki/File:Dijkstra_Animation.gif" target="_blank"
-                        rel="noopener noreferrer">Wikimedia Commons</a>.</figcaption>
-            </figure>
             <p>
                 In Mystic Garden, the nodes are vine segments, the edge weights are each segment's transfer time, and
                 the distance is how long an item takes to arrive. My implementation follows the same steps:
@@ -258,15 +271,14 @@ if (targetInventory == null || !targetInventory.InsertItem(item /* ... */).inser
             <div class="code-source">FlowvineManager.cs: FlowvineSystem transfer coroutine (condensed)</div>
             <p>
                 Either way, the player never loses an item to the network. With branching networks, though, it
-                isn't obvious where an item will end up. As a finishing touch to this task, I reused the same route search logic
+                isn't obvious where an item will end up. To finish the feature, I reused the same route search logic
                 to build an overlay that shows the player where items are flowing when they hover over a flowvine system.
             </p>
             <figure class="blog-image-placeholder">
                 <video controls muted loop playsinline preload="metadata" width="1280" height="720" poster="../images/mystic-garden/flowvine-hover-poster.jpg" aria-label="Hovering over a Flowvine segment">
                     <source src="../videos/mystic-garden-flowvine-hover.mp4" type="video/mp4">
                 </video>
-                <figcaption>Hovering a segment shows its tooltip, including its current mode (Transfer), harvest chance, and edit controls.
-                    Note: after this was implemented, I realized there was z-fighting on the seed preview. I haven't fixed it yet, but I'd like to at a later date.</figcaption>
+                <figcaption>Hovering a segment shows its tooltip, including its current mode (Transfer), harvest chance, and edit controls.</figcaption>
             </figure>
             <p>
                 Hovering over a matured segment highlights every route that passes through it, so the player can
@@ -290,21 +302,6 @@ if (targetInventory == null || !targetInventory.InsertItem(item /* ... */).inser
                 <figcaption><code class="language-csharp">SeasonVisualManager</code> raises one event, and every
                     seasonal system subscribes to it instead of being called directly.</figcaption>
             </figure>
-            <pre tabindex="0" aria-label="Subscribing to season changes"><code class="language-csharp">private void Start()
-{
-    if (SeasonVisualManager.Instance != null)
-    {
-        SeasonVisualManager.Instance.OnSeasonChanged += OnSeasonChanged;
-        OnSeasonChanged(SeasonVisualManager.Instance.ActiveSeason);
-    }
-}
-
-private void OnDisable()
-{
-    if (SeasonVisualManager.Instance != null)
-        SeasonVisualManager.Instance.OnSeasonChanged -= OnSeasonChanged;
-}</code></pre>
-            <div class="code-source">SeasonalSpriteChanger.cs: season subscription</div>
             <p>
                 The handler also runs once with the current season right after subscribing. An object
                 created in the middle of winter shows its winter sprite immediately instead of waiting for the next
@@ -328,18 +325,6 @@ private void OnDisable()
                 chance, and single seeds become a roll. That way watering and planning pay off without the player
                 ever being completely blocked.
             </p>
-            <pre tabindex="0" aria-label="Combining penalties and bonuses into a harvest chance"><code class="language-csharp">private float GetHarvestChance()
-{
-    float dehydrationPenalty = plantHydration.GetDehydrationPenalty();
-
-    float harvestChance = maxHarvestChance
-        - dehydrationPenalty
-        + SpellEffectHandler.HarvestSpellBoost
-        - (hasStoredWarmthPenalty ? storedWarmthPenalty : GetWarmthPenalty());
-
-    return Mathf.Clamp(harvestChance, 0f, maxHarvestChance);
-}</code></pre>
-            <div class="code-source">Plant.cs: harvest chance</div>
             <p>
                 At first, hydration logic was mixed into <code class="language-csharp">Plant</code>, which was
                 already one of the largest classes in the project, so I moved it into its own <code
@@ -473,16 +458,6 @@ private void RemoveEffect(PlantSpellEffect effect)
                 dip in water ruin the lotus before the player could react. Checking at phase changes matches how
                 players think about the plant: each stage is a checkpoint.
             </p>
-            <pre tabindex="0" aria-label="Checking lotus conditions once per growth phase"><code class="language-csharp">int currentPhase = plant.PhaseIndex;
-if (currentPhase == lastCheckedPhase) return;
-lastCheckedPhase = currentPhase;
-
-if (currentPhase == 0) return; // Skip the first stage.
-
-bool missingCaxius = !plant.StatusEffects().Any(c =&gt; c is CaxiusIncreaseEffect);
-bool underwatered = plant.PercentWatered() &lt; 0.95;
-invalid = missingCaxius || underwatered;</code></pre>
-            <div class="code-source">RaphaelInvalidator.cs: per-phase validation</div>
             <p>
                 One bug came from Unity's update order. The lotus and its invalidator are separate components, and
                 Unity doesn't guarantee which one updates first. On the frame the lotus matured, the invalidator
@@ -544,17 +519,12 @@ for (int x = -1; x &lt;= 1; x++)
                 restored.
             </p>
 
-            <h3>Implementation Scope</h3>
+            <h3>Results and Takeaways</h3>
             <p>
                 My commits run from October 2025 to August 2026. They start with the pipe system and its art. Next
                 came the Flowvine rework and the season refactor, then hydration, spells, and quest saving. They end
                 with the Raphael Lotus, the Frostberry, and lilypads for the final builds.
             </p>
-            <figure class="blog-image-placeholder">
-                <img src="../images/mystic-garden/merge-requests.png" alt="The project-witches merge request list on the studio GitLab, filtered to my eight merged requests, including Raphael lotus, Frostberry implementation, and Lilypad fixes" width="1547" height="768" loading="lazy">
-                <figcaption>My merged requests on the studio GitLab, from the Raphael Lotus through the final
-                    bug fixes and polish. Earlier history was lost when the project moved to the new GitLab.</figcaption>
-            </figure>
             <p>
                 Many of these systems touch <code class="language-csharp">Plant</code>, which several programmers were editing at the
                 same time, so I tried to put new behavior in separate components (hydration, spell handling,
@@ -562,15 +532,37 @@ for (int x = -1; x &lt;= 1; x++)
                 feature belonged.
             </p>
 
-            <h3>Project Source</h3>
+            <p>
+ The Flowvine shipped with the game, and it changed how I approach new problems. Routing felt hard
+ until I recognized it as a shortest-path problem I had already studied; after that, the algorithm was the
+ easy part and the real work was fitting it into the game's existing systems.
+</p>
+<h3>Known Issues</h3>
+<ul class="known-issues">
+<li>There is z-fighting on the seed preview, visible in the Flowvine hover clip above. I haven't fixed it yet, but it's on my list.</li>
+</ul>
+<h3>Source</h3>
             <p>
                 Mystic Garden is developed in WolverineSoft's private studio repository, so source links aren't
                 available. The excerpts above are trimmed from the code I wrote. You can find the game on
                 <a href="https://store.steampowered.com/app/4316230/Mystic_Garden/" target="_blank"
                     rel="noopener noreferrer">Steam</a>.
             </p>
+        
+                    <p class="dim">(END) · <a href="../index.html#home">cd ~</a></p>
+                </div>
+            </main>
+
+            <aside class="win toc" aria-label="Contents">
+                <div class="title" aria-hidden="true"><span>contents</span><span>toc</span></div>
+                <div class="body">
+                    <details open>
+                        <summary>contents</summary>
+                        <ol id="toc-list"></ol>
+                    </details>
+                </div>
+            </aside>
         </div>
     </div>
 </body>
-
 </html>

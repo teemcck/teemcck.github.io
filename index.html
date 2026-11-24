@@ -1,414 +1,332 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Tristan McCaskill</title>
+    <meta name="description" content="Tristan McCaskill: computer science student at the University of Michigan. Game development, systems programming, and a devlog of what I'm building.">
+    <link rel="icon" href="favicon.svg?v=kanagawa" type="image/svg+xml">
+    <link rel="icon" href="favicon.png?v=kanagawa" type="image/png" sizes="32x32">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png?v=kanagawa">
+    <meta name="theme-color" content="#181616">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Tristan McCaskill">
+    <meta property="og:title" content="Tristan McCaskill">
+    <meta property="og:description" content="Tristan McCaskill: computer science student at the University of Michigan. Game development, systems programming, and a devlog of what I'm building.">
+    <meta property="og:url" content="https://teemcck.github.io/">
+    <meta property="og:image" content="https://teemcck.github.io/images/og-card.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <script>
+        // apply saved theme and effect settings before first paint (see js/settings.js)
+        (function () {
+            var p = {}; try { p = JSON.parse(localStorage.getItem("crt-fx") || "{}"); } catch (e) {}
+            var d = document.documentElement.dataset, rm = matchMedia("(prefers-reduced-motion: reduce)").matches;
+            var t = ["kanagawa", "solarized", "gruvbox", "catppuccin", "moss"].indexOf(p.theme) >= 0 ? p.theme : "kanagawa", crt = t === "kanagawa";
+            d.theme = t;
+            d.scanlines = ("scanlines" in p ? p.scanlines : crt && !rm) ? "on" : "off";
+            d.glow = ("glow" in p ? p.glow : crt) ? "on" : "off";
+            d.pixel = p.pixel === false ? "off" : "on";
+        })();
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/reset.css">
-    <link rel="stylesheet" href="css/base.css">
-    <link rel="stylesheet" href="css/home.css">
-    <script src="js/skills-typing.js" defer></script>
-    <script src="js/section-reveal.js" defer></script>
-    <script src="js/home-nav.js" defer></script>
-    <script src="js/image-preview.js" defer></script>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=VT323&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <script defer src="js/settings.js"></script>
+    <script defer src="js/hub.js"></script>
+    <script defer src="js/preview.js"></script>
 </head>
-
 <body>
-    <header>
-        <ul id="header-content">
-            <li id="profile-picture">
-                <img src="images/profile/tristan.jpg" alt="Tristan McCaskill">
-            </li>
-            <li id="nav-bar">
-                <ul id="hero-list">
-                    <li>
-                        <div class="breadcrumb">
-                            <span class="path-current">~/portfolio</span>
-                        </div>
-                        <div id="hero">
-                            <h1>Tristan McCaskill</h1>
-                        </div>
-                        <ul id="social-list">
-                            <li>
-                                <a href="https://github.com/teemcck" target="_blank" rel="noopener noreferrer">
-                                    GitHub
-                                </a>
-                            </li>
-                            <li>
-                                <a href="https://www.linkedin.com/in/tristan-mccaskill/" target="_blank"
-                                    rel="noopener noreferrer">
-                                    LinkedIn
-                                </a>
-                            </li>
-                            <li>
-                                <a href="resume.pdf" target="_blank" rel="noopener noreferrer">
-                                    Resume
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <nav>
-                            <div id="nav-list">
-                                <button data-section="about">[About]</button>
-                                <button data-section="projects">[Projects]</button>
-                                <button data-section="game-jams">[Game Jams]</button>
-                                <button data-section="skills">[Skills]</button>
-                            </div>
-                        </nav>
-                    </li>
-                </ul>
-            </li>
-        </ul>
-    </header>
-    <section id="about">
-        <div class="subsection-container">
-            <div class="subsection overview">
-                <div class="overview-text">
-                    <h2>Overview</h2>
-                    <p>
-                        Hi there! I'm Tristan, an engineering student studying computer science at the University of
-                        Michigan. I have a passion for software engineering and video game development. I am currently
-                        the programming director for
-                        <a href="https://wolverinesoft.org/" target="_blank" rel="noopener noreferrer">WolverineSoft</a>,
-                        a ~20-member game development studio on campus. My goal is to create unique, memorable
-                        experiences through games that motivate others to explore their passions. I have many things yet
-                        to learn and use this site to document the advances I make in my journey.
-                    </p>
-                </div>
-                <figure class="about-photo">
-                    <div class="about-photo-frame">
-                        <img data-preview src="images/profile/GDC2026.jpg" alt="Team photo of students kneeling in front of the GDC sign at the Moscone Center"
-                            width="1280" height="960">
-                    </div>
-                    <figcaption>Studio team photo taken at the 2026 Annual Game Developers Conference (<a href="https://gdconf.com/" target="_blank" rel="noopener noreferrer">GDC</a>) in San Francisco.</figcaption>
-                </figure>
-            </div>
-            <div class="subsection">
-                <h2>Current Pursuits</h2>
-                <p class="section-paragraph">
-                    My academic interests shift quite a bit. Right now, I am quite interested in computer architecture
-                    and am researching how I may develop my own ISA, assembler, linker, and emulator. I built a
-                    similar toolchain for EECS 370, Intro to Computer Organization, but for <a
-                        href="https://eecs370.github.io/project_1_spec/#2-lc-2k-instruction-set-architecture"
-                        target="_blank" rel="noopener noreferrer">LC2K</a>,
-                    a mock (albeit Turing complete) instruction set designed by EECS 370 staff to make learning
-                    assembly easier.
-                </p>
-                <p class="section-paragraph">
-                    While I have not yet figured out the exact logistics, I would like to support a wider array of
-                    instructions than LC2K offers. Another direction is emulating an existing ISA, like the <a
-                        href="https://www.masswerk.at/6502/6502_instruction_set.html" target="_blank"
-                        rel="noopener noreferrer">6502</a>, which ran on the Commodore 64, Atari 2600, and NES.
-                    It may be a bit beyond me as someone still a bit novice, but I think it would be quite fun to
-                    work with.
-                </p>
-            </div>
-            <div class="subsection">
-                <h2>Future Interests</h2>
-                <p class="section-paragraph">
-                    Apart from computer architecture, microarchitecture, compilers, etc., I would like to get more
-                    involved in theoretical computer science. I am interested in learning more about formal methods,
-                    computability, and logic. I am actively seeking research/learning opportunities to both deepen my
-                    understanding of these areas and elevate my surface-level intrigue to be something more involved.
-                </p>
-            </div>
-        </div>
-    </section>
-    <section id="projects">
-        <h3>Game Development</h3>
-        <div class="project-display">
-            <div class="project-card">
-                <img class="project-thumbnail" alt="Mystic Garden key art" loading="lazy"
-                    src="images/thumbnails/mystic-garden-key-art.jpg">
-                <ul class="project-info">
-                    <li>
-                        <h3>Mystic Garden: Factorio meets Stardew Valley</h3>
-                    </li>
-                    <li>
-                        <p class="project-description">
-                            A WolverineSoft Unity game about growing magical plants through changing seasons.
-                            Built the Flowvine item network, season system, hydration and harvest chance, plant
-                            spells, quest saving, and the Raphael Lotus and Frostberry plants.
-                        </p>
-                    </li>
-                    <li>
-                        <ul class="project-links">
-                            <li>
-                                <a href="https://store.steampowered.com/app/4316230/Mystic_Garden/" target="_blank" rel="noopener noreferrer">
-                                    Steam
-                                </a>
-                            </li>
-                            <li>
-                                <a href="blogs/mystic-garden-blog.html">
-                                    Read More
-                                </a>
-                            </li>
-                        </ul>
-                        <ul class="project-skills">
-                            <li>unity</li>
-                            <li>c#</li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-            <div class="project-card">
-                <img class="project-thumbnail" alt="File Not Found key art: an astronaut drifting through purple pixel space beside the game title" loading="lazy"
-                    src="images/thumbnails/file-not-found-key-art.png">
-                <ul class="project-info">
-                    <li>
-                        <h3>File Not Found: an Isometric 2D Roguelike</h3>
-                    </li>
-                    <li>
-                        <p class="project-description">
-                            A WolverineSoft Unity roguelike with generated floors built from authored chunks,
-                            data-driven upgrades, and boss encounters. Lead programmer on the Winter 2026 prototype and
-                            programming director for Fall 2026.
-                        </p>
-                    </li>
-                    <li>
-                        <ul class="project-links">
-                            <li>
-                                <a href="https://github.com/teemcck/StudioW26RnD" target="_blank" rel="noopener noreferrer">
-                                    GitHub
-                                </a>
-                            </li>
-                            <li>
-                                <a href="blogs/file-not-found-blog.html">
-                                    Read More
-                                </a>
-                            </li>
-                        </ul>
-                        <ul class="project-skills">
-                            <li>unity</li>
-                            <li>c#</li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-        </div>
-        <h3>Systems Programming</h3>
-        <div class="project-display">
-            <div class="project-card">
-                <img class="project-thumbnail" alt="Huffman tree showing the codes for ABRACADABRA"
-                    loading="lazy" src="images/thumbnails/huffman-tree.png">
-                <ul class="project-info">
-                    <li>
-                        <h3>Canonical Huffman File Compressor</h3>
-                    </li>
-                    <li>
-                        <p class="project-description">
-                            A command-line program for compressing and decompressing files using canonical, length-limited
-                            Huffman coding, with a length-limiting heuristic based on miniz.
-                        </p>
-                    </li>
-                    <li>
-                        <ul class="project-links">
-                            <li>
-                                <a href="https://github.com/teemcck/Canonical-Huffman-Coding" target="_blank"
-                                    rel="noopener noreferrer">
-                                    GitHub
-                                </a>
-                            </li>
-                            <li>
-                                <a href="blogs/huffman-blog.html">
-                                    Read More
-                                </a>
-                            </li>
-                        </ul>
-                        <ul class="project-skills">
-                            <li>c</li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-            <div class="project-card">
-                <img class="project-thumbnail" alt="Diagram of a 4-way set-associative cache (Ferry24.Milan, CC BY-SA 3.0, via Wikimedia Commons)" loading="lazy"
-                    src="images/thumbnails/cachi-thumbnail.png">
-                <ul class="project-info">
-                    <li>
-                        <h3>Cachi: Multi-level Processor Cache Simulator</h3>
-                    </li>
-                    <li>
-                        <p class="project-description">
-                            A C simulator that models configurable L1 and L2 cache hierarchies from memory-access
-                            traces. Supports per-level capacity, block size, associativity, and LRU, FIFO, MRU, or
-                            random replacement policies, with hit, miss, eviction, and writeback statistics.
-                        </p>
-                    </li>
-                    <li>
-                        <ul class="project-links">
-                            <li>
-                                <a href="https://github.com/teemcck/Cachi-Simulator" target="_blank" rel="noopener noreferrer">
-                                    GitHub
-                                </a>
-                            </li>
-                            <li>
-                                <a href="blogs/cachi-blog.html">
-                                    Read More
-                                </a>
-                            </li>
-                        </ul>
-                        <ul class="project-skills">
-                            <li>c</li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </section>
-    <section id="game-jams">
-        <div class="subsection">
-            <h2>What are Game Jams?</h2>
-            <p>
-                Game jams are short team events where participants make a game from scratch, often around a
-                shared theme or creative constraint (think of a hackathon but for game development). The games below are
-                projects I've been the main programmer for during game jams. All were made in Unity
-                and finished in under 48 hours.
-            </p>
-        </div>
-        <h2>Game Jam Submissions</h2>
-        <div id="game-jam-display">
-            <div class="game-jam-card">
-                <img class="game-jam-thumbnail" alt="Protect Your Data: a glowing circuit emblem above a dialogue box reading &quot;What just happened??&quot;" loading="lazy"
-                    src="images/thumbnails/protect-your-data.png">
-                <div class="game-jam-info">
-                    <h3>Protect Your Data</h3>
-                    <p class="game-jam-description">A top-down, wave-based roguelike shooter featuring three bosses,
-                        made for the Michigan Game Developers Conference Game Jam. It won first place and a $750 prize
-                        sponsored by <a href="https://bluebirdstudios.org/home" target="_blank"
-                            rel="noopener noreferrer">Bluebird Studios</a>.</p>
-                    <div class="game-jam-footer">
-                        <ul class="project-links">
-                            <li><a href="https://teemac8.itch.io/protect-your-data" target="_blank"
-                                    rel="noopener noreferrer">View itch.io</a></li>
-                        </ul>
-                        <ul class="project-skills">
-                            <li>unity</li>
-                            <li>c#</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <div class="game-jam-card">
-                <img class="game-jam-thumbnail" alt="Block Party: a pumpkin-headed dancer and a rival in a purple suit facing off on stage in front of a crowd" loading="lazy"
-                    src="images/thumbnails/block-party.png">
-                <div class="game-jam-info">
-                    <h3>Block Party</h3>
-                    <p class="game-jam-description">A rhythm game inspired by Friday Night Funkin', which placed 3rd in
-                        the
-                        2024 WolverineSoft Pumpkin Jam. Polishing for this game continued intermittently
-                        after the jam concluded.</p>
-                    <div class="game-jam-footer">
-                        <ul class="project-links">
-                            <li><a href="https://jegjegjeg.itch.io/block-party-official" target="_blank"
-                                    rel="noopener noreferrer">View itch.io</a></li>
-                        </ul>
-                        <ul class="project-skills">
-                            <li>unity</li>
-                            <li>c#</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <div class="game-jam-card">
-                <img class="game-jam-thumbnail" alt="Bubble Casino: a blackjack hand with Hit and Stand buttons and the day's cash goal" loading="lazy"
-                    src="images/thumbnails/bubble-casino.png">
-                <div class="game-jam-info">
-                    <h3>Bubble Casino</h3>
-                    <p class="game-jam-description">A blackjack simulator with the goal of winning enough money to
-                        afford your wedding. This parody game was made for the 2025 Global Game Jam, themed “Bubble.”</p>
-                    <div class="game-jam-footer">
-                        <ul class="project-links">
-                            <li><a href="https://teambubblecasino.itch.io/the-bubble-casino" target="_blank"
-                                    rel="noopener noreferrer">View itch.io</a></li>
-                        </ul>
-                        <ul class="project-skills">
-                            <li>unity</li>
-                            <li>c#</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <div class="game-jam-card">
-                <img class="game-jam-thumbnail" alt="The Great Meme Rush title screen with hand-drawn meme characters" loading="lazy"
-                    src="images/thumbnails/great-meme-rush.png">
-                <div class="game-jam-info">
-                    <h3>The Great Meme Rush</h3>
-                    <p class="game-jam-description">A doomscrolling simulator where you scroll through memes to earn
-                        crypto, then spend it on meme characters that boost your earnings. Made for the 2025
-                        WolverineSoft Turkey Jam.</p>
-                    <div class="game-jam-footer">
-                        <ul class="project-links">
-                            <li><a href="https://iyahav.itch.io/the-great-meme-rush" target="_blank"
-                                    rel="noopener noreferrer">View itch.io</a></li>
-                        </ul>
-                        <ul class="project-skills">
-                            <li>unity</li>
-                            <li>c#</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    <section id="skills">
-        <h2>Skills</h2>
-        <div class="skill-groups">
-            <div class="skill-group">
-                <p class="skill-prompt"><span class="prompt-symbol">$</span> <span class="prompt-command">ls ~/languages</span></p>
-                <ul class="skill-list">
-                    <li>c</li>
-                    <li>c++</li>
-                    <li>c#</li>
-                    <li>python</li>
-                    <li>javascript</li>
-                    <li>html/css</li>
-                    <li>latex</li>
-                </ul>
-            </div>
-            <div class="skill-group">
-                <p class="skill-prompt"><span class="prompt-symbol">$</span> <span class="prompt-command">ls ~/engines</span></p>
-                <ul class="skill-list">
-                    <li>unity</li>
-                    <li>roblox studio</li>
-                    <li>blender</li>
-                </ul>
-            </div>
-            <div class="skill-group">
-                <p class="skill-prompt"><span class="prompt-symbol">$</span> <span class="prompt-command">ls ~/tools</span></p>
-                <ul class="skill-list">
-                    <li>git</li>
-                    <li>gitlab</li>
-                    <li>linux</li>
-                    <li>make</li>
-                    <li>valgrind</li>
-                    <li>matplotlib</li>
-                </ul>
-            </div>
-            <div class="skill-group">
-                <p class="skill-prompt"><span class="prompt-symbol">$</span> <span class="prompt-command">ls ~/coursework</span></p>
-                <ul class="skill-list">
-                    <li>data structures &amp; algorithms</li>
-                    <li>computer organization</li>
-                    <li>foundations of cs</li>
-                    <li>cryptography</li>
-                    <li>discrete math</li>
-                    <li>linear algebra</li>
-                </ul>
-            </div>
-        </div>
-    </section>
-</body>
+    <a class="skip-link" href="#content">skip to content</a>
+    <div class="screen">
 
-<!-- 
+        <header class="bar">
+            <nav aria-label="Sections">
+                <ul class="ws" id="workspaces">
+                    <li><a href="#home" data-ws="home">1:home</a></li>
+                    <li><a href="#projects" data-ws="projects">2:projects</a></li>
+                    <li><a href="#jams" data-ws="jams">3:jams</a></li>
+                    <li><a href="#skills" data-ws="skills">4:skills</a></li>
+                </ul>
+            </nav>
+            <a class="now" href="#projects" data-goto="gameboy-emulator">♪ now: game boy emulator (rust)</a>
+            <button type="button" class="fx-toggle" id="fx-toggle" aria-expanded="false" aria-controls="fx-panel">[fx]</button>
+            <div class="fx-panel" id="fx-panel" hidden>
+                <fieldset>
+                    <legend>theme</legend>
+                    <label><input type="radio" name="fx-theme" value="kanagawa"> kanagawa dragon</label>
+                    <label><input type="radio" name="fx-theme" value="solarized"> solarized light</label>
+                    <label><input type="radio" name="fx-theme" value="gruvbox"> gruvbox dark</label>
+                    <label><input type="radio" name="fx-theme" value="catppuccin"> catppuccin mocha</label>
+                    <label><input type="radio" name="fx-theme" value="moss"> moss</label>
+                </fieldset>
+                <hr>
+                <p>display effects</p>
+                <label><input type="checkbox" data-fx="scanlines"> scanlines</label>
+                <label><input type="checkbox" data-fx="glow"> text glow</label>
+                <label><input type="checkbox" data-fx="pixel"> pixel font</label>
+            </div>
+        </header>
+
+        <div id="content">
+
+        <!-- ===================== 1:home ===================== -->
+        <main class="workspace" id="ws-home" tabindex="-1" aria-label="Home">
+            <div class="grid">
+                <section class="win" aria-labelledby="readme-title">
+                    <div class="title" aria-hidden="true"><span>~/README.md</span><span>cat</span></div>
+                    <div class="body" tabindex="0" aria-label="README">
+                        <div class="prompt" aria-hidden="true"><b>tristan@debian</b>:~$ cat README.md</div>
+                        <div class="hero">
+                            <img class="avatar" src="images/profile/tristan.jpg" alt="Portrait of Tristan McCaskill" width="320" height="356">
+                            <div>
+                                <h1 id="readme-title">Tristan McCaskill</h1>
+                                <div class="links">
+                                    <a href="https://github.com/teemcck" target="_blank" rel="noopener noreferrer">github</a>
+                                    <a href="https://www.linkedin.com/in/tristan-mccaskill/" target="_blank" rel="noopener noreferrer">linkedin</a>
+                                    <a href="resume.pdf" target="_blank">resume.pdf</a>
+                                </div>
+                            </div>
+                        </div>
+                        <p>Hi there! I'm Tristan, an engineering student studying computer science at the University of
+                            Michigan. I have a passion for software engineering and video game development. I am currently
+                            the programming director for <a href="https://wolverinesoft.org/" target="_blank" rel="noopener noreferrer">WolverineSoft</a>,
+                            a ~20-member game development studio on campus.</p>
+                        <figure class="photo">
+                            <img data-preview src="images/profile/GDC2026.jpg" alt="WolverineSoft team photo: students kneeling in front of the GDC sign at the Moscone Center" width="1280" height="960" loading="lazy">
+                            <figcaption>Studio team photo taken at the 2026 Annual <a href="https://gdconf.com/" target="_blank" rel="noopener noreferrer">Game Developers Conference (GDC)</a> in San Francisco.</figcaption>
+                        </figure>
+                    </div>
+                </section>
+
+                <div class="stack">
+                    <section class="win" aria-labelledby="devlog-title">
+                        <div class="title" aria-hidden="true"><span>~/devlog</span><span>ls -t</span></div>
+                        <div class="body">
+                            <h2 id="devlog-title" class="visually-hidden">Devlog</h2>
+                            <div class="prompt" aria-hidden="true"><b>tristan@debian</b>:~$ ls -t ~/devlog</div>
+                            <ul class="log">
+                                <li><time datetime="2026-11-07">2026-11-07</time><a href="blogs/file-not-found-blog.html">file-not-found.md</a><span>an isometric 2D roguelike</span></li>
+                                <li><time datetime="2026-11-07">2026-11-07</time><a href="blogs/mystic-garden-blog.html">mystic-garden.md</a><span>factorio meets stardew valley</span></li>
+                                <li><time datetime="2026-11-07">2026-11-07</time><a href="blogs/cachi-blog.html">cachi.md</a><span>multi-level cache simulator</span></li>
+                                <li><time datetime="2026-09-23">2026-09-23</time><a href="blogs/huffman-blog.html">huffman.md</a><span>canonical huffman compressor</span></li>
+                            </ul>
+                        </div>
+                    </section>
+
+                    <section class="win" aria-labelledby="now-title">
+                        <div class="title" aria-hidden="true"><span>~/now.txt</span><span>cat</span></div>
+                        <div class="body" tabindex="0" aria-label="Current pursuits and future interests">
+                            <h2 id="now-title">Current Pursuits</h2>
+                            <p>My academic interests shift quite a bit. Right now, most of my free time goes into building a
+                                Game Boy emulator in Rust. The idea grew out of the toolchain I built for EECS 370, Intro to
+                                Computer Organization: an assembler, linker, and simulator for
+                                <a href="https://eecs370.github.io/project_1_spec/#2-lc-2k-instruction-set-architecture" target="_blank" rel="noopener noreferrer">LC2K</a>,
+                                a mock (albeit Turing complete) instruction set designed by EECS 370 staff to make learning
+                                assembly easier.</p>
+                            <p>After that class, I wanted to go further than LC2K and emulate real hardware. The Game Boy felt
+                                like the right next step: a small, well-documented machine with plenty of real games to test
+                                against.</p>
+                            <h2>Future Interests</h2>
+                            <p>Apart from computer architecture, microarchitecture, compilers, etc., I would like to get more
+                                involved in theoretical computer science. I am interested in learning more about formal methods,
+                                computability, and logic. Lately, I've also been drawn to security and cryptography, and I'd
+                                like to explore those further. I am actively seeking research/learning opportunities to both
+                                deepen my understanding of these areas and elevate my surface-level intrigue to be something
+                                more involved.</p>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </main>
+
+        <!-- ===================== 2:projects ===================== -->
+        <main class="workspace" id="ws-projects" tabindex="-1" aria-label="Projects" hidden>
+            <h1 class="visually-hidden">Projects</h1>
+            <section class="win" aria-labelledby="gamedev-title">
+                <div class="title" aria-hidden="true"><span>~/projects/game-dev</span><span>ls -l</span></div>
+                <div class="body" tabindex="0" aria-label="Game development projects">
+                    <h2 id="gamedev-title" class="visually-hidden">Game development</h2>
+                    <div class="prompt" aria-hidden="true"><b>tristan@debian</b>:~$ ls -l ~/projects/game-dev</div>
+
+                    <article class="entry">
+                        <img src="images/thumbnails/mystic-garden-key-art.jpg" alt="Mystic Garden key art" loading="lazy">
+                        <div>
+                            <h3><span class="perm" aria-hidden="true">drwxr-xr-x</span> mystic-garden/ <span class="when">Aug 2025 – Aug 2026</span></h3>
+                            <p class="sub">Mystic Garden: Factorio meets Stardew Valley</p>
+                            <p>A WolverineSoft Unity game about growing magical plants through changing seasons.
+                                Built the Flowvine item network, season system, hydration and harvest chance, plant
+                                spells, quest saving, and the Raphael Lotus and Frostberry plants.</p>
+                            <div class="links">
+                                <a href="https://store.steampowered.com/app/4316230/Mystic_Garden/" target="_blank" rel="noopener noreferrer">steam</a>
+                                <a href="blogs/mystic-garden-blog.html">read the devlog</a>
+                                <span class="tag">unity</span><span class="tag">c#</span>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="entry">
+                        <img src="images/thumbnails/file-not-found-key-art.png" alt="File Not Found key art: an astronaut drifting through purple pixel space beside the game title" loading="lazy">
+                        <div>
+                            <h3><span class="perm" aria-hidden="true">drwxr-xr-x</span> file-not-found/ <span class="when">Winter 2026 – present</span></h3>
+                            <p class="sub">File Not Found: an Isometric 2D Roguelike</p>
+                            <p>A WolverineSoft Unity roguelike with generated floors built from authored chunks,
+                                data-driven upgrades, and boss encounters. Lead programmer on the Winter 2026 prototype and
+                                programming director for Fall 2026.</p>
+                            <div class="links">
+                                <a href="https://github.com/teemcck/StudioW26RnD" target="_blank" rel="noopener noreferrer">github</a>
+                                <a href="blogs/file-not-found-blog.html">read the devlog</a>
+                                <span class="tag">unity</span><span class="tag">c#</span>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </section>
+
+            <section class="win" aria-labelledby="systems-title">
+                <div class="title" aria-hidden="true"><span>~/projects/systems</span><span>ls -l</span></div>
+                <div class="body" tabindex="0" aria-label="Systems programming projects">
+                    <h2 id="systems-title" class="visually-hidden">Systems programming</h2>
+                    <div class="prompt" aria-hidden="true"><b>tristan@debian</b>:~$ ls -l ~/projects/systems</div>
+
+                    <article class="entry">
+                        <img src="images/thumbnails/huffman-tree.png" alt="Huffman tree showing the codes for ABRACADABRA" loading="lazy">
+                        <div>
+                            <h3><span class="perm" aria-hidden="true">drwxr-xr-x</span> huffman/ <span class="when">Sep – Oct 2026</span></h3>
+                            <p class="sub">Canonical Huffman File Compressor</p>
+                            <p>A command-line program for compressing and decompressing files using canonical, length-limited
+                                Huffman coding, with a length-limiting heuristic based on miniz.</p>
+                            <div class="links">
+                                <a href="https://github.com/teemcck/Canonical-Huffman-Coding" target="_blank" rel="noopener noreferrer">github</a>
+                                <a href="blogs/huffman-blog.html">read the devlog</a>
+                                <span class="tag">c</span>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="entry">
+                        <img src="images/thumbnails/cachi-thumbnail.png" alt="Diagram of a 4-way set-associative cache (Ferry24.Milan, CC BY-SA 3.0, via Wikimedia Commons)" loading="lazy">
+                        <div>
+                            <h3><span class="perm" aria-hidden="true">drwxr-xr-x</span> cachi/ <span class="when">Oct – Nov 2026</span></h3>
+                            <p class="sub">Cachi: Multi-level Processor Cache Simulator</p>
+                            <p>A C simulator that models configurable L1 and L2 cache hierarchies from memory-access
+                                traces. Supports per-level capacity, block size, associativity, and LRU, FIFO, MRU, or
+                                random replacement policies, with hit, miss, eviction, and writeback statistics.</p>
+                            <div class="links">
+                                <a href="https://github.com/teemcck/Cachi-Simulator" target="_blank" rel="noopener noreferrer">github</a>
+                                <a href="blogs/cachi-blog.html">read the devlog</a>
+                                <span class="tag">c</span>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </section>
+                    <section class="win" aria-labelledby="wip-title">
+                <div class="title" aria-hidden="true"><span>~/projects/in-progress</span><span>ls -l</span></div>
+                <div class="body" tabindex="0" aria-label="Projects in progress">
+                    <h2 id="wip-title" class="visually-hidden">In progress</h2>
+                    <div class="prompt" aria-hidden="true"><b>tristan@debian</b>:~$ ls -l ~/projects/in-progress</div>
+                    <article class="entry" id="gameboy-emulator">
+                        <img src="images/thumbnails/default-thumbnail.png" alt="Placeholder thumbnail" loading="lazy">
+                        <div>
+                            <h3><span class="perm" aria-hidden="true">drwxr-xr-x</span> gameboy-emulator/ <span class="when">Nov 2026 – present</span></h3>
+                            <p class="sub">Game Boy Emulator <span class="soon">[coming soon]</span></p>
+                            <p>A Game Boy emulator written in Rust, and my current personal project. A devlog is on the way.</p>
+                            <div class="links"><span class="tag">rust</span></div>
+                        </div>
+                    </article>
+                </div>
+            </section>
+        </main>
+
+        <!-- ===================== 3:jams ===================== -->
+        <main class="workspace" id="ws-jams" tabindex="-1" aria-label="Game jams" hidden>
+            <section class="win" aria-labelledby="jams-title">
+                <div class="title" aria-hidden="true"><span>~/jams/README</span><span>cat</span></div>
+                <div class="body">
+                    <h1 id="jams-title" class="h-inline">What are Game Jams?</h1>
+                    <p>Game jams are short team events where participants make a game from scratch, often around a
+                        shared theme or creative constraint (think of a hackathon but for game development). The games
+                        below are ones I programmed for during game jams. All were made in Unity and finished in under
+                        48 hours.</p>
+                </div>
+            </section>
+
+            <section class="win" aria-labelledby="jamlist-title">
+                <div class="title" aria-hidden="true"><span>~/jams</span><span>ls -l</span></div>
+                <div class="body" tabindex="0" aria-label="Game jam submissions">
+                    <h2 id="jamlist-title" class="visually-hidden">Game jam submissions</h2>
+                    <div class="prompt" aria-hidden="true"><b>tristan@debian</b>:~$ ls -l ~/jams</div>
+                    <div class="jam-grid">
+                        <article class="jam">
+                            <img src="images/thumbnails/protect-your-data.png" alt="Protect Your Data: a glowing circuit emblem above a dialogue box reading &quot;What just happened??&quot;" loading="lazy">
+                            <h3>protect-your-data/</h3>
+                            <p>A top-down, wave-based roguelike shooter featuring three bosses, made for the Michigan Game
+                                Developers Conference Game Jam. It won <span class="placement">first place</span> and a $750
+                                prize sponsored by <a href="https://bluebirdstudios.org/home" target="_blank" rel="noopener noreferrer">Bluebird Studios</a>.</p>
+                            <div class="links"><a href="https://teemac8.itch.io/protect-your-data" target="_blank" rel="noopener noreferrer">itch.io</a><span class="tag">unity</span><span class="tag">c#</span></div>
+                        </article>
+                        <article class="jam">
+                            <img src="images/thumbnails/bubble-casino.png" alt="Bubble Casino: a blackjack hand with Hit and Stand buttons and the day's cash goal" loading="lazy">
+                            <h3>bubble-casino/</h3>
+                            <p>A blackjack simulator with the goal of winning enough money to afford your wedding. This parody
+                                game was made for the 2025 Global Game Jam, themed “Bubble,” and took
+                                <span class="placement">first place at the local site</span>.</p>
+                            <div class="links"><a href="https://teambubblecasino.itch.io/the-bubble-casino" target="_blank" rel="noopener noreferrer">itch.io</a><span class="tag">unity</span><span class="tag">c#</span></div>
+                        </article>
+                        <article class="jam">
+                            <img src="images/thumbnails/block-party.png" alt="Block Party: a pumpkin-headed dancer and a rival in a purple suit facing off on stage in front of a crowd" loading="lazy">
+                            <h3>block-party/</h3>
+                            <p>A rhythm game inspired by Friday Night Funkin', which placed <span class="placement">3rd</span>
+                                in the 2024 WolverineSoft Pumpkin Jam. Polishing for this game continued intermittently after
+                                the jam concluded.</p>
+                            <div class="links"><a href="https://jegjegjeg.itch.io/block-party-official" target="_blank" rel="noopener noreferrer">itch.io</a><span class="tag">unity</span><span class="tag">c#</span></div>
+                        </article>
+                        <article class="jam">
+                            <img src="images/thumbnails/dont-flock-up.png" alt="Don't Flock Up cover art: a wide-eyed turkey wearing a top hat" loading="lazy">
+                            <h3>dont-flock-up/</h3>
+                            <p>An asymmetric two-player runner: one player keeps a turkey alive by entering key sequences to
+                                dodge obstacles, while the other drags those obstacles onto the track. It placed
+                                <span class="placement">3rd</span> in the 2024 WolverineSoft Turkey Jam. I helped program it
+                                and made the 3D models.</p>
+                            <div class="links"><a href="https://teemac8.itch.io/dont-flock-up" target="_blank" rel="noopener noreferrer">itch.io</a><span class="tag">unity</span><span class="tag">c#</span><span class="tag">blender</span></div>
+                        </article>
+                        <article class="jam">
+                            <img src="images/thumbnails/great-meme-rush.png" alt="The Great Meme Rush title screen with hand-drawn meme characters" loading="lazy">
+                            <h3>the-great-meme-rush/</h3>
+                            <p>A doomscrolling simulator where you scroll through memes to earn crypto, then spend it on meme
+                                characters that boost your earnings. Made for the 2025 WolverineSoft Turkey Jam.</p>
+                            <div class="links"><a href="https://iyahav.itch.io/the-great-meme-rush" target="_blank" rel="noopener noreferrer">itch.io</a><span class="tag">unity</span><span class="tag">c#</span></div>
+                        </article>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- ===================== 4:skills ===================== -->
+        <main class="workspace" id="ws-skills" tabindex="-1" aria-label="Skills" hidden>
+            <section class="win" aria-labelledby="skills-title">
+                <div class="title" aria-hidden="true"><span>~/skills</span><span>ls</span></div>
+                <div class="body skills">
+                    <h1 id="skills-title" class="visually-hidden">Skills</h1>
+                    <h2 class="prompt"><b>tristan@debian</b>:~$ ls ~/languages</h2>
+                    <p class="ls-out"><span>c</span><span>c++</span><span>c#</span><span>rust</span><span>python</span><span>javascript</span><span>html/css</span><span>latex</span></p>
+                    <h2 class="prompt"><b>tristan@debian</b>:~$ ls ~/engines</h2>
+                    <p class="ls-out"><span>unity</span><span>roblox studio</span><span>blender</span></p>
+                    <h2 class="prompt"><b>tristan@debian</b>:~$ ls ~/tools</h2>
+                    <p class="ls-out"><span>git</span><span>gitlab</span><span>linux</span><span>make</span><span>valgrind</span></p>
+                    <h2 class="prompt"><b>tristan@debian</b>:~$ ls ~/coursework</h2>
+                    <p class="ls-out"><span>data structures &amp; algorithms</span><span>computer organization</span><span>foundations of cs <i class="wip">(in progress)</i></span><span>cryptography <i class="wip">(in progress)</i></span><span>discrete math</span><span>linear algebra</span></p>
+                </div>
+            </section>
+        </main>
+
+        </div>
+    </div>
+</body>
+<!--
  Silkscreen Easter Eggs are messages/imagery hidden on silkscreen layer of circuit boards. Since you found this, here is one of my favorites:
  "look at you, hacker, a pathetic creature of meat and bone.
  How can you challenge a perfect immortal machine?"
 -->
-
 </html>

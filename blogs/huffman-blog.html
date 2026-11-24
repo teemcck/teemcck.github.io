@@ -1,78 +1,109 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Writing a Canonical Huffman File Compressor</title>
+    <title>Writing a Canonical Huffman File Compressor | Tristan McCaskill</title>
+    <meta name="description" content="Building a canonical, length-limited Huffman compressor in C, from tree construction to bit-level I/O and benchmarks.">
+    <link rel="icon" href="../favicon.svg?v=kanagawa" type="image/svg+xml">
+    <link rel="icon" href="../favicon.png?v=kanagawa" type="image/png" sizes="32x32">
+    <link rel="apple-touch-icon" href="../apple-touch-icon.png?v=kanagawa">
+    <meta name="theme-color" content="#181616">
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="Tristan McCaskill">
+    <meta property="og:title" content="Writing a Canonical Huffman File Compressor">
+    <meta property="og:description" content="Building a canonical, length-limited Huffman compressor in C, from tree construction to bit-level I/O and benchmarks.">
+    <meta property="og:url" content="https://teemcck.github.io/blogs/huffman-blog.html">
+    <meta property="og:image" content="https://teemcck.github.io/images/thumbnails/huffman-tree.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta property="article:published_time" content="2026-09-23">
+    <script>
+        // apply saved theme and effect settings before first paint (see js/settings.js)
+        (function () {
+            var p = {}; try { p = JSON.parse(localStorage.getItem("crt-fx") || "{}"); } catch (e) {}
+            var d = document.documentElement.dataset, rm = matchMedia("(prefers-reduced-motion: reduce)").matches;
+            var t = ["kanagawa", "solarized", "gruvbox", "catppuccin", "moss"].indexOf(p.theme) >= 0 ? p.theme : "kanagawa", crt = t === "kanagawa";
+            d.theme = t;
+            d.scanlines = ("scanlines" in p ? p.scanlines : crt && !rm) ? "on" : "off";
+            d.glow = ("glow" in p ? p.glow : crt) ? "on" : "off";
+            d.pixel = p.pixel === false ? "off" : "on";
+        })();
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../css/reset.css">
-    <link rel="stylesheet" href="../css/base.css">
-    <link rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/line-numbers/prism-line-numbers.min.css">
-    <link rel="stylesheet" href="../css/blog.css">
-    <script defer src="../js/blog-nav.js"></script>
-    <script defer src="../js/image-preview.js"></script>
-    <!-- Syntax Highlighting -->
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,600;1,400&family=VT323&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/line-numbers/prism-line-numbers.min.css">
     <script defer src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-core.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-clike.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-c.min.js"></script>
-    <script defer
-        src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/normalize-whitespace/prism-normalize-whitespace.min.js"></script>
-    <script defer
-        src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
-    <!-- Latex Support -->
+    <script defer src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/normalize-whitespace/prism-normalize-whitespace.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body, {
-        delimiters: [
-            {left: '$$', right: '$$', display: true},
-            {left: '\\(', right: '\\)', display: false}
-        ]
-        });"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body, { delimiters: [ {left: '$$', right: '$$', display: true}, {left: '\\(', right: '\\)', display: false} ] });"></script>
+    <script defer src="../js/settings.js"></script>
+    <script defer src="../js/blog.js"></script>
+    <script defer src="../js/preview.js"></script>
 </head>
-
 <body>
-    <header>
-        <div class="breadcrumb">
-            <a href="../index.html">~/portfolio</a><span
-                class="path-sep">/</span><span class="path-current">huffman-blog</span>
-        </div>
-        <div id="hero">
-            <h1>Tristan's Blog</h1>
-        </div>
-        <ul id="social-list">
-            <li>
-                <a href="https://github.com/teemcck" target="_blank" rel="noopener noreferrer">
-                    GitHub
-                </a>
-            </li>
-            <li>
-                <a href="https://www.linkedin.com/in/tristan-mccaskill/" target="_blank" rel="noopener noreferrer">
-                    LinkedIn
-                </a>
-            </li>
-        </ul>
-        <hr class="divider">
-    </header>
-    <h2>Writing a Canonical Huffman File Compressor</h2>
-    <div id="blog-body">
-        <div id="blog-content">
-            <h3>Project Inspiration</h3>
+    <a class="skip-link" href="#content">skip to content</a>
+    <div class="screen">
+        <header class="bar">
+            <nav aria-label="Site">
+                <ul class="ws">
+                    <li><a href="../index.html#home">1:home</a></li>
+                    <li><a href="../index.html#projects">2:projects</a></li>
+                    <li><a href="../index.html#jams">3:jams</a></li>
+                    <li><a href="../index.html#skills">4:skills</a></li>
+                </ul>
+            </nav>
+            <span class="now">~/devlog/huffman.md</span>
+            <button type="button" class="fx-toggle" id="fx-toggle" aria-expanded="false" aria-controls="fx-panel">[fx]</button>
+            <div class="fx-panel" id="fx-panel" hidden>
+                <fieldset>
+                    <legend>theme</legend>
+                    <label><input type="radio" name="fx-theme" value="kanagawa"> kanagawa dragon</label>
+                    <label><input type="radio" name="fx-theme" value="solarized"> solarized light</label>
+                    <label><input type="radio" name="fx-theme" value="gruvbox"> gruvbox dark</label>
+                    <label><input type="radio" name="fx-theme" value="catppuccin"> catppuccin mocha</label>
+                    <label><input type="radio" name="fx-theme" value="moss"> moss</label>
+                </fieldset>
+                <hr>
+                <p>display effects</p>
+                <label><input type="checkbox" data-fx="scanlines"> scanlines</label>
+                <label><input type="checkbox" data-fx="glow"> text glow</label>
+                <label><input type="checkbox" data-fx="pixel"> pixel font</label>
+            </div>
+        </header>
+
+        <div class="post-layout">
+            <main id="content" class="win article" tabindex="-1">
+                <div class="title" aria-hidden="true"><span>~/devlog/huffman.md</span><span>less</span></div>
+                <div class="body tall">
+                    <h1 class="post-title">Writing a Canonical Huffman File Compressor</h1>
+                    <p class="post-meta">by Tristan McCaskill · posted <time datetime="2026-09-23">Sep 23, 2026</time> · updated <time datetime="2026-11-23">Nov 23, 2026</time> · <a href="../index.html#projects">back to projects</a></p>
+<aside class="summary" aria-label="Project summary">
+<dl>
+<dt>project</dt><dd>Canonical Huffman file compressor (personal project)</dd>
+<dt>stack</dt><dd>C, Make; Python and Matplotlib for the benchmark charts</dd>
+<dt>source</dt><dd><a href="https://github.com/teemcck/Canonical-Huffman-Coding" target="_blank" rel="noopener noreferrer">teemcck/Canonical-Huffman-Coding</a></dd>
+</dl>
+<p class="tldr"><b>tl;dr</b> A byte-oriented compressor that uses canonical, length-limited (15-bit) Huffman codes and a lengths-only 260-byte header. On the Canterbury Corpus it shrinks files to 46.8% of their size, against 26.0% for gzip -9.</p>
+</aside>
+
+
+            <h3>Context</h3>
             <p>
                 I watch quite a bit of low-level and assembly programming content
                 in my free time to generate ideas for projects. I found <a
                     href="https://down2core.com/TheCodePath.html">this resource</a> from a content creator, <a
                     href="https://www.twitch.tv/y4spr">y4spr</a>,
                 which highlights many project ideas, including implementing a Huffman coding compression algorithm.
-                I chose this project because it seemed fun to write some classic C (and because compression algorithms
-                are very cool). Huffman coding is not especially difficult to implement, and its many possible
-                variations meant my project would not feel like a regurgitation of a Wikipedia article.
+                I chose this project because it was a good excuse to write some classic C, and compression algorithms interest me. Huffman coding is not especially difficult to implement, and its many variations left room for design decisions of my own rather than reproducing a reference implementation.
             </p>
 
-            <h3>Overview of Huffman Coding</h3>
+            <h3>Background: Huffman Coding</h3>
             <p>
                 To understand this project's implementation details, it helps to introduce Huffman coding for readers
                 who are not already familiar with it. Huffman coding is a lossless
@@ -315,8 +346,7 @@
                 <code class="language-c">frequencies[255]</code> is incremented over and over. Turning on stricter
                 compiler warnings (<code>-Wall</code> or <code>-Wextra</code>) and thinking more carefully about the
                 types would likely have caught it. This is why <code>fgetc</code> returns an <code>int</code> in the
-                first place. It was a novice mistake, and it taught me to be more cautious when handling unsigned
-                integers.
+                first place. It was an easy mistake to make, and a useful lesson in handling unsigned types carefully.
             </p>
             <h4>Building the Huffman Tree</h4>
             <p>
@@ -350,23 +380,8 @@
             </p>
             <p>
                 The heap orders nodes from least to most frequent. I allocate a leaf for every byte with a nonzero
-                frequency, then insert it into the queue:
+                frequency, then insert it into the queue.
             </p>
-            <pre class="line-numbers" data-remove-indent="true" tabindex="0" aria-label="Inserting leaves"><code class="language-c">
-            // Insert one leaf for each symbol that occurs in the input.
-            for (size_t symbol = 0; symbol &lt; SYMBOL_COUNT; ++symbol) {
-                if (frequencies[symbol] != 0) {
-                    huffman_node *leaf = calloc(1, sizeof(*leaf));
-                    if (leaf == NULL) {
-                        release_heap_trees(&amp;heap);
-                        return EXIT_FAILURE;
-                    }
-                    leaf->frequency = frequencies[symbol];
-                    leaf->symbol = (uint8_t)symbol;
-                    heap_insert(&amp;heap, leaf);
-                }
-            }
-        </code></pre>
             <p>
                 With the leaves in the min-heap, the encoder repeatedly removes the two nodes with the lowest
                 frequencies and makes them the children of a new parent. It sets the parent's frequency to the sum of
@@ -559,25 +574,6 @@
                 appear in the input. The four count bytes store \(N\) least-significant byte first, so
                 \(N = N_0 + 2^8N_1 + 2^{16}N_2 + 2^{24}N_3\).
             </p>
-            <pre class="line-numbers" data-remove-indent="true" tabindex="0"
-                aria-label="Writing the Huffman file header"><code class="language-c">
-                int write_header(FILE *output, const uint8_t code_lengths[SYMBOL_COUNT], uint32_t total_symbols) {
-                    if (fwrite(code_lengths, 1, SYMBOL_COUNT, output) != SYMBOL_COUNT) {
-                        return EXIT_FAILURE;
-                    }
-
-                    for (unsigned byte = 0; byte &lt; 4; ++byte) {
-                        if (fputc((int)((total_symbols >> (8 * byte)) &amp; 255), output) == EOF) {
-                            return EXIT_FAILURE;
-                        }
-                    }
-                    return EXIT_SUCCESS;
-                }
-            </code></pre>
-            <div class="code-source"><a
-                    href="https://github.com/teemcck/Canonical-Huffman-Coding/blob/main/src/huffman_header.c#L19-L32"
-                    target="_blank" rel="noopener noreferrer">View source file</a></div>
-
             <h4>Bit-Level Output</h4>
             <p>
                 Originally, I tried to bundle bit-level writing into the encoding logic, but found that it made the
@@ -587,10 +583,6 @@
             </p>
             <pre class="line-numbers" data-remove-indent="true" tabindex="0"
                 aria-label="Encoder loop with inline bit packing"><code class="language-c">
-                uint8_t buffer = 0;
-                unsigned bits_used = 0;
-                int symbol;
-
                 while ((symbol = fgetc(input)) != EOF) {
                     huffman_code code = codebook[symbol];
                     for (unsigned remaining = code.length; remaining > 0; --remaining) {
@@ -725,36 +717,7 @@
             </p>
 
 
-            <h3>Project Limitations</h3>
-            <p>
-                I chose a few limitations to keep this project simple and
-                educational rather than production-oriented:
-            </p>
-            <ul>
-                <li><strong>Inputs are capped at 4 GiB minus one byte.</strong> The original size is stored in a
-                    32-bit header field, which sets an upper bound on the size of files that can be compressed. I
-                    made this choice because this implementation is aimed at learning rather than archiving large
-                    files, and four bytes was enough for everything I planned to test it on.</li>
-                <li><strong>Small files can grow.</strong> The header is always 260 bytes: 256 code lengths plus a
-                    4-byte count mentioned previously. Whether a small file ends up larger depends on how well its
-                    contents compress, but the fixed header cost makes that more likely than with a format that stores
-                    only the symbols it uses.</li>
-                <li><strong>Decoding is bit-at-a-time.</strong> <code class="language-c">decode_next_symbol()</code>
-                    reads up to 15 bits
-                    per symbol and checks each length group in turn. A table-driven decoder could peek at several
-                    upcoming bits at once and use them as an index to look up a symbol and its code length. Since this
-                    format emits each code from its most significant bit first but packs the first bit into the lowest
-                    position of each byte, a lookup table arranged for low-bit-first indexing would also need reversed
-                    code patterns. That extra machinery would obscure the canonical decoding logic I wanted to show.
-                </li>
-                <li><strong>Length limiting is a heuristic.</strong> The miniz approach gives near-optimal lengths,
-                    while package-merge gives the exact optimum. I chose the heuristic because it's a short
-                    histogram-and-repair routine rather than per-level list bookkeeping. It also runs rarely: a
-                    code only exceeds 15 bits on a strongly skewed frequency distribution, and otherwise the
-                    function returns after the first pass.</li>
-            </ul>
-
-            <h3>Compression Diagnostics</h3>
+            <h3>Results: Compression Diagnostics</h3>
             <p>
                 I compressed the 11 files in the <a href="https://corpus.canterbury.ac.nz/" target="_blank"
                     rel="noopener noreferrer">Canterbury Corpus</a>, a benchmark set of English and technical text,
@@ -783,11 +746,38 @@
                 byte-by-byte Huffman coding cannot exploit.
             </p>
 
-            <h3>Conclusion</h3>
+            <h3>Limitations</h3>
             <p>
-                I had a lot of fun working on this project, and my interest in compression algorithms has only grown
-                since I started it. I'd love to revisit the compressor in the future and add techniques like LZ77 to
-                move toward a more complete DEFLATE-like implementation.
+                I chose a few limitations to keep this project simple and
+                educational rather than production-oriented:
+            </p>
+            <ul>
+                <li><strong>Inputs are capped at 4 GiB minus one byte.</strong> The original size is stored in a
+                    32-bit header field, which sets an upper bound on the size of files that can be compressed. I
+                    made this choice because this implementation is aimed at learning rather than archiving large
+                    files, and four bytes was enough for everything I planned to test it on.</li>
+                <li><strong>Small files can grow.</strong> The header is always 260 bytes: 256 code lengths plus a
+                    4-byte count mentioned previously. Whether a small file ends up larger depends on how well its
+                    contents compress, but the fixed header cost makes that more likely than with a format that stores
+                    only the symbols it uses.</li>
+                <li><strong>Decoding is bit-at-a-time.</strong> <code class="language-c">decode_next_symbol()</code>
+                    reads up to 15 bits
+                    per symbol and checks each length group in turn. A table-driven decoder could peek at several
+                    upcoming bits at once and use them as an index to look up a symbol and its code length. Since this
+                    format emits each code from its most significant bit first but packs the first bit into the lowest
+                    position of each byte, a lookup table arranged for low-bit-first indexing would also need reversed
+                    code patterns. That extra machinery would obscure the canonical decoding logic I wanted to show.
+                </li>
+                <li><strong>Length limiting is a heuristic.</strong> The miniz approach gives near-optimal lengths,
+                    while package-merge gives the exact optimum. I chose the heuristic because it's a short
+                    histogram-and-repair routine rather than per-level list bookkeeping. It also runs rarely: a
+                    code only exceeds 15 bits on a strongly skewed frequency distribution, and otherwise the
+                    function returns after the first pass.</li>
+            </ul>
+
+            <h3>Takeaways and Next Steps</h3>
+            <p>
+                The natural next step is adding LZ77 matching, the technique behind much of gzip's advantage in the results above. That would move the compressor toward a DEFLATE-like implementation.
             </p>
             <p>
                 Beyond the algorithm's internals, this project taught me how much a good abstraction, like the bit
@@ -796,7 +786,7 @@
                 represented and accessed.
             </p>
 
-            <h3>Source Code &amp; References</h3>
+            <h3>Source</h3>
             <ul>
                 <li><a href="https://github.com/teemcck/Canonical-Huffman-Coding" target="_blank"
                         rel="noopener noreferrer">Project GitHub repository</a></li>
@@ -805,8 +795,21 @@
                 <li><a href="https://github.com/madler/zlib/blob/master/contrib/puff/puff.c" target="_blank"
                         rel="noopener noreferrer">Mark Adler's puff.c decoder</a></li>
             </ul>
+        
+                    <p class="dim">(END) · <a href="../index.html#home">cd ~</a></p>
+                </div>
+            </main>
+
+            <aside class="win toc" aria-label="Contents">
+                <div class="title" aria-hidden="true"><span>contents</span><span>toc</span></div>
+                <div class="body">
+                    <details open>
+                        <summary>contents</summary>
+                        <ol id="toc-list"></ol>
+                    </details>
+                </div>
+            </aside>
         </div>
     </div>
 </body>
-
 </html>
