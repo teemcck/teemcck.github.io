@@ -48,7 +48,8 @@ document.querySelectorAll("a.now[data-goto]").forEach(a => {
 
 
 
-// Jams: size the list window to show one and a half rows of previews, so it's clear the list continues
+// Jams: size the list window to show the first row plus a peek of the next, so it's clear the list continues.
+// the window is kept at 70% of that height to keep the section compact
 function sizeJams() {
     const body = document.querySelector('#ws-jams [aria-labelledby="jamlist-title"] > .body');
     const cards = body ? body.querySelectorAll(".jam") : [];
@@ -59,7 +60,7 @@ function sizeJams() {
     const next = [...cards].find(c => c.getBoundingClientRect().top > firstTop + 1);
     if (!next) { body.style.maxHeight = ""; return; }
     const nr = next.getBoundingClientRect();
-    body.style.maxHeight = Math.round(nr.top - top + nr.height * 0.3) + "px";
+    body.style.maxHeight = Math.round((nr.top - top + nr.height * 0.3) * 0.7) + "px";
 }
 window.addEventListener("resize", sizeJams);
 document.querySelectorAll("#ws-jams img").forEach(img => img.addEventListener("load", sizeJams));

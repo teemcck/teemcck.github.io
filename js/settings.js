@@ -6,20 +6,18 @@
     const KEY = "crt-fx";
     const THEMES = ["kanagawa", "solarized", "gruvbox", "catppuccin", "moss"];
     const root = document.documentElement;
-    const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    // first visit: scanlines and glow start on for the default theme (kanagawa dragon).
-    // after that, switching themes leaves the effect toggles alone
-    function themeDefaults(theme) {
-        const crt = theme === "kanagawa";
-        return { scanlines: crt && !reducedMotion, glow: crt };
+    // scanlines and glow start off; visitors can turn them on in the [fx] menu.
+    // switching themes leaves the effect toggles alone
+    function themeDefaults() {
+        return { scanlines: false, glow: false };
     }
 
     function load() {
         let saved = {};
         try { saved = JSON.parse(localStorage.getItem(KEY) || "{}"); } catch (e) { /* storage unavailable */ }
         const theme = THEMES.includes(saved.theme) ? saved.theme : "kanagawa";
-        return { theme, pixel: true, ...themeDefaults(theme), ...saved, theme };
+        return { theme, pixel: true, ...themeDefaults(), ...saved, theme };
     }
 
 

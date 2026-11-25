@@ -21,11 +21,11 @@
         // apply saved theme and effect settings before first paint (see js/settings.js)
         (function () {
             var p = {}; try { p = JSON.parse(localStorage.getItem("crt-fx") || "{}"); } catch (e) {}
-            var d = document.documentElement.dataset, rm = matchMedia("(prefers-reduced-motion: reduce)").matches;
-            var t = ["kanagawa", "solarized", "gruvbox", "catppuccin", "moss"].indexOf(p.theme) >= 0 ? p.theme : "kanagawa", crt = t === "kanagawa";
+            var d = document.documentElement.dataset;
+            var t = ["kanagawa", "solarized", "gruvbox", "catppuccin", "moss"].indexOf(p.theme) >= 0 ? p.theme : "kanagawa";
             d.theme = t;
-            d.scanlines = ("scanlines" in p ? p.scanlines : crt && !rm) ? "on" : "off";
-            d.glow = ("glow" in p ? p.glow : crt) ? "on" : "off";
+            d.scanlines = p.scanlines ? "on" : "off";
+            d.glow = p.glow ? "on" : "off";
             d.pixel = p.pixel === false ? "off" : "on";
         })();
     </script>
