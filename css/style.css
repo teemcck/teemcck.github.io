@@ -338,6 +338,57 @@ html[data-theme="solarized"] body::after {
 .fx-panel legend { color: var(--dim); padding: 0; margin-bottom: 4px; }
 .fx-panel hr { border: 0; border-top: 1px dashed var(--line); margin: 6px 0 8px; }
 
+/* ---------------- carousel (projects + jams, built by js/carousel.js) ----------------
+   two tiles side by side: a wheel that turns, and a detail window that only swaps text */
+.carousel { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 12px; align-items: stretch; }
+.carousel > .win { margin-top: 12px; display: flex; flex-direction: column; }
+.carousel .detail-win > .body { flex: 1; }
+
+/* the wheel grows to match a taller detail tile, with the cards kept vertically centred */
+.wheel {
+    position: relative; flex: 1 0 auto; min-height: 250px; overflow: hidden; outline-offset: -4px;
+    perspective: 900px; container-type: inline-size; touch-action: pan-y; cursor: grab; user-select: none;
+    --sp: min(30cqw, 190px);  /* horizontal step between cards */
+    --rot: -38deg;            /* how far neighbours turn away */
+    --depth: -150px;          /* how far neighbours sink back */
+}
+.wheel:active { cursor: grabbing; }
+.wheel-card {
+    position: absolute; left: 50%; top: 50%; width: min(250px, 58cqw);
+    background: var(--bg); border: 1px solid var(--line);
+    transform: translate(calc(-50% + var(--o) * var(--sp)), -50%) translateZ(calc(var(--abs) * var(--depth))) rotateY(calc(var(--o) * var(--rot)));
+    transition: transform .45s cubic-bezier(.2, .8, .2, 1), opacity .3s, border-color .3s;
+}
+.wheel-card img { width: 100%; height: 150px; object-fit: cover; border: 0; border-bottom: 1px solid var(--line); }
+.wheel-card span { display: block; padding: 2px 8px; color: var(--fg); font-size: 0.9em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.wheel-card::after { content: ""; position: absolute; inset: 0; background: var(--bg); opacity: calc(var(--abs) * 0.3); pointer-events: none; transition: opacity .3s; }
+.wheel-card.on { border-color: var(--fg); box-shadow: 0 0 0 2px var(--bg), 0 0 0 3px var(--fg); }
+.wheel-card.off { opacity: 0; visibility: hidden; }
+.wheel-card.jump, .wheel-card.jump::after { transition: none; }
+
+.wheel-nav { display: flex; align-items: center; justify-content: center; gap: 14px; padding: 4px 10px 8px; border-top: 1px dashed var(--line); }
+.wheel-pos { color: var(--dim); white-space: pre; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.wheel-nav button, .wheel-filter button {
+    font: inherit; color: var(--fg); background: none; cursor: pointer;
+    border: 1px solid var(--line); padding: 0 8px; text-shadow: inherit;
+}
+.wheel-nav button:hover, .wheel-filter button:hover { background: var(--fg); color: var(--bg); text-shadow: none; }
+.wheel-filter { display: inline-flex; flex-wrap: wrap; justify-content: flex-end; gap: 2px 4px; }
+.wheel-filter button { border-color: transparent; padding: 0 5px; color: var(--dim); }
+.wheel-filter button[aria-pressed="true"] { background: var(--fg); color: var(--bg); text-shadow: none; }
+
+.carousel .detail-stack { display: grid; max-height: none; }
+.detail-pane { grid-area: 1 / 1; }
+.detail-pane:not(.shown) { visibility: hidden; }
+.detail-entry h3 { margin-top: 4px; }
+.detail-pane.swap { animation: swap .18s steps(3); }
+@keyframes swap { from { opacity: 0.2; } }
+
+@media (prefers-reduced-motion: reduce) {
+    .wheel-card, .wheel-card::after { transition: none; }
+    .detail-pane.swap { animation: none; }
+}
+
 /* ---------------- motion ---------------- */
 .cursor { display: inline-block; width: 0.55em; height: 1em; vertical-align: -2px; background: var(--fg); animation: blink 1.1s steps(1) infinite; }
 @keyframes blink { 50% { opacity: 0; } }
@@ -349,6 +400,8 @@ html[data-theme="solarized"] body::after {
     .toc { position: static; order: -1; }
     .toc .body { max-height: none; }
     .toc details > summary { display: list-item; cursor: pointer; }
+    .carousel { grid-template-columns: minmax(0, 1fr); }
+    .carousel .detail-win > .body { flex: none; }
 }
 @media (max-width: 760px) {
     .screen { padding: 10px; }
@@ -362,6 +415,9 @@ html[data-theme="solarized"] body::after {
     .log li { grid-template-columns: minmax(0, 1fr); }
     .summary dl { grid-template-columns: minmax(0, 1fr); }
     .summary dd { margin-bottom: 4px; }
+    /* phones: the wheel flattens into a sliding strip with the neighbours peeking in */
+    .wheel { --rot: 0deg; --depth: 0px; --sp: 64cqw; min-height: 215px; }
+    .wheel-card img { height: 135px; }
 }
 @media (max-width: 420px) {
     body { --body-size: 19px; }
