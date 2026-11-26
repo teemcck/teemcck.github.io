@@ -33,12 +33,10 @@ document.addEventListener("keydown", e => {
 });
 
 // "now: ..." in the status bar jumps to that project's entry
-// (turns the projects wheel to it when js/carousel.js has built one, otherwise scrolls the plain list)
 document.querySelectorAll("a.now[data-goto]").forEach(a => {
     a.addEventListener("click", e => {
         e.preventDefault();
         show("projects");
-        if (window.selectInCarousel?.(a.dataset.goto)) return;
         const target = document.getElementById(a.dataset.goto);
         if (target) {
             target.scrollIntoView({ block: "start", behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
