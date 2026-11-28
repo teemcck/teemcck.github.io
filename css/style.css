@@ -217,19 +217,12 @@ a.now:hover { color: var(--bg); }
 
 h2.prompt, .h-inline { font-size: 1em; margin: 0 0 2px; font-weight: 400; }
 h1.h-inline { font-size: 25px; }
-/* skills: laid out like `ls` columns, each entry in its own cell */
-.skills .prompt { margin: 14px 0 6px; }
+.skills .prompt { margin: 14px 0 2px; }
 .skills .prompt:first-of-type { margin-top: 0; }
-.ls-out {
-    display: flex; flex-wrap: wrap;
-    gap: 6px 8px; margin: 0 0 4px;
-}
-.ls-out span {
-    color: var(--link); background: var(--bg-raised);
-    border: 1px dashed var(--line); padding: 1px 10px; min-width: 9ch;
-}
-.ls-out span::before { content: "./"; color: var(--dim); }
-.wip { color: var(--dim); font-style: normal; font-size: 0.85em; }
+/* skills: plain `ls` columns, styled like the apt list in ~/currently-learning */
+.ls-out { display: flex; flex-wrap: wrap; gap: 0 3ch; margin: 0; color: var(--link); }
+.ls-out .ip { color: var(--head); }
+.ls-note { margin: 4px 0 0; color: var(--dim); font-size: 0.85em; }
 
 /* ---------------- devlog post ---------------- */
 .post-layout { display: grid; grid-template-columns: minmax(0, 1fr) 250px; gap: 12px; align-items: start; }
