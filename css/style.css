@@ -194,8 +194,6 @@ a.now { color: var(--fg); text-decoration: none; }
 a.now:hover { color: var(--bg); }
 .sub { color: var(--link); margin-top: 2px; }
 
-.jam-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-top: 8px; }
-.jam h3 { margin-top: 8px; }
 .placement { color: var(--link); }
 
 h2.prompt, .h-inline { font-size: 1em; margin: 0 0 2px; font-weight: 400; }
@@ -352,7 +350,7 @@ html[data-theme="solarized"] body::after {
 }
 @media (max-width: 760px) {
     .screen { padding: 10px; }
-    .grid, .jam-grid { grid-template-columns: minmax(0, 1fr); }
+    .grid { grid-template-columns: minmax(0, 1fr); }
     .entry { grid-template-columns: minmax(0, 1fr); gap: 8px; }
     .entry img { max-width: 360px; }
     .win .body { max-height: 70vh; }
