@@ -222,11 +222,12 @@ h1.h-inline { font-size: 25px; }
 .skills .prompt:first-of-type { margin-top: 0; }
 .ls-out {
     display: flex; flex-wrap: wrap;
-    gap: 6px 8px; margin: 0 0 4px;
+    gap: 5px 7px; margin: 0 0 4px;
 }
 .ls-out span {
     color: var(--link); background: var(--bg-raised);
-    border: 1px dashed var(--line); padding: 1px 10px; min-width: 9ch;
+    border: 1px dashed var(--line); padding: 0 8px; min-width: 8ch;
+    font-size: 0.9em;
 }
 .ls-out span::before { content: "./"; color: var(--dim); }
 .wip { color: var(--dim); font-style: normal; font-size: 0.85em; }
