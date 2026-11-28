@@ -351,20 +351,21 @@
             </section>
 
             <section class="win" aria-labelledby="learning-title">
-                <div class="title" aria-hidden="true"><span>currently learning</span><span>apt upgrade</span></div>
+                <div class="title" aria-hidden="true"><span>~/currently-learning</span><span>apt list</span></div>
                 <div class="body">
                     <h2 id="learning-title" class="visually-hidden">Currently learning</h2>
-                    <div class="prompt" aria-hidden="true"><b>tristan@debian</b>:~$ sudo apt upgrade</div>
+                    <div class="prompt" aria-hidden="true"><b>tristan@debian</b>:~$ apt list --upgradable</div>
                     <ul class="apt">
-                        <li><span class="get" aria-hidden="true">Get:1</span><span class="pkg">gameboy-architecture</span><span class="progress" aria-hidden="true">[#####-----------]</span><span class="pct">30%</span><span class="note">sm83 cpu, ppu, memory map</span></li>
-                        <li><span class="get" aria-hidden="true">Get:2</span><span class="pkg">cryptography</span><span class="progress" aria-hidden="true">[########--------]</span><span class="pct">50%</span><span class="note">md5 collisions → real attacks</span></li>
-                        <li><span class="get" aria-hidden="true">Get:3</span><span class="pkg">x86-assembly</span><span class="progress" aria-hidden="true">[####------------]</span><span class="pct">25%</span><span class="note">needed for RE + pwn</span></li>
-                        <li><span class="get" aria-hidden="true">Get:4</span><span class="pkg">reverse-engineering</span><span class="progress" aria-hidden="true">[##--------------]</span><span class="pct">15%</span><span class="note">ghidra, crackmes</span></li>
-                        <li><span class="get" aria-hidden="true">Get:5</span><span class="pkg">binary-exploitation</span><span class="progress" aria-hidden="true">[................]</span><span class="pct">waiting</span><span class="note">stack, ROP, heap basics</span></li>
-                        <li><span class="get" aria-hidden="true">Get:6</span><span class="pkg">web-security</span><span class="progress" aria-hidden="true">[#####-----------]</span><span class="pct">30%</span><span class="note">owasp top 10, portswigger labs</span></li>
-                        <li><span class="get" aria-hidden="true">Get:7</span><span class="pkg">networking</span><span class="progress" aria-hidden="true">[#######---------]</span><span class="pct">45%</span><span class="note">tcp/ip, wireshark</span></li>
-                        <li><span class="get" aria-hidden="true">Get:8</span><span class="pkg">linux-internals</span><span class="progress" aria-hidden="true">[########--------]</span><span class="pct">50%</span><span class="note">syscalls, permissions, procfs</span></li>
-                        <li><span class="get" aria-hidden="true">Get:9</span><span class="pkg">unity</span><span class="progress" aria-hidden="true">[#############---]</span><span class="pct">80%</span><span class="note"></span></li>
+                        <li class="apt-head" aria-hidden="true">Listing... Done</li>
+                        <li><span class="pkg">gameboy-architecture/rust</span><span class="ver">0.3 → 1.0</span><span class="status">[upgradable]</span><span class="note"># sm83 cpu, ppu, memory map</span></li>
+                        <li><span class="pkg">cryptography/security</span><span class="ver">0.4 → 0.8</span><span class="status">[upgradable]</span><span class="note"># md5 collisions → real attacks</span></li>
+                        <li><span class="pkg">x86-assembly/security</span><span class="ver">0.2 → 0.8</span><span class="status">[upgradable]</span><span class="note"># needed for RE + pwn</span></li>
+                        <li><span class="pkg">reverse-engineering/sec</span><span class="ver">0.1 → 0.7</span><span class="status">[upgradable]</span><span class="note"># ghidra, crackmes</span></li>
+                        <li><span class="pkg">binary-exploitation/sec</span><span class="ver">0.0 → 0.6</span><span class="status">[upgradable]</span><span class="note"># stack, ROP, heap basics</span></li>
+                        <li><span class="pkg">web-security/sec</span><span class="ver">0.2 → 0.7</span><span class="status">[upgradable]</span><span class="note"># owasp top 10, portswigger labs</span></li>
+                        <li><span class="pkg">networking/core</span><span class="ver">0.3 → 0.7</span><span class="status">[upgradable]</span><span class="note"># tcp/ip, wireshark</span></li>
+                        <li><span class="pkg">linux-internals/core</span><span class="ver">0.4 → 0.8</span><span class="status">[upgradable]</span><span class="note"># syscalls, permissions, procfs</span></li>
+                        <li><span class="pkg">unity/gamedev</span><span class="ver">0.8 → 1.0</span><span class="status">[upgradable]</span><span class="note"></span></li>
                     </ul>
                 </div>
             </section>

@@ -207,13 +207,12 @@ a.now:hover { color: var(--bg); }
 .commits .when { color: var(--dim); text-align: right; white-space: nowrap; }
 .commits-msg { color: var(--dim); }
 
-/* currently learning: apt upgrade-style progress list */
+/* ~/currently-learning: apt list --upgradable-style list of skills I'm working toward */
 .apt { list-style: none; margin: 6px 0 0; padding: 0; }
-.apt li { display: grid; grid-template-columns: 6ch 21ch auto 7ch minmax(0, 1fr); gap: 0 12px; padding: 2px 0; white-space: nowrap; }
-.apt .get, .apt .note { color: var(--dim); }
-.apt .pkg { color: var(--link); }
-.apt .progress { color: var(--fg); }
-.apt .pct { text-align: right; }
+.apt li { display: grid; grid-template-columns: 26ch 11ch 13ch minmax(0, 1fr); gap: 0 12px; padding: 2px 0; white-space: nowrap; }
+.apt li.apt-head { display: block; color: var(--dim); }
+.apt .pkg { color: var(--link); overflow: hidden; text-overflow: ellipsis; }
+.apt .status, .apt .note { color: var(--dim); }
 .apt .note { overflow: hidden; text-overflow: ellipsis; }
 
 h2.prompt, .h-inline { font-size: 1em; margin: 0 0 2px; font-weight: 400; }
@@ -381,9 +380,8 @@ html[data-theme="solarized"] body::after {
     .commits li { grid-template-columns: 7ch minmax(0, 1fr) auto; grid-template-areas: "sha repo when" "msg msg msg"; }
     .commits .sha { grid-area: sha; } .commits .repo { grid-area: repo; } .commits .when { grid-area: when; }
     .commits .msg { grid-area: msg; margin-bottom: 4px; }
-    .apt li { grid-template-columns: minmax(0, 1fr) 7ch; grid-template-areas: "pkg pct" "progress progress"; padding: 3px 0; }
-    .apt .pkg { grid-area: pkg; } .apt .pct { grid-area: pct; } .apt .progress { grid-area: progress; }
-    .apt .get, .apt .note { display: none; }
+    .apt li { grid-template-columns: minmax(0, 1fr) auto; }
+    .apt .status, .apt .note { display: none; }
     .summary dl { grid-template-columns: minmax(0, 1fr); }
     .summary dd { margin-bottom: 4px; }
 }
