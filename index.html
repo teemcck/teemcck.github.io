@@ -35,6 +35,7 @@
     <script defer src="js/settings.js"></script>
     <script defer src="js/hub.js"></script>
     <script defer src="js/preview.js"></script>
+    <script defer src="js/activity.js"></script>
 </head>
 <body>
     <a class="skip-link" href="#content">skip to content</a>
@@ -138,6 +139,18 @@
                     </section>
                 </div>
             </div>
+
+            <section class="win" aria-labelledby="activity-title">
+                <div class="title" aria-hidden="true"><span>~/activity</span><span>git log</span></div>
+                <div class="body">
+                    <h2 id="activity-title" class="visually-hidden">Recent commits</h2>
+                    <div class="prompt" aria-hidden="true"><b>tristan@debian</b>:~$ git log --all --oneline -5</div>
+                    <!-- filled in by js/activity.js from GitHub's commit search -->
+                    <ul class="commits" id="commits" aria-live="polite">
+                        <li class="commits-msg">fetching&hellip;</li>
+                    </ul>
+                </div>
+            </section>
         </main>
 
         <!-- ===================== 2:projects ===================== -->
@@ -334,6 +347,25 @@
                     <p class="ls-out"><span>git</span><span>gitlab</span><span>linux</span><span>make</span><span>valgrind</span></p>
                     <h2 class="prompt"><b>tristan@debian</b>:~$ ls ~/coursework</h2>
                     <p class="ls-out"><span>data structures &amp; algorithms</span><span>computer organization</span><span>foundations of cs <i class="wip">(in progress)</i></span><span>cryptography <i class="wip">(in progress)</i></span><span>discrete math</span><span>linear algebra</span></p>
+                </div>
+            </section>
+
+            <section class="win" aria-labelledby="learning-title">
+                <div class="title" aria-hidden="true"><span>currently learning</span><span>apt upgrade</span></div>
+                <div class="body">
+                    <h2 id="learning-title" class="visually-hidden">Currently learning</h2>
+                    <div class="prompt" aria-hidden="true"><b>tristan@debian</b>:~$ sudo apt upgrade</div>
+                    <ul class="apt">
+                        <li><span class="get" aria-hidden="true">Get:1</span><span class="pkg">gameboy-architecture</span><span class="progress" aria-hidden="true">[#####-----------]</span><span class="pct">30%</span><span class="note">sm83 cpu, ppu, memory map</span></li>
+                        <li><span class="get" aria-hidden="true">Get:2</span><span class="pkg">cryptography</span><span class="progress" aria-hidden="true">[########--------]</span><span class="pct">50%</span><span class="note">md5 collisions → real attacks</span></li>
+                        <li><span class="get" aria-hidden="true">Get:3</span><span class="pkg">x86-assembly</span><span class="progress" aria-hidden="true">[####------------]</span><span class="pct">25%</span><span class="note">needed for RE + pwn</span></li>
+                        <li><span class="get" aria-hidden="true">Get:4</span><span class="pkg">reverse-engineering</span><span class="progress" aria-hidden="true">[##--------------]</span><span class="pct">15%</span><span class="note">ghidra, crackmes</span></li>
+                        <li><span class="get" aria-hidden="true">Get:5</span><span class="pkg">binary-exploitation</span><span class="progress" aria-hidden="true">[................]</span><span class="pct">waiting</span><span class="note">stack, ROP, heap basics</span></li>
+                        <li><span class="get" aria-hidden="true">Get:6</span><span class="pkg">web-security</span><span class="progress" aria-hidden="true">[#####-----------]</span><span class="pct">30%</span><span class="note">owasp top 10, portswigger labs</span></li>
+                        <li><span class="get" aria-hidden="true">Get:7</span><span class="pkg">networking</span><span class="progress" aria-hidden="true">[#######---------]</span><span class="pct">45%</span><span class="note">tcp/ip, wireshark</span></li>
+                        <li><span class="get" aria-hidden="true">Get:8</span><span class="pkg">linux-internals</span><span class="progress" aria-hidden="true">[########--------]</span><span class="pct">50%</span><span class="note">syscalls, permissions, procfs</span></li>
+                        <li><span class="get" aria-hidden="true">Get:9</span><span class="pkg">unity</span><span class="progress" aria-hidden="true">[#############---]</span><span class="pct">80%</span><span class="note"></span></li>
+                    </ul>
                 </div>
             </section>
         </main>
