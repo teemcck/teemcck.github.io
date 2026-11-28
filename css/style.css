@@ -97,7 +97,9 @@ h2.prompt { color: var(--dim); }
 }
 .bar .ws { display: flex; flex-wrap: wrap; gap: 4px; margin: 0; padding: 0; list-style: none; }
 .bar .ws a { color: var(--fg); text-decoration: none; padding: 0 8px; display: inline-block; }
+.bar .ws a:hover,
 .bar .ws a[aria-current] { background: var(--fg); color: var(--bg); text-shadow: none; }
+.bar .ws a[aria-current]::after { content: "*"; } /* tmux-style marker for the active workspace */
 .bar .now { margin-left: auto; }
 .bar .host { color: var(--dim); }
 
