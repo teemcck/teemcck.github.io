@@ -48,7 +48,7 @@ document.querySelectorAll("a.now[data-goto]").forEach(a => {
 
 
 
-// Jams: make the list window the same height as the first projects window (~/projects/game-dev).
+// Jams: size the list window relative to the first projects window (~/projects/game-dev).
 // The projects workspace is usually hidden here, so it is unhidden just long enough to measure;
 // this all happens synchronously, so nothing flashes on screen.
 const jamsRef = document.querySelector("#ws-projects .win > .body");
@@ -64,7 +64,8 @@ function sizeJams() {
     projects.hidden = false;
     const h = jamsRef.getBoundingClientRect().height;
     projects.hidden = wasHidden;
-    body.style.maxHeight = h ? Math.round(h) + "px" : "";
+    // 1.5x the projects window, but never taller than 85% of the viewport (matters on phones)
+    body.style.maxHeight = h ? Math.round(Math.min(h * 1.5, innerHeight * 0.85)) + "px" : "";
 }
 window.addEventListener("resize", sizeJams);
 document.querySelectorAll("#ws-jams img").forEach(img => img.addEventListener("load", sizeJams));
