@@ -64,8 +64,8 @@ function sizeJams() {
     projects.hidden = false;
     const h = jamsRef.getBoundingClientRect().height;
     projects.hidden = wasHidden;
-    // 1.5x the projects window, but never taller than 85% of the viewport (matters on phones)
-    body.style.maxHeight = h ? Math.round(Math.min(h * 1.5, innerHeight * 0.85)) + "px" : "";
+    // 1.25x the projects window, but never taller than 85% of the viewport (matters on phones)
+    body.style.maxHeight = h ? Math.round(Math.min(h * 1.25, innerHeight * 0.85)) + "px" : "";
 }
 window.addEventListener("resize", sizeJams);
 document.querySelectorAll("#ws-jams img").forEach(img => img.addEventListener("load", sizeJams));
