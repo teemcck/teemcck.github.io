@@ -209,7 +209,7 @@ a.now:hover { color: var(--bg); }
 
 /* ~/currently-learning: apt list --upgradable-style list of skills I'm working toward */
 .apt { list-style: none; margin: 6px 0 0; padding: 0; }
-.apt li { display: grid; grid-template-columns: 30ch 11ch 13ch minmax(0, 1fr); gap: 0 12px; padding: 2px 0; white-space: nowrap; }
+.apt li { display: grid; grid-template-columns: 24ch 11ch 13ch minmax(0, 1fr); gap: 0 12px; padding: 2px 0; white-space: nowrap; }
 .apt li.apt-head { display: block; color: var(--dim); }
 .apt .pkg { color: var(--link); overflow: hidden; text-overflow: ellipsis; }
 .apt .status, .apt .note { color: var(--dim); }
